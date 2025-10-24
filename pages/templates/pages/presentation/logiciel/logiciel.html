@@ -1,0 +1,1090 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusFlow | Gestion Scolaire 360°</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00a76f;
+            --primary-dark: #008c5d;
+            --primary-light: #4cce9d;
+            --secondary: #3366ff;
+            --dark: #212b36;
+            --light: #f9fafb;
+            --gray: #637381;
+            --success: #00a76f;
+            --warning: #ffab00;
+            --danger: #ff5630;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --hover-shadow: 0 10px 25px -5px rgba(0, 167, 111, 0.15);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+            background-color: var(--light);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            line-height: 1.25;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            background-color: white;
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            backdrop-filter: blur(6px);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+            height: 80px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: transform 0.3s;
+        }
+
+        .logo:hover {
+            transform: translateY(-2px);
+        }
+
+        .logo-icon {
+            background: var(--gradient);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 1rem;
+        }
+
+        .logo-text {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--dark);
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin-left: auto;
+        }
+
+        .nav-links li {
+            margin-left: 32px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--gray);
+            font-weight: 500;
+            font-size: 0.9375rem;
+            transition: color 0.3s;
+            position: relative;
+            padding: 8px 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--dark);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .cta-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9375rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: 0 8px 16px rgba(0, 167, 111, 0.16);
+        }
+
+        .cta-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .cta-button i {
+            margin-left: 8px;
+            font-size: 0.875rem;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark);
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 180px 0 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-text {
+            flex: 1;
+            padding-right: 60px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 24px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--gray);
+            margin-bottom: 32px;
+            max-width: 500px;
+        }
+
+        .hero-image {
+            flex: 1;
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .hero-image img {
+            width: 100%;
+            display: block;
+            transition: transform 0.5s;
+        }
+
+        .hero-image:hover img {
+            transform: scale(1.02);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .secondary-button {
+            background: white;
+            color: var(--primary);
+            border: 1px solid rgba(0, 167, 111, 0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9375rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .secondary-button:hover {
+            background: rgba(0, 167, 111, 0.05);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .secondary-button i {
+            margin-left: 8px;
+            font-size: 0.875rem;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .section-title p {
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.125rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 32px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s;
+            border: 1px solid rgba(145, 158, 171, 0.12);
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--hover-shadow);
+            border-color: rgba(0, 167, 111, 0.2);
+        }
+
+        .feature-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin: 0 auto 24px;
+            color: white;
+            background: var(--gradient);
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            font-size: 0.9375rem;
+        }
+
+        /* Process Section */
+        .process {
+            padding: 100px 0;
+            background: linear-gradient(to bottom, #f9fafb 0%, white 100%);
+        }
+
+        .process-steps {
+            display: flex;
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .process-step {
+            flex: 1;
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(145, 158, 171, 0.12);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .process-step:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .step-number {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            font-size: 3rem;
+            font-weight: 800;
+            color: rgba(0, 167, 111, 0.08);
+            line-height: 1;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .step-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 24px;
+            color: var(--primary);
+            background: rgba(0, 167, 111, 0.08);
+        }
+
+        .process-step h3 {
+            font-size: 1.125rem;
+            margin-bottom: 16px;
+        }
+
+        .process-step p {
+            color: var(--gray);
+            font-size: 0.9375rem;
+        }
+
+        /* Dashboard Showcase */
+        .dashboard-showcase {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .dashboard-content {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .dashboard-text {
+            flex: 1;
+        }
+
+        .dashboard-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 24px;
+        }
+
+        .dashboard-text p {
+            color: var(--gray);
+            margin-bottom: 32px;
+            font-size: 1.125rem;
+        }
+
+        .dashboard-features {
+            margin-bottom: 32px;
+        }
+
+        .dashboard-feature {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .dashboard-feature-icon {
+            color: var(--primary);
+            font-size: 1rem;
+            margin-right: 12px;
+            margin-top: 4px;
+        }
+
+        .dashboard-image {
+            flex: 1;
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .dashboard-image img {
+            width: 100%;
+            display: block;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 100px 0;
+            background: linear-gradient(to bottom, white 0%, #f9fafb 100%);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .testimonial-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(145, 158, 171, 0.12);
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 24px;
+            left: 40px;
+            font-size: 5rem;
+            color: rgba(0, 167, 111, 0.08);
+            font-family: serif;
+            line-height: 1;
+        }
+
+        .testimonial-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .testimonial-text {
+            font-size: 1.125rem;
+            font-style: italic;
+            color: var(--dark);
+            margin-bottom: 24px;
+            line-height: 1.7;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+
+        .author-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: rgba(0, 167, 111, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 16px;
+            font-size: 1.25rem;
+        }
+
+        .author-info h4 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .author-info p {
+            color: var(--gray);
+            font-size: 0.875rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 120px 0;
+            background: var(--gradient);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+            opacity: 0.3;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .cta-section p {
+            max-width: 700px;
+            margin: 0 auto 32px;
+            opacity: 0.9;
+            font-size: 1.125rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .cta-buttons .cta-button {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .cta-buttons .secondary-button {
+            background: transparent;
+            color: white;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .cta-buttons .secondary-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: white;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 80px 0 40px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .footer-logo .logo-icon {
+            margin-right: 12px;
+        }
+
+        .footer-logo-text {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: white;
+        }
+
+        .footer-logo-text span {
+            color: var(--primary-light);
+        }
+
+        .footer-about p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 24px;
+            font-size: 0.9375rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .social-link {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s;
+            font-size: 0.875rem;
+        }
+
+        .social-link:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .footer-links h3 {
+            font-size: 1rem;
+            margin-bottom: 24px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.9375rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-contact p {
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 16px;
+            font-size: 0.9375rem;
+        }
+
+        .footer-contact i {
+            margin-right: 12px;
+            color: var(--primary-light);
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 40px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.875rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .features-grid, .testimonials-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .hero-content, .dashboard-content {
+                flex-direction: column;
+            }
+            
+            .hero-text, .dashboard-text {
+                padding-right: 0;
+                margin-bottom: 60px;
+                text-align: center;
+            }
+            
+            .hero-text p, .section-title p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            .button-group, .cta-buttons {
+                justify-content: center;
+            }
+            
+            .process-steps {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero h1, .section-title h2, .dashboard-text h2, .cta-section h2 {
+                font-size: 2rem;
+            }
+            
+            .hero p, .section-title p, .dashboard-text p, .cta-section p {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group, .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+            
+            .testimonial-card {
+                padding: 32px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header design valider -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="#" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <div class="logo-text">Campus<span>Flow</span></div>
+                </a>
+                
+                <ul style="margin-right:20px" class="nav-links">
+                    <li><a href="#features">Solutions</a></li>
+                    <li><a href="#process">Fonctionnalités</a></li>
+                    <li><a href="#dashboard">Plateforme</a></li>
+                    <li><a href="#testimonials">Références</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                
+                <a href="{% url "ecole" %}" class=" logo cta-button">ESCOM</a> 
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Digitalisez votre institution éducative</h1>
+                    <p>CampusFlow unifie la gestion financière, académique et administrative dans une solution moderne conçue pour les écoles et universités.</p>
+                    <div class="button-group">
+                        <a href="{% url "login" %}" class="cta-button">acceder a l'interface <i class="fas fa-arrow-right"></i></a>
+                        {% comment %} <a href="#" class="secondary-button">Voir la démo <i class="fas fa-play-circle"></i></a> {% endcomment %}
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="{% static "img/capture2.PNG" %}" alt="Tableau de bord CampusFlow">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Une solution complète pour votre institution</h2>
+                <p>CampusFlow combine les meilleurs outils de gestion scolaire dans une plateforme unifiée et intuitive.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <h3>Gestion Financière</h3>
+                    <p>Suivi des frais de scolarité, génération de factures, rapports financiers détaillés et intégration bancaire sécurisée.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>Emplois du Temps</h3>
+                    <p>Création intelligente d'emplois du temps avec gestion des salles et optimisation des ressources enseignantes.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h3>Inscriptions</h3>
+                    <p>Processus d'admission digitalisé avec dossier en ligne, paiement des frais et intégration automatique.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <h3>Présences</h3>
+                    <p>Système de pointage électronique avec notifications automatiques et rapports d'absentéisme.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h3>Prise en compte des recutement</h3>
+                    <p>Gestion des contrats enseignants, paiement des salaires et suivi des qualifications.</p>
+                </div>
+{% comment %}                 
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <h3>Analytique</h3>
+                    <p>Tableaux de bord personnalisés avec indicateurs clés pour la prise de décision éclairée.</p>
+                </div> {% endcomment %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="process" id="process">
+        <div class="container">
+            <div class="section-title">
+                <h2>Transformez vos processus administratifs</h2>
+                <p>Découvrez comment CampusFlow optimise le fonctionnement de votre institution en 4 étapes clés.</p>
+            </div>
+            
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Digitalisation</h3>
+                    <p>Migration sécurisée de vos données vers notre plateforme  avec accompagnement sur mesure.</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>Automatisation</h3>
+                    <p>Configuration des workflows pour automatiser les tâches répétitives</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <h3>Formation</h3>
+                    <p>Prise en main de la plateforme par vos équipe,et une maintenance continue de notre part .</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <div class="step-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3>Optimisation</h3>
+                    <p>Analyse continue des données pour améliorer vos processus et performances académiques,mise en place en perspective d'une analyse de donnees par nos modeles de machines learnings</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Showcase -->
+    <section class="dashboard-showcase" id="dashboard">
+        <div class="container">
+            <div class="dashboard-content">
+                <div class="dashboard-text">
+                    <h2>Une plateforme conçue pour l'éducation</h2>
+                    <p>L'interface intuitive de CampusFlow offre une expérience utilisateur premium tout en conservant la puissance nécessaire pour gérer des institutions complexes.</p>
+                    
+                    <div class="dashboard-features">
+                        <div class="dashboard-feature">
+                            <div class="dashboard-feature-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div>
+                                <h4>Tableau de bord unifié</h4>
+                                <p>Accès centralisé à toutes les fonctionnalités avec vue d'ensemble en temps réel.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-feature">
+                            <div class="dashboard-feature-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div>
+                                <h4>Design responsive</h4>
+                                <p>Accessible sur tous les appareils avec une expérience optimisée desktop.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-feature">
+                            <div class="dashboard-feature-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div>
+                                <h4>Modules intégrés</h4>
+                                <p>Tous les outils dont vous avez besoin dans une seule plateforme cohérente.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="{% url "login" %}" class="cta-button"> se connecter <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="dashboard-image">
+                    <img src="{% static "img/capture.PNG" %}" alt="Interface CampusFlow">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h2>Un mot des createurs </h2>
+                <p>Découvrez ce que les createurs de CampusFlow ,pense de leur produit:</p>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="testimonial-text">
+                            <p>La gestion financière d'université peu radicalement etre transformée par CampusFlow. Une utilisation d'un seul module unifie peut largement vous faire gagner du temps et bien plus...</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">RA</div>
+                            <div class="author-info">
+                                <h4>Rock Ambalowe</h4>
+                                <p>Etudiant finaliste , Université (ESTIM) </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="testimonial-text">
+                            <p>L'intégration de CampusFlow dans votre école pourrai l'un levier d'evolution et de progression qui vous manquait , elle  permetra entre autre de recolter des donnees en temps reel,une mise en place d'indicateur decisionaire...</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">MD</div>
+                            <div class="author-info">
+                                <h4>Mivince Dabordieu</h4>
+                                <p>Etudiant finaliste , Université (ESTIM) </p>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Vous douttez encore de nous  ?</h2>
+                <p>voyez par vous meme </p>
+                
+                <div class="cta-buttons">
+                    <a href="{% url "login" %}"  class="cta-button">se connecter  <i class="fas fa-arrow-right"></i></a>
+                    <a href="#" class="secondary-button">Contactez-nous <i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                        <div class="logo-icon">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <div class="footer-logo-text">Campus<span>Flow</span></div>
+                    </div>
+                    <p>La plateforme SaaS de référence pour la digitalisation complète des établissements d'enseignement.</p>
+                    
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Produit</h3>
+                    <ul>
+                        <li><a href="#">Fonctionnalités</a></li>
+                        <li><a href="#">Tarifs</a></li>
+                        <li><a href="#">Applications mobiles</a></li>
+                        <li><a href="#">Nouveautés</a></li>
+                        <li><a href="#">Intégrations</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Ressources</h3>
+                    <ul>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Centre d'aide</a></li>
+                        <li><a href="#">Tutoriels</a></li>
+                        <li><a href="#">Webinaires</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+            

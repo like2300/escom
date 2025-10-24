@@ -1,0 +1,774 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESCOM - École Supérieure de Commerce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7635dc;
+            --primary-dark: #5c2bb5;
+            --primary-light: #9364e8;
+            --secondary: #00a76f;
+            --dark: #212b36;
+            --light: #f9fafb;
+            --gray: #637381;
+            --success: #00a76f;
+            --warning: #ffab00;
+            --danger: #ff5630;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --hover-shadow: 0 10px 25px -5px rgba(118, 53, 220, 0.15);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            height: 100vh;
+            position: fixed;
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            margin-bottom: 1rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            background: var(--gradient);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .logo-text {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--dark);
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        .nav-menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 1rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray);
+            padding: 0.5rem 1rem;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.2s;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(118, 53, 220, 0.05);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: rgba(118, 53, 220, 0.08);
+            border-left: 3px solid var(--primary);
+        }
+
+        .nav-icon {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        /* Sous-menu */
+        .submenu {
+            margin-left: 2rem;
+            padding-left: 0.5rem;
+            border-left: 2px solid rgba(118, 53, 220, 0.1);
+            display: none;
+        }
+
+        .submenu.show {
+            display: block;
+        }
+
+        .submenu .nav-link {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .has-submenu .nav-link {
+            position: relative;
+        }
+
+        .has-submenu .nav-link::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 1rem;
+            transition: transform 0.2s;
+            font-size: 0.75rem;
+        }
+
+        .has-submenu.active .nav-link::after {
+            transform: rotate(180deg);
+        }
+
+        .user-profile {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            width: 240px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(118, 53, 220, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .notification-btn {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.25rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .error-message {
+            color: white;
+            font-size: 0.875rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: var(--danger);
+            box-shadow: 0 4px 12px rgba(255, 86, 48, 0.2);
+            display: flex;
+            align-items: center;
+            animation: fadeInOut 10s forwards;
+            opacity: 2;
+        }
+        .error-message span {
+            color: white;
+            font-size: 0.875rem;
+
+        }
+
+        .error-message i {
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-10px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+        /* Form Container */
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .form-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-label.required::after {
+            content: '*';
+            color: var(--danger);
+            margin-left: 4px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(118, 53, 220, 0.2);
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            color: var(--dark);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        fieldset {
+            border: 1px solid rgba(145, 158, 171, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        legend {
+            font-weight: 600;
+            color: var(--dark);
+            padding: 0 0.5rem;
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Checkbox styling */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+                overflow: hidden;
+            }
+            
+            .logo-text, .nav-title, .user-info, .nav-link span {
+                display: none;
+            }
+            
+            .logo {
+                justify-content: center;
+                padding: 0 0 1.5rem;
+            }
+            
+            .nav-icon {
+                margin-right: 0;
+                font-size: 1.25rem;
+            }
+            
+            .nav-link {
+                justify-content: center;
+                padding: 1rem 0;
+            }
+            
+            .user-profile {
+                justify-content: center;
+                padding: 1rem 0;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .search-bar input {
+                width: 180px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Logout button */
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--danger);
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: auto;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 86, 48, 0.05);
+        }
+
+        .logout-icon {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        {% include 'pages/bases/dashboard/logo.html' %}
+
+        {% include 'pages/bases/dashboard/recrutement_i.html' %}
+
+        
+        {% include 'pages/bases/dashboard/user.html' %}
+
+    </aside>
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <div class="page-title">
+                <h1>Recrutement des Professeurs</h1>
+            </div>
+            
+            <div class="header-actions">
+                <div class="search-bar">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="Rechercher...">
+                </div>
+                
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Form Container -->
+        <div class="form-container">
+            <div class="form-header">
+                <h2 class="form-title">Formulaire de recrutement des professeurs</h2>
+            </div>
+            
+            <form method="post" id="recruitment-form">
+                {% csrf_token %}
+                
+                {% for message in messages %}
+                <div class="error-message" id="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>{{message}}</span>
+                </div>
+                {% endfor %}
+                
+                <fieldset>
+                    <legend>Informations personnelles</legend>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="nom" class="form-label required">Nom</label>
+                            <input type="text" id="nom" name="nom" class="form-control" required
+                             pattern="^[A-Za-zÀ-ÿ\-']+$"
+                             title="Le prénom ne peut contenir que des lettres, traits d'union et apostrophes"
+                             minlength="2"
+                             maxlength="50">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="prenom" class="form-label required">Prénom</label>
+                            <input type="text" id="prenom" name="prenom" class="form-control" required
+                                       pattern="^[A-Za-zÀ-ÿ\-']+$" 
+                                       title="Le prénom ne peut contenir que des lettres, traits d'union et apostrophes"
+                                       minlength="2"
+                                       maxlength="50">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="date_naissance" class="form-label required">Date de naissance</label>
+                            <input type="date" id="date_naissance" name="date_naissance" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lieu_naissance" class="form-label required">Lieu de naissance</label>
+                            <input type="text" id="lieu_naissance" name="lieu_naissance" class="form-control" required  pattern="^[A-Za-zÀ-ÿ\s\-'\.]+$" title="Veuillez entrer uniquement des lettres, espaces, traits d'union et apostrophes">
+                        </div>
+                        <div class="form-group">
+                            <label for="adresse" class="form-label required">Adresse</label>
+                            <input type="text" id="adresse" name="adresse" class="form-control" 
+                                required 
+                                pattern="^\d+\s+(rue|avenue|boulevard|allée|impasse|place|route|chemin)\s+[A-Za-zÀ-ÿ\s\-']+$" 
+                                title="Format attendu : 123 rue NomDeLaRue (ex: 123 rue Djanbala)" 
+                                placeholder="Format attendu : 123 rue NomDeLaRue (ex: 123 rue Djanbala)">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="nationalite" class="form-label required">Nationalité</label>
+                            <input type="text" id="nationalite" name="nationalite" class="form-control" required pattern="^[A-Za-zÀ-ÿ\s\-'\.]+$" title="Veuillez entrer uniquement des lettres, espaces, traits d'union et apostrophes">
+                        </div>
+                        <div class="form-group">
+                            <label for="telephone" class="form-label required">Numéro de téléphone</label>
+                            <input type="text" id="telephone" name="telephone" class="form-control" 
+                                required 
+                                pattern="^0[1-9]\s\d{3}\s\d{2}\s\d{2}$" 
+                                title="Format: 0X XXX XX XX (ex: 06 678 67 56)"
+                                placeholder="06 123 45 67">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label required">Email</label>
+                            <input type="email" id="email" name="email" class="form-control" required>
+                        </div>
+                    </div>
+                </fieldset>
+                
+                <div class="form-grid">
+                    <fieldset>
+                        <legend>Informations académiques</legend>
+                        
+                        <div class="form-group">
+                            <label for="niveau_etude" class="form-label required">Niveau d'étude</label>
+                            <select id="niveau_etude" name="niveau_etude" class="form-control form-select" required>
+                                <option value="">Sélectionner un niveau</option>
+                                <option value="licence">Licence</option>
+                                <option value="master">Master</option>
+                                <option value="doctorat">Doctorat</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="specialite" class="form-label required">Spécialité</label>
+                            <input type="text" id="specialite" name="specialite" class="form-control" required>
+                        </div>        
+                        <div class="form-group">
+                            <label for="annee_id" class="form-label required">Année académique</label>
+                            <select id="annee_id" name="annee_id" class="form-control form-select" required>
+                                <option value="">Sélectionner une année</option>
+                                {% for annee in annee %}
+                                    <option value="{{ annee.id }}">{{ annee.annee }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </fieldset>
+
+                </div>
+                
+                <fieldset>
+                    <legend>Documents à fournir</legend>
+                    
+                    <div class="form-grid">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="cv" name="cv" required>
+                            <label for="cv" class="form-label required">Curriculum Vitae (CV)</label>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="diplomes_copies" name="diplomes_copies" required>
+                            <label for="diplomes_copies" class="form-label required">Copies des diplômes</label>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="lettre_motivation" name="lettre_motivation" required>
+                            <label for="lettre_motivation" class="form-label required">Lettre de motivation</label>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="pieces_identite" name="pieces_identite" required>
+                            <label for="pieces_identite" class="form-label required">Pièce d'identité</label>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="attestations_travail" name="attestations_travail">
+                            <label for="attestations_travail">Attestations de travail</label>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="autres_documents" name="autres_documents">
+                            <label for="autres_documents">Autres documents</label>
+                        </div>
+                    </div>
+                </fieldset>
+                
+                <div class="form-actions">
+                    <button type="reset" class="btn btn-outline">
+                        <i class="fas fa-redo"></i> Réinitialiser
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-check"></i> Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion des sous-menus
+            const dateInput = document.getElementById('date_naissance');
+            const today = new Date();
+            const minAgeDate = new Date(today.getFullYear() - 25, today.getMonth(), today.getDate());
+            const maxDate = minAgeDate.toISOString().split('T')[0];
+            dateInput.setAttribute('max', maxDate);   
+            const menuItems = document.querySelectorAll('.has-submenu');
+            
+            menuItems.forEach(item => {
+                const link = item.querySelector('.nav-link');
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    item.classList.toggle('active');
+                    const submenu = item.querySelector('.submenu');
+                    submenu.classList.toggle('show');
+                });
+            });
+            
+            // Gestion des notifications
+            const notificationBtn = document.querySelector('.notification-btn');
+            notificationBtn.addEventListener('click', function() {
+                alert('Affichage des notifications');
+            });
+            
+            // Validation du formulaire
+            const form = document.getElementById('recruitment-form');
+            form.addEventListener('submit', function(e) {
+                // Vous pouvez ajouter une validation supplémentaire ici si nécessaire
+                console.log('Formulaire soumis');
+            });
+            
+            const errorMessage = document.getElementById('error-message');
+            if (errorMessage) {
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 10000); // Disparaît après 10 secondes
+            }
+        });
+    </script>
+</body>
+</html>

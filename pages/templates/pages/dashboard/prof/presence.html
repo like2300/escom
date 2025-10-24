@@ -1,0 +1,1437 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESCOM - École Supérieure de Commerce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Votre CSS existant reste inchangé */
+        :root {
+            --primary: #7635dc;
+            --primary-dark: #5c2bb5;
+            --primary-light: #9364e8;
+            --secondary: #00a76f;
+            --dark: #212b36;
+            --light: #f9fafb;
+            --gray: #637381;
+            --success: #00a76f;
+            --warning: #ffab00;
+            --danger: #ff5630;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --hover-shadow: 0 10px 25px -5px rgba(118, 53, 220, 0.15);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            height: 100vh;
+            position: fixed;
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            margin-bottom: 1rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            background: var(--gradient);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .logo-text {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--dark);
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        .nav-menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 1rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray);
+            padding: 0.5rem 1rem;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.2s;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(118, 53, 220, 0.05);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: rgba(118, 53, 220, 0.08);
+            border-left: 3px solid var(--primary);
+        }
+
+        .nav-icon {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        /* Sous-menu */
+        .submenu {
+            margin-left: 2rem;
+            padding-left: 0.5rem;
+            border-left: 2px solid rgba(118, 53, 220, 0.1);
+            display: none;
+        }
+
+        .submenu.show {
+            display: block;
+        }
+
+        .submenu .nav-link {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .has-submenu .nav-link {
+            position: relative;
+        }
+
+        .has-submenu .nav-link::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 1rem;
+            transition: transform 0.2s;
+            font-size: 0.75rem;
+        }
+
+        .has-submenu.active .nav-link::after {
+            transform: rotate(180deg);
+        }
+
+        .user-profile {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            width: 240px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(118, 53, 220, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .notification-btn {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.25rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            background: var(--gradient);
+            color: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(118, 53, 220, 0.24);
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+            opacity: 0.3;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-text h2 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .welcome-text p {
+            opacity: 0.9;
+            max-width: 600px;
+        }
+
+        /* Dashboard Stats */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-change {
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+
+        .card-change.positive {
+            color: var(--success);
+        }
+
+        .card-change.negative {
+            color: var(--danger);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            background: rgba(118, 53, 220, 0.08);
+            color: var(--primary);
+        }
+
+        /* Intervenants List */
+        .intervenants-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .view-all {
+            color: var(--primary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .intervenants-list {
+            list-style: none;
+        }
+
+        .intervenant-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            transition: all 0.2s;
+        }
+
+        .intervenant-item:hover {
+            background: rgba(118, 53, 220, 0.02);
+        }
+
+        .intervenant-item:last-child {
+            border-bottom: none;
+        }
+
+        .intervenant-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .intervenant-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            background: var(--primary);
+        }
+
+        .intervenant-details h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .intervenant-details p {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        .intervenant-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-present {
+            background: rgba(0, 167, 111, 0.1);
+            color: var(--success);
+        }
+
+        .status-absent {
+            background: rgba(255, 86, 48, 0.1);
+            color: var(--danger);
+        }
+
+        .status-pending {
+            background: rgba(255, 171, 0, 0.1);
+            color: var(--warning);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #00925f;
+            box-shadow: 0 10px 25px -5px rgba(0, 167, 111, 0.15);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            color: var(--dark);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+        }
+
+        .modal-close:hover {
+            background: rgba(145, 158, 171, 0.1);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            background-color: #f8f9fa;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(118, 53, 220, 0.2);
+            background-color: white;
+        }
+
+        .form-control.editable {
+            background-color: white;
+        }
+
+        .form-control:disabled {
+            background-color: #f8f9fa;
+            color: var(--gray);
+            cursor: not-allowed;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        /* Logout button */
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--danger);
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: auto;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 86, 48, 0.05);
+        }
+
+        .logout-icon {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+                overflow: hidden;
+            }
+            
+            .logo-text, .nav-title, .user-info, .nav-link span {
+                display: none;
+            }
+            
+            .logo {
+                justify-content: center;
+                padding: 0 0 1.5rem;
+            }
+            
+            .nav-icon {
+                margin-right: 0;
+                font-size: 1.25rem;
+            }
+            
+            .nav-link {
+                justify-content: center;
+                padding: 1rem 0;
+            }
+            
+            .user-profile {
+                justify-content: center;
+                padding: 1rem 0;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .search-bar input {
+                width: 180px;
+            }
+
+            .intervenant-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .intervenant-status {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .modal {
+                width: 95%;
+                margin: 1rem;
+            }
+            
+            .modal-body {
+                padding: 1.5rem;
+            }
+        }
+        :root {
+            --primary: #7635dc;
+            --primary-dark: #5c2bb5;
+            --primary-light: #9364e8;
+            --secondary: #00a76f;
+            --dark: #212b36;
+            --light: #f9fafb;
+            --gray: #637381;
+            --success: #00a76f;
+            --warning: #ffab00;
+            --danger: #ff5630;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --hover-shadow: 0 10px 25px -5px rgba(118, 53, 220, 0.15);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ... (Votre CSS existant reste inchangé) ... */
+
+        /* Styles pour les champs éditables */
+        .form-control.editable {
+            background-color: white;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .form-control.editable:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(118, 53, 220, 0.2);
+            background-color: white;
+        }
+
+        .form-control:disabled {
+            background-color: #f8f9fa;
+            color: var(--gray);
+            cursor: not-allowed;
+            border-color: #e2e8f0;
+        }
+
+        /* Loading state */
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+        }
+
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Success state */
+        .btn-success-state {
+            background-color: var(--success) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation (identique à votre code existant) -->
+    <aside class="sidebar">
+        {% include 'pages/bases/dashboard/logo.html' %}
+
+        {% include 'pages/bases/dashboard/presence.html' %}
+        {% include 'pages/bases/dashboard/user.html' %}
+
+
+    </aside>
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <div class="page-title">
+                <h1>Présences des Intervenants</h1>
+            </div>
+            
+            <div class="header-actions">
+                <div class="search-bar">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="Rechercher un intervenant...">
+                </div>
+                
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Welcome Card -->
+        <div class="welcome-card">
+            <div class="welcome-content">
+                <div class="welcome-text">
+                    <h2>Gestion des présences</h2>
+                    <p>Enregistrez la présence des intervenants pour la journée du {{jour}}. {{presence_count}} intervenants sont présents sur {{total_count}} attendus.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dashboard Stats -->
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Intervenants du jour</div>
+                        <div class="card-value">{{total_count}}</div>
+                        <div class="card-change positive">
+                            <i class="fas fa-arrow-up"></i> 2 de plus qu'hier
+                        </div>
+                    </div>
+                    <div class="card-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Présences Enregistrées</div>
+                        <div class="card-value">{{presence_count}}</div>
+                        <div class="card-change positive">
+                            <i class="fas fa-check-circle"></i> {{presence_percentage}}% complété
+                        </div>
+                    </div>
+                    <div class="card-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Taux de Présence</div>
+                        <div class="card-value">92%</div>
+                        <div class="card-change positive">
+                            <i class="fas fa-arrow-up"></i> 3% vs semaine dernière
+                        </div>
+                    </div>
+                    <div class="card-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Intervenants List -->
+        <div class="intervenants-container">
+            <div class="section-header">
+                <h2 class="section-title">Liste des Intervenants du {{jour}}</h2>
+                <a href="#" class="view-all">Date</a>
+            </div>
+            
+            <ul class="intervenants-list" id="intervenantsList">
+                {% for key, value in emploie.items %}
+                <li class="intervenant-item" 
+                    data-intervenant-id="{{ key }}"
+                    data-present="{{ value.present|yesno:'true,false' }}">
+                    <div class="intervenant-info">
+                        <div class="intervenant-avatar">{{ value.prenom|first }}{{ value.nom|first }}</div>
+                        <div class="intervenant-details">
+                            <h3>{{ value.nom }} {{ value.prenom }}</h3>
+                            <p>{{ value.matiere }} ({{ value.salle }}) • {{ value.heure_debut }}h - {{ value.heure_fin }}h</p>
+                        </div>
+                    </div>
+                    
+                    <div class="intervenant-status">
+                        {% if value.present %}
+                        {{value.Id.date_cours}}
+                        <span class="status-badge status-present">Présence pris en compte</span>
+                        {% comment %} <button class="btn btn-outline btn-edit" 
+                                data-intervenant-id="{{ key }}"
+                                data-nom="{{ value.nom }}"
+                                data-prenom="{{ value.prenom }}"
+                                data-matiere="{{ value.matiere }}"
+                                data-salle="{{ value.salle }}"
+                                data-heure-debut="{{ value.heure_debut }}"
+                                data-heure-fin="{{ value.heure_fin }}"
+                                data-classe="{{ value.classe }}"
+                                data-jour="{{ value.jour }}">
+                            <i class="fas fa-edit"></i> Modifier
+                        </button> {% endcomment %}
+                        {% else %}
+                        <span class="status-badge status-pending">En attente</span>
+                        <a href ="{% url 'enregistrement_presence' key %}" style="text-decoration:none;" class="btn btn-primary btn-mark-presence" >
+                            <i class="fas fa-check"></i> Enregistrer présence
+                        </a>
+                        {% endif %}
+                    </div>
+                </li>
+                {% empty %}
+                <p>Aucun intervenants aujourd'hui</p>
+                {% endfor %}
+            </ul>
+        </div>
+    </main>
+
+    <!-- Modal de modification -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Modifier les horaires du cours</h3>
+                <button class="modal-close" onclick="closeEditModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="presenceForm" action="." class="form-grid">
+                    <input type="hidden" id="edit_intervenant_id">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Enseignant</label>
+                        <input type="text" class="form-control" id="edit_enseignant" disabled>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Matière</label>
+                        <input type="text" class="form-control" id="edit_matiere" disabled>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Classe</label>
+                        <input type="text" class="form-control" id="edit_classe" disabled>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Salle</label>
+                        <input type="text" class="form-control" id="edit_salle" disabled>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Jour</label>
+                        <input type="text" class="form-control" id="edit_jour" disabled>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Date du cours</label>
+                        <input type="date" class="form-control" id="edit_date_cours">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Heure de début</label>
+                        <input type="time" class="form-control editable" id="edit_heure_debut" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Heure de fin</label>
+                        <input type="time" class="form-control editable" id="edit_heure_fin" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Nombre d'heures</label>
+                        <input type="number" class="form-control" id="edit_nombre_heure" disabled step="0.5">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Année académique</label>
+                        <input type="text" class="form-control" id="edit_annee_academique" value="2023-2024" disabled>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label class="form-label">Statut du traitement</label>
+                        <select class="form-control editable" id="edit_traitement">
+                            <option value="non_traite">Non traité</option>
+                            <option value="en_cours">En cours de traitement</option>
+                            <option value="traite">Traité</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Remarques</label>
+                        <textarea class="form-control editable" id="edit_remarques" rows="3" placeholder="Notes supplémentaires..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" onclick="closeEditModal()">
+                            <i class="fas fa-times"></i> Annuler
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <i class="fas fa-save"></i> Enregistrer les modifications
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Stockage des données globales
+        const intervenantsData = {
+            {% for key, value in emploie.items %}
+            "{{ key }}": {
+                nom: "{{ value.nom }}",
+                prenom: "{{ value.prenom }}",
+                matiere: "{{ value.matiere }}",
+                salle: "{{ value.salle }}",
+                classe: "{{ value.classe }}",
+                jour: "{{ value.jour }}",
+                heure_debut: "{{ value.heure_debut }}",
+                heure_fin: "{{ value.heure_fin }}",
+                present: {{ value.present|yesno:"true,false" }}
+            },
+            {% endfor %}
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion des sous-menus
+            const menuItems = document.querySelectorAll('.has-submenu');
+            menuItems.forEach(item => {
+                const link = item.querySelector('.nav-link');
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    item.classList.toggle('active');
+                    const submenu = item.querySelector('.submenu');
+                    submenu.classList.toggle('show');
+                });
+            });
+            
+            // Gestion des notifications
+            const notificationBtn = document.querySelector('.notification-btn');
+            notificationBtn.addEventListener('click', function() {
+                alert('Affichage des notifications');
+            });
+            
+            // Gestion de la recherche
+            const searchInput = document.querySelector('.search-bar input');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const intervenants = document.querySelectorAll('.intervenant-item');
+                
+                intervenants.forEach(intervenant => {
+                    const name = intervenant.querySelector('h3').textContent.toLowerCase();
+                    const course = intervenant.querySelector('p').textContent.toLowerCase();
+                    
+                    if (name.includes(searchTerm) || course.includes(searchTerm)) {
+                        intervenant.style.display = 'flex';
+                    } else {
+                        intervenant.style.display = 'none';
+                    }
+                });
+            });
+
+            // Gestion des boutons "Modifier" avec event delegation
+            document.getElementById('intervenantsList').addEventListener('click', function(e) {
+                if (e.target.closest('.btn-edit')) {
+                    const button = e.target.closest('.btn-edit');
+                    openEditModal(button);
+                }
+                
+                if (e.target.closest('.btn-mark-presence')) {
+                    const button = e.target.closest('.btn-mark-presence');
+                    markAttendance(button);
+                }
+            });
+
+            // Gestion du formulaire de modification
+            const presenceForm = document.getElementById('presenceForm');
+            presenceForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                savePresenceChanges();
+            });
+
+            // Calcul automatique du nombre d'heures
+            const heureDebut = document.getElementById('edit_heure_debut');
+            const heureFin = document.getElementById('edit_heure_fin');
+            
+            heureDebut.addEventListener('change', calculateHours);
+            heureFin.addEventListener('change', calculateHours);
+
+            // Initialiser la date du cours à aujourd'hui
+            document.getElementById('edit_date_cours').value = new Date().toISOString().split('T')[0];
+        });
+
+        // Fonction pour ouvrir le modal de modification
+        function openEditModal(button) {
+            // Récupérer les données depuis les attributs data-*
+            const intervenantId = button.getAttribute('data-intervenant-id');
+            const nom = button.getAttribute('data-nom');
+            const prenom = button.getAttribute('data-prenom');
+            const matiere = button.getAttribute('data-matiere');
+            const salle = button.getAttribute('data-salle');
+            const heureDebut = button.getAttribute('data-heure-debut');
+            const heureFin = button.getAttribute('data-heure-fin');
+            const classe = button.getAttribute('data-classe');
+            const jour = button.getAttribute('data-jour');
+            
+            console.log('Données récupérées:', {
+                intervenantId, nom, prenom, matiere, salle, heureDebut, heureFin, classe, jour
+            });
+            
+            // Remplir le formulaire
+            document.getElementById('edit_intervenant_id').value = intervenantId;
+            document.getElementById('edit_enseignant').value = `${nom} ${prenom}`;
+            document.getElementById('edit_matiere').value = matiere;
+            document.getElementById('edit_classe').value = classe || 'Non spécifié';
+            document.getElementById('edit_salle').value = salle;
+            document.getElementById('edit_jour').value = jour || 'Lundi';
+            document.getElementById('edit_heure_debut').value = formatTimeForInput(heureDebut);
+            document.getElementById('edit_heure_fin').value = formatTimeForInput(heureFin);
+            
+            // Calculer les heures
+            calculateHours();
+            
+            // Afficher le modal
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        // Fonction pour formater l'heure pour l'input time
+        function formatTimeForInput(timeString) {
+            if (!timeString) return '';
+            
+            // Supprimer "h" et formater en HH:MM
+            const cleaned = timeString.replace('h', '').trim();
+            const [hours, minutes = '00'] = cleaned.split(':');
+            
+            return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+        }
+
+        // Fonction pour fermer le modal
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+            // Réinitialiser le formulaire
+            document.getElementById('presenceForm').reset();
+        }
+
+        // Fonction pour calculer le nombre d'heures
+        function calculateHours() {
+            const heureDebut = document.getElementById('edit_heure_debut').value;
+            const heureFin = document.getElementById('edit_heure_fin').value;
+            
+            if (heureDebut && heureFin) {
+                const [startHours, startMinutes] = heureDebut.split(':').map(Number);
+                const [endHours, endMinutes] = heureFin.split(':').map(Number);
+                
+                const startTotalMinutes = startHours * 60 + startMinutes;
+                const endTotalMinutes = endHours * 60 + endMinutes;
+                
+                let diffMinutes = endTotalMinutes - startTotalMinutes;
+                
+                // Gérer le cas où le cours passe minuit
+                if (diffMinutes < 0) {
+                    diffMinutes += 24 * 60;
+                }
+                
+                const diffHours = diffMinutes / 60;
+                document.getElementById('edit_nombre_heure').value = Math.round(diffHours * 100) / 100;
+            }
+        }
+
+        // Fonction pour enregistrer les modifications
+        function savePresenceChanges() {
+            const submitBtn = document.getElementById('submitBtn');
+            const intervenantId = document.getElementById('edit_intervenant_id').value;
+            
+            // Récupérer les données modifiées
+            const updatedData = {
+                intervenant_id: intervenantId,
+                heure_debut: document.getElementById('edit_heure_debut').value,
+                heure_fin: document.getElementById('edit_heure_fin').value,
+                date_cours: document.getElementById('edit_date_cours').value,
+                traitement: document.getElementById('edit_traitement').value,
+                remarques: document.getElementById('edit_remarques').value,
+                nombre_heures: document.getElementById('edit_nombre_heure').value
+            };
+            
+            console.log('Données à enregistrer:', updatedData);
+            
+            // Simulation de chargement
+            submitBtn.classList.add('btn-loading');
+            submitBtn.disabled = true;
+            
+            // Simuler une requête AJAX
+            setTimeout(() => {
+                // Mettre à jour les données locales
+                if (intervenantsData[intervenantId]) {
+                    intervenantsData[intervenantId].heure_debut = updatedData.heure_debut;
+                    intervenantsData[intervenantId].heure_fin = updatedData.heure_fin;
+                    
+                    // Mettre à jour l'affichage dans la liste
+                    updateIntervenantDisplay(intervenantId, updatedData);
+                }
+                
+                // Réinitialiser le bouton
+                submitBtn.classList.remove('btn-loading');
+                submitBtn.disabled = false;
+                
+                // Afficher la confirmation
+                showNotification('Les modifications ont été enregistrées avec succès!', 'success');
+                
+                // Fermer le modal
+                setTimeout(() => closeEditModal(), 1000);
+                
+            }, 1500);
+        }
+
+        // Fonction pour mettre à jour l'affichage d'un intervenant
+        function updateIntervenantDisplay(intervenantId, newData) {
+            const intervenantItem = document.querySelector(`[data-intervenant-id="${intervenantId}"]`);
+            if (!intervenantItem) return;
+            
+            // Mettre à jour les heures dans l'affichage
+            const details = intervenantItem.querySelector('.intervenant-details p');
+            const currentText = details.textContent;
+            const newText = currentText.replace(
+                /\d{1,2}h?\s*-\s*\d{1,2}h?/,
+                `${formatTimeForDisplay(newData.heure_debut)} - ${formatTimeForDisplay(newData.heure_fin)}`
+            );
+            details.textContent = newText;
+            
+            // Mettre à jour les attributs data du bouton
+            const editButton = intervenantItem.querySelector('.btn-edit');
+            if (editButton) {
+                editButton.setAttribute('data-heure-debut', formatTimeForDisplay(newData.heure_debut));
+                editButton.setAttribute('data-heure-fin', formatTimeForDisplay(newData.heure_fin));
+            }
+        }
+
+        // Fonction pour formater l'heure pour l'affichage
+        function formatTimeForDisplay(timeString) {
+            if (!timeString) return '';
+            const [hours, minutes] = timeString.split(':');
+            return `${hours}h${minutes !== '00' ? minutes : ''}`;
+        }
+
+        // Fonction pour enregistrer la présence
+        function markAttendance(button) {
+            const intervenantId = button.getAttribute('data-intervenant-id');
+            const nom = button.getAttribute('data-nom');
+            const prenom = button.getAttribute('data-prenom');
+            
+            // Simulation de chargement
+            button.classList.add('btn-loading');
+            button.disabled = true;
+            
+            setTimeout(() => {
+                // Mettre à jour les données
+                intervenantsData[intervenantId].present = true;
+                
+                // Mettre à jour l'interface
+                updateAttendanceUI(button, intervenantId, nom, prenom);
+                
+                // Mettre à jour les statistiques
+                updateStats();
+                
+                // Afficher la confirmation
+                showNotification(`Présence de ${nom} ${prenom} enregistrée avec succès`, 'success');
+            }, 1000);
+        }
+
+        // Fonction pour mettre à jour l'UI après enregistrement de présence
+        function updateAttendanceUI(button, intervenantId, nom, prenom) {
+            const intervenantItem = button.closest('.intervenant-item');
+            const statusContainer = intervenantItem.querySelector('.intervenant-status');
+            
+            // Mettre à jour le statut
+            statusContainer.innerHTML = `
+                <span class="status-badge status-present">Présent</span>
+                <button class="btn btn-outline btn-edit" 
+                        data-intervenant-id="${intervenantId}"
+                        data-nom="${nom}"
+                        data-prenom="${prenom}"
+                        data-matiere="${intervenantsData[intervenantId].matiere}"
+                        data-salle="${intervenantsData[intervenantId].salle}"
+                        data-heure-debut="${intervenantsData[intervenantId].heure_debut}"
+                        data-heure-fin="${intervenantsData[intervenantId].heure_fin}"
+                        data-classe="${intervenantsData[intervenantId].classe}"
+                        data-jour="${intervenantsData[intervenantId].jour}">
+                    <i class="fas fa-edit"></i> Modifier
+                </button>
+            `;
+            
+            // Mettre à jour l'attribut data
+            intervenantItem.setAttribute('data-present', 'true');
+        }
+
+        // Fonction pour mettre à jour les statistiques
+        function updateStats() {
+            const presentCount = document.querySelectorAll('[data-present="true"]').length;
+            const totalCount = document.querySelectorAll('.intervenant-item').length;
+            const presencePercentage = Math.round((presentCount / totalCount) * 100);
+            
+            // Mettre à jour l'affichage
+            document.querySelectorAll('.card-value')[1].textContent = presentCount;
+            document.querySelectorAll('.card-change')[1].innerHTML = 
+                `<i class="fas fa-check-circle"></i> ${presencePercentage}% complété`;
+        }
+
+        // Fonction pour afficher une notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 1000;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            notification.style.backgroundColor = 
+                type === 'success' ? 'var(--success)' : 
+                type === 'error' ? 'var(--danger)' : 'var(--primary)';
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        }
+
+        // Ajouter les styles d'animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

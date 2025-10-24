@@ -1,0 +1,822 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESCOM - École Supérieure de Commerce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        {% include 'pages/bases/dashboard/css.html' %}
+        :root {
+            --primary: #7635dc;
+            --primary-dark: #5c2bb5;
+            --primary-light: #9364e8;
+            --secondary: #00a76f;
+            --dark: #212b36;
+            --light: #f9fafb;
+            --gray: #637381;
+            --success: #00a76f;
+            --warning: #ffab00;
+            --danger: #ff5630;
+            --info: #00b8d9;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --hover-shadow: 0 10px 25px -5px rgba(118, 53, 220, 0.15);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            height: 100vh;
+            position: fixed;
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            margin-bottom: 1rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            background: var(--gradient);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .logo-text {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--dark);
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            min-width: 0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            width: 240px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(118, 53, 220, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .notification-btn {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.25rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Filtres Section */
+        .filters-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .filters-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .filters-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--gray);
+        }
+
+        .form-select {
+            padding: 0.75rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background-color: white;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(118, 53, 220, 0.2);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid rgba(145, 158, 171, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: #f1f3f4;
+        }
+
+        /* Tables Section */
+        .tables-section {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .table-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .table-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .table-title i {
+            color: var(--success);
+        }
+
+        .table-title.impayes i {
+            color: var(--danger);
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-print {
+            background: var(--secondary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-print:hover {
+            background: #009960;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        .data-table th {
+            background: rgba(118, 53, 220, 0.05);
+            padding: 1rem;
+            text-align: left;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--dark);
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.1);
+            font-size: 0.875rem;
+            white-space: nowrap;
+        }
+
+        .data-table tr:hover {
+            background-color: rgba(118, 53, 220, 0.02);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .status-paid {
+            background: rgba(0, 167, 111, 0.1);
+            color: var(--success);
+        }
+
+        .status-unpaid {
+            background: rgba(255, 86, 48, 0.1);
+            color: var(--danger);
+        }
+
+        .empty-state {
+            padding: 3rem 1.5rem;
+            text-align: center;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .count-badge {
+            background: rgba(118, 53, 220, 0.1);
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .filters-form {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+                overflow: hidden;
+            }
+            
+            .logo-text, .nav-title, .user-info, .nav-link span {
+                display: none;
+            }
+            
+            .logo {
+                justify-content: center;
+                padding: 0 0 1.5rem;
+            }
+            
+            .nav-icon {
+                margin-right: 0;
+                font-size: 1.25rem;
+            }
+            
+            .nav-link {
+                justify-content: center;
+                padding: 1rem 0;
+            }
+            
+            .user-profile {
+                justify-content: center;
+                padding: 1rem 0;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+                padding: 1rem;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .search-bar input {
+                width: 180px;
+            }
+            
+            .filters-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-actions {
+                justify-content: flex-end;
+            }
+            
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .table-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 0.5rem;
+            }
+            
+            .filters-card {
+                padding: 1rem;
+            }
+            
+            .table-header {
+                padding: 1rem;
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: 0.75rem 0.5rem;
+            }
+            
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+            
+            .search-bar input {
+                width: 150px;
+            }
+        }
+
+        @media print {
+            .sidebar, .header-actions, .filters-card, .btn-print {
+                display: none !important;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 0;
+            }
+            
+            .table-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                margin-bottom: 1rem;
+            }
+            
+            .data-table {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        {% include 'pages/bases/dashboard/logo.html' %}
+
+        {% include 'pages/bases/dashboard/stats.html' %}
+        {% include 'pages/bases/dashboard/user.html' %}
+
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <div class="page-title">
+                <h1>Statistiques des Paiements</h1>
+            </div>
+            
+            <div class="header-actions">
+                <div class="search-bar">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="Rechercher...">
+                </div>
+                
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Filtres -->
+        <div class="filters-card">
+            <h3 class="filters-title">Filtrer les résultats</h3>
+            <form method="GET" class="filters-form">
+                <div class="form-group">
+                    <label class="form-label">Classe</label>
+                    <select name="classe" class="form-select">
+                        <option value="">Toutes les classes</option>
+                        {% for classe in classes %}
+                        <option value="{{ classe.id }}" {% if classe_selected == classe.id|stringformat:"s" %}selected{% endif %}>
+                            {{ classe.nom }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Année Académique</label>
+                    <select name="annee_academique" class="form-select">
+                        <option value="">Toutes les années</option>
+                        {% for annee in annees_academiques %}
+                        <option value="{{ annee.id }}" {% if annee_selected == annee.id|stringformat:"s" %}selected{% endif %}>
+                            {{ annee.annee }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Mois</label>
+                    <select name="mois" class="form-select">
+                        <option value="">Tous les mois</option>
+                        {% for mois_item in mois %}
+                        <option value="{{ mois_item.id }}" {% if mois_selected == mois_item.id|stringformat:"s" %}selected{% endif %}>
+                            {{ mois_item.nom }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="filter-actions" >
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-filter"></i>
+                        Appliquer
+                    </button>
+                    <a href="{% url 'stats' %}" style="text-decoration: none;" class="btn btn-secondary">
+                        <i class="fas fa-redo"></i>
+                        Réinitialiser
+                    </a>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Tables des Paiements -->
+        <div class="tables-section">
+            <!-- Étudiants Payés -->
+            <div class="table-card">
+                <div class="table-header">
+                    <h3 class="table-title">
+                        <i class="fas fa-check-circle"></i>
+                        Étudiants Payés
+                        <span class="count-badge">{{ payes.count }}</span>
+                    </h3>
+                    <div class="table-actions">
+                        <button class="btn-print" onclick="printTable('table-payes', 'Étudiants Payés')">
+                            <i class="fas fa-print"></i>
+                            Imprimer
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="data-table" id="table-payes">
+                        <thead>
+                            <tr>
+                                <th>Étudiant</th>
+                                <th>Classe</th>
+                                <th>Année Académique</th>
+                                <th>Mois</th>
+                                <th>Montant</th>
+                                <th>Date</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for paiement in payes %}
+                            <tr>
+                                <td>{{ paiement.etudiant.utilisateur.nom }} {{ paiement.etudiant.utilisateur.prenom }}</td>
+                                <td>{{ paiement.classe.nom }}</td>
+                                <td>{{ paiement.annee_academique.annee }}</td>
+                                <td>{{ paiement.mois.nom }}</td>
+                                <td>{{ paiement.montant }} FCFA</td>
+                                <td>{{ paiement.date|date:"d/m/Y" }}</td>
+                                <td>
+                                    <span class="status-badge status-paid">Payé</span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7">
+                                    <div class="empty-state">
+                                        <i class="fas fa-receipt"></i>
+                                        <p>Aucun paiement trouvé</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Étudiants Impayés -->
+            <div class="table-card">
+                <div class="table-header">
+                    <h3 class="table-title impayes">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Étudiants Impayés
+                        <span class="count-badge">{{ impayes|length }}</span>
+                    </h3>
+                    <div class="table-actions">
+                        <button class="btn-print" onclick="printTable('table-impayes', 'Étudiants Impayés')">
+                            <i class="fas fa-print"></i>
+                            Imprimer
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="data-table" id="table-impayes">
+                        <thead>
+                            <tr>
+                                <th>Étudiant</th>
+                                <th>Classe</th>
+                                <th>Année Académique</th>
+                                <th>Mois</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for impaye in impayes %}
+                            <tr>
+                                <td>{{ impaye.etudiant.etudiant.utilisateur.nom }} {{ impaye.etudiant.etudiant.utilisateur.prenom }}</td>
+                                <td>{{ impaye.classe.nom }}</td>
+                                <td>{{ impaye.annee_academique.annee|default:"-" }}</td>
+                                <td>{{ impaye.mois.nom|default:"-" }}</td>
+                                <td>
+                                    <span class="status-badge status-unpaid">Impayé</span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5">
+                                    <div class="empty-state">
+                                        <i class="fas fa-check-circle"></i>
+                                        <p>Tous les étudiants sont à jour de paiement</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    {% include 'pages/bases/dashboard/script.html' %}
+    
+    <script>
+        function printTable(tableId, title) {
+            var printWindow = window.open('', '_blank');
+            var table = document.getElementById(tableId);
+            
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>${title}</title>
+                        <style>
+                            body { 
+                                font-family: Arial, sans-serif; 
+                                margin: 20px; 
+                                font-size: 12px;
+                            }
+                            table { 
+                                width: 100%; 
+                                border-collapse: collapse; 
+                            }
+                            th, td { 
+                                border: 1px solid #ddd; 
+                                padding: 8px; 
+                                text-align: left; 
+                            }
+                            th { 
+                                background-color: #f5f5f5; 
+                                font-weight: bold; 
+                            }
+                            .status-badge { 
+                                padding: 4px 8px; 
+                                border-radius: 4px; 
+                                font-size: 10px; 
+                            }
+                            .status-paid { 
+                                background-color: #e8f5e8; 
+                                color: #2e7d32; 
+                            }
+                            .status-unpaid { 
+                                background-color: #ffebee; 
+                                color: #c62828; 
+                            }
+                            h1 { 
+                                color: #333; 
+                                margin-bottom: 20px;
+                                text-align: center;
+                            }
+                            @media print {
+                                body { margin: 0; }
+                                table { font-size: 10px; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>${title}</h1>
+                        ${table.outerHTML}
+                        <script>
+                            window.onload = function() {
+                                window.print();
+                                setTimeout(function() {
+                                    window.close();
+                                }, 100);
+                            };
+                        <\/script>
+                    </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+        }
+
+        // Gestion des interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            const notificationBtn = document.querySelector('.notification-btn');
+            notificationBtn.addEventListener('click', function() {
+                alert('Affichage des notifications');
+            });
+            
+            // Recherche en temps réel
+            const searchInput = document.querySelector('.search-bar input');
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const tables = document.querySelectorAll('.data-table');
+                
+                tables.forEach(table => {
+                    const rows = table.querySelectorAll('tbody tr');
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        if (text.includes(searchTerm)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

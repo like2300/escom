@@ -1,0 +1,321 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESCOM - École Supérieure de Commerce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00a76f;
+            --primary-dark: #008c5d;
+            --primary-light: #4cce9d;
+            --secondary: #3366ff;
+            --admin: #ff5630;
+            --visitor: #8a2be2;
+            --dark: #212b36;
+            --light: #f9fafb;
+            --gray: #637381;
+            --light-gray: #f5f7fa;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --hover-shadow: 0 10px 25px -5px rgba(0, 167, 111, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark);
+            background-color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            line-height: 1.25;
+        }
+
+        header {
+            background-color: white;
+            width: 100%;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 24px;
+            height: 80px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 1rem;
+        }
+
+        .logo-text {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--dark);
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        .portail-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .welcome-title {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            color: var(--dark);
+        }
+
+        .welcome-subtitle {
+            color: var(--gray);
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        .access-options {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .access-card {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-radius: 12px;
+            background: white;
+            border: 1px solid rgba(145, 158, 171, 0.2);
+            transition: all 0.3s;
+            text-decoration: none;
+            color: var(--dark);
+            text-align: left;
+        }
+
+        .access-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .student-card:hover {
+            border-color: var(--primary-light);
+        }
+
+        .teacher-card:hover {
+            border-color: #6b7cff;
+        }
+
+        .admin-card:hover {
+            border-color: var(--admin);
+        }
+
+        .visitor-card:hover {
+            border-color: #ba7bf8;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 1.25rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .student-icon {
+            background: linear-gradient(135deg, var(--primary) 0%, #00c9a7 100%);
+        }
+
+        .teacher-icon {
+            background: linear-gradient(135deg, var(--secondary) 0%, #6b7cff 100%);
+        }
+
+        .admin-icon {
+            background: linear-gradient(135deg, var(--admin) 0%, #ff8e6b 100%);
+        }
+
+        .visitor-icon {
+            background: linear-gradient(135deg, var(--visitor) 0%, #ba7bf8 100%);
+        }
+
+        .card-content h3 {
+            font-size: 1.25rem;
+            margin-bottom: 4px;
+        }
+
+        .card-content p {
+            color: var(--gray);
+            font-size: 0.875rem;
+        }
+
+        .separator {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: var(--gray);
+            font-size: 0.875rem;
+        }
+
+        .separator::before, .separator::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .separator::before {
+            margin-right: 16px;
+        }
+
+        .separator::after {
+            margin-left: 16px;
+        }
+
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 24px;
+            margin-top: auto;
+            text-align: center;
+        }
+
+        .footer-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .access-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .card-icon {
+                margin-right: 0;
+                margin-bottom: 16px;
+            }
+            
+            .welcome-title {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="logo-text" style="font-family: Inter;">.my <span>ESCOM</span></div>
+            </a>
+            <a href="#" style="color: var(--primary); text-decoration: none;" hidden>presentation du logiciel</a>
+        </nav>
+    </header>
+
+    <!-- Portail Content -->
+    <main class="portail-container">
+        <h1 class="welcome-title">Connectez vous a votre compte académique</h1>
+        <p class="welcome-subtitle" hidden>Annee academique {{annee}}</p>
+        
+        <div class="access-options">
+            <a href="{% url 'login_etudiant' %}" class="access-card student-card">
+                <div class="card-icon student-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Espace Étudiant</h3>
+                    <p>Accédez à vos cours, notes, emploi du temps et ressources pédagogiques</p>
+                </div>
+                <i class="fas fa-chevron-right" style="margin-left: auto; color: var(--gray);"></i>
+            </a>
+            
+            <a href="{% url 'login_prof' %}" class="access-card teacher-card">
+                <div class="card-icon teacher-icon">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Espace Enseignant</h3>
+                    <p>Gestion des cours, suivi des étudiants et partage de ressources</p>
+                </div>
+                <i class="fas fa-chevron-right" style="margin-left: auto; color: var(--gray);"></i>
+            </a>
+            
+            <a href="{% url 'login_admin' %}" class="access-card admin-card">
+                <div class="card-icon admin-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Espace Administratif</h3>
+                    <p>Gestion de l'établissement, inscriptions et données institutionnelles</p>
+                </div>
+                <i class="fas fa-chevron-right" style="margin-left: auto; color: var(--gray);"></i>
+            </a>
+            
+            <!-- <div class="separator">ou</div>
+            
+            <a href="{% url 'ecole' %}" class="access-card visitor-card">
+                <div class="card-icon visitor-icon">
+                    <i class="fas fa-school"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Visite Virtuelle</h3>
+                    <p>Découvrez notre école, nos formations et nos installations</p>
+                </div>
+                <i class="fas fa-chevron-right" style="margin-left: auto; color: var(--gray);"></i>
+            </a> -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p class="footer-text">&copy; 2025 CampusFlow - ESCOM. Tous droits réservés.</p>
+    </footer>
+</body>
+</html>

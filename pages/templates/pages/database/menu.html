@@ -1,0 +1,944 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESCOM - École Supérieure de Commerce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7635dc;
+            --primary-dark: #5c2bb5;
+            --primary-light: #9364e8;
+            --secondary: #00a76f;
+            --dark: #212b36;
+            --light: #f9fafb;
+            --gray: #637381;
+            --success: #00a76f;
+            --warning: #ffab00;
+            --danger: #ff5630;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --hover-shadow: 0 10px 25px -5px rgba(118, 53, 220, 0.15);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            background: var(--gradient);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .logo-text {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        .page-title h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            width: 240px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(118, 53, 220, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .notification-btn {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.25rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Database Grid */
+        .database-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            height: fit-content;
+        }
+
+        .table-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .table-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .table-btn {
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .table-btn.add {
+            background: var(--success);
+            color: white;
+        }
+
+        .table-btn.view {
+            background: rgba(118, 53, 220, 0.08);
+            color: var(--primary);
+        }
+
+        .table-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .table-info {
+            font-size: 0.875rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .table-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .table-count {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* Table Elements */
+        .table-elements {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid rgba(145, 158, 171, 0.2);
+            border-radius: 8px;
+            padding: 0.5rem;
+        }
+
+        .element-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.1);
+            transition: background 0.2s;
+        }
+
+        .element-item:last-child {
+            border-bottom: none;
+        }
+
+        .element-item:hover {
+            background: rgba(118, 53, 220, 0.03);
+        }
+
+        .element-info {
+            flex: 1;
+        }
+
+        .element-name {
+            font-weight: 500;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .element-details {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        .element-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .element-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .element-btn.update {
+            color: var(--primary);
+        }
+
+        .element-btn.delete {
+            color: var(--danger);
+        }
+
+        .element-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Exit Button - Centré */
+        .exit-container {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999;
+        }
+
+        .exit-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(118, 53, 220, 0.3);
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .exit-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(118, 53, 220, 0.4);
+        }
+
+        /* Popup Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transform: translateY(-20px);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--gray);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: var(--danger);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-label.required::after {
+            content: '*';
+            color: var(--danger);
+            margin-left: 4px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(118, 53, 220, 0.2);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            color: var(--dark);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .database-grid {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .search-bar input {
+                width: 180px;
+            }
+            
+            .database-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .table-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .table-btn {
+                flex: 1;
+                text-align: center;
+            }
+            
+            .element-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .element-actions {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <a href="#" class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-database"></i>
+            </div>
+            <div class="logo-text">Campus<span>Flow</span></div>
+        </a>
+        
+        <div class="page-title">
+            <h1>Base de Données</h1>
+        </div>
+        
+        <div class="header-actions">
+            <div class="search-bar">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" placeholder="Rechercher une table...">
+            </div>
+            
+            <button class="notification-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Database Grid -->
+        <div class="database-grid">
+            <!-- Année académique -->
+            <div class="table-card">
+                <div class="table-header">
+                    <h3 class="table-title">Années académiques</h3>
+                    <div class="table-actions">
+                        <button class="table-btn add" data-table="annee-academique">Add</button>
+                        <button class="table-btn view">Change</button>
+                    </div>
+                </div>
+                <div class="table-info">
+                    Gestion des années académiques et périodes d'études.
+                </div>
+                <div class="table-stats">
+                    <span>Enregistrements: <span class="table-count">2</span></span>
+                    <span>Dernière mise à jour: 12/10/2023</span>
+                </div>
+                <div class="table-elements">
+                    <div class="element-item">
+                        <div class="element-info">
+                            <div class="element-name">2024-2025</div>
+                            <div class="element-details">Date début: 01/09/2024 - Date fin: 30/06/2025</div>
+                        </div>
+                        <div class="element-actions">
+                            <button class="element-btn update" data-year="2024-2025" data-start="2024-09-01" data-end="2025-06-30"><i class="fas fa-edit"></i></button>
+                            <button class="element-btn delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="element-item">
+                        <div class="element-info">
+                            <div class="element-name">2025-2026</div>
+                            <div class="element-details">Date début: 01/09/2025 - Date fin: 30/06/2026</div>
+                        </div>
+                        <div class="element-actions">
+                            <button class="element-btn update" data-year="2025-2026" data-start="2025-09-01" data-end="2026-06-30"><i class="fas fa-edit"></i></button>
+                            <button class="element-btn delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Salles -->
+            <div class="table-card">
+                <div class="table-header">
+                    <h3 class="table-title">Salles</h3>
+                    <div class="table-actions">
+                        <button class="table-btn add" data-table="salles">Add</button>
+                        <button class="table-btn view">Change</button>
+                    </div>
+                </div>
+                <div class="table-info">
+                    Inventaire et gestion des salles de classe.
+                </div>
+                <div class="table-stats">
+                    <span>Enregistrements: <span class="table-count">1</span></span>
+                    <span>Dernière mise à jour: 15/09/2023</span>
+                </div>
+                <div class="table-elements">
+                    <div class="element-item">
+                        <div class="element-info">
+                            <div class="element-name">Martin Luther King</div>
+                            <div class="element-details">Capacité: 4000 places</div>
+                        </div>
+                        <div class="element-actions">
+                            <button class="element-btn update"><i class="fas fa-edit"></i></button>
+                            <button class="element-btn delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Classes -->
+            <div class="table-card">
+                <div class="table-header">
+                    <h3 class="table-title">Classes</h3>
+                    <div class="table-actions">
+                        <button class="table-btn add" data-table="classes">Add</button>
+                        <button class="table-btn view">Change</button>
+                    </div>
+                </div>
+                <div class="table-info">
+                    Organisation des classes et groupes d'étudiants.
+                </div>
+                <div class="table-stats">
+                    <span>Enregistrements: <span class="table-count">3</span></span>
+                    <span>Dernière mise à jour: 10/10/2023</span>
+                </div>
+                <div class="table-elements">
+                    <div class="element-item">
+                        <div class="element-info">
+                            <div class="element-name">B1 Informatique</div>
+                            <div class="element-details">Effectif: 35 étudiants</div>
+                        </div>
+                        <div class="element-actions">
+                            <button class="element-btn update"><i class="fas fa-edit"></i></button>
+                            <button class="element-btn delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="element-item">
+                        <div class="element-info">
+                            <div class="element-name">B2 Gestion</div>
+                            <div class="element-details">Effectif: 42 étudiants</div>
+                        </div>
+                        <div class="element-actions">
+                            <button class="element-btn update"><i class="fas fa-edit"></i></button>
+                            <button class="element-btn delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="element-item">
+                        <div class="element-info">
+                            <div class="element-name">M1 Data Science</div>
+                            <div class="element-details">Effectif: 28 étudiants</div>
+                        </div>
+                        <div class="element-actions">
+                            <button class="element-btn update"><i class="fas fa-edit"></i></button>
+                            <button class="element-btn delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Exit Button - Centré -->
+    <div class="exit-container">
+        <button class="exit-btn" id="exit-btn">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <!-- Modal Popup pour Ajout -->
+    <div class="modal-overlay" id="add-modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="add-modal-title">Ajouter un enregistrement</h3>
+                <button class="modal-close" id="add-modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-form">
+                    <div id="add-form-content">
+                        <!-- Le contenu du formulaire sera généré dynamiquement -->
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" id="add-cancel-btn">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Popup pour Update Année Académique -->
+    <div class="modal-overlay" id="update-annee-modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Modifier l'année académique</h3>
+                <button class="modal-close" id="update-annee-modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="update-annee-form">
+                    <div class="form-group">
+                        <label class="form-label required" for="update-annee-name">Nom de l'année</label>
+                        <input type="text" class="form-control" id="update-annee-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required" for="update-annee-start">Date de début</label>
+                        <input type="date" class="form-control" id="update-annee-start" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required" for="update-annee-end">Date de fin</label>
+                        <input type="date" class="form-control" id="update-annee-end" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="update-annee-status">Statut</label>
+                        <select class="form-control" id="update-annee-status">
+                            <option value="active">Active</option>
+                            <option value="planned">Planifiée</option>
+                            <option value="completed">Terminée</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" id="update-annee-cancel-btn">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion des notifications
+            const notificationBtn = document.querySelector('.notification-btn');
+            notificationBtn.addEventListener('click', function() {
+                alert('Affichage des notifications');
+            });
+            
+            // Gestion du bouton de sortie
+            const exitBtn = document.getElementById('exit-btn');
+            exitBtn.addEventListener('click', function() {
+                if (confirm('Voulez-vous vraiment quitter la base de données?')) {
+                    window.location.href = '{% url "out" %}';
+                }
+            });
+            
+            // Gestion des popups d'ajout
+            const addButtons = document.querySelectorAll('.table-btn.add');
+            const addModalOverlay = document.getElementById('add-modal-overlay');
+            const addModalTitle = document.getElementById('add-modal-title');
+            const addModalClose = document.getElementById('add-modal-close');
+            const addCancelBtn = document.getElementById('add-cancel-btn');
+            const addForm = document.getElementById('add-form');
+            const addFormContent = document.getElementById('add-form-content');
+            
+            // Gestion des popups de mise à jour
+            const updateAnneeModalOverlay = document.getElementById('update-annee-modal-overlay');
+            const updateAnneeModalClose = document.getElementById('update-annee-modal-close');
+            const updateAnneeCancelBtn = document.getElementById('update-annee-cancel-btn');
+            const updateAnneeForm = document.getElementById('update-annee-form');
+            
+            // Templates de formulaires pour chaque table
+            const formTemplates = {
+                'annee-academique': `
+                    <div class="form-group">
+                        <label class="form-label required" for="annee-name">Nom de l'année</label>
+                        <input type="text" class="form-control" id="annee-name" placeholder="Ex: 2024-2025" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required" for="annee-start">Date de début</label>
+                        <input type="date" class="form-control" id="annee-start" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required" for="annee-end">Date de fin</label>
+                        <input type="date" class="form-control" id="annee-end" required>
+                    </div>
+                `,
+                'salles': `
+                    <div class="form-group">
+                        <label class="form-label required" for="salle-name">Nom de la salle</label>
+                        <input type="text" class="form-control" id="salle-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required" for="salle-capacite">Capacité</label>
+                        <input type="number" class="form-control" id="salle-capacite" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="salle-equipement">Équipement</label>
+                        <input type="text" class="form-control" id="salle-equipement">
+                    </div>
+                `,
+                'classes': `
+                    <div class="form-group">
+                        <label class="form-label required" for="classe-name">Nom de la classe</label>
+                        <input type="text" class="form-control" id="classe-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required" for="classe-effectif">Effectif</label>
+                        <input type="number" class="form-control" id="classe-effectif" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="classe-niveau">Niveau</label>
+                        <select class="form-control" id="classe-niveau">
+                            <option value="L1">Licence 1</option>
+                            <option value="L2">Licence 2</option>
+                            <option value="L3">Licence 3</option>
+                            <option value="M1">Master 1</option>
+                            <option value="M2">Master 2</option>
+                        </select>
+                    </div>
+                `
+            };
+            
+            addButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tableName = this.getAttribute('data-table');
+                    const tableTitle = this.closest('.table-card').querySelector('.table-title').textContent;
+                    
+                    addModalTitle.textContent = `Ajouter un enregistrement - ${tableTitle}`;
+                    addFormContent.innerHTML = formTemplates[tableName] || '<p>Formulaire non disponible</p>';
+                    addModalOverlay.classList.add('active');
+                });
+            });
+            
+            // Gestion des boutons update pour années académiques
+            const updateAnneeButtons = document.querySelectorAll('.element-btn.update[data-year]');
+            updateAnneeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const year = this.getAttribute('data-year');
+                    const start = this.getAttribute('data-start');
+                    const end = this.getAttribute('data-end');
+                    
+                    // Pré-remplir le formulaire avec les données actuelles
+                    document.getElementById('update-annee-name').value = year;
+                    document.getElementById('update-annee-start').value = start;
+                    document.getElementById('update-annee-end').value = end;
+                    
+                    updateAnneeModalOverlay.classList.add('active');
+                });
+            });
+            
+            // Fermer les modals
+            function closeAllModals() {
+                addModalOverlay.classList.remove('active');
+                updateAnneeModalOverlay.classList.remove('active');
+                addForm.reset();
+                updateAnneeForm.reset();
+            }
+            
+            addModalClose.addEventListener('click', closeAllModals);
+            addCancelBtn.addEventListener('click', closeAllModals);
+            updateAnneeModalClose.addEventListener('click', closeAllModals);
+            updateAnneeCancelBtn.addEventListener('click', closeAllModals);
+            
+            // Fermer les modals en cliquant en dehors
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === overlay) {
+                        closeAllModals();
+                    }
+                });
+            });
+            
+            // Soumission des formulaires
+            addForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Enregistrement ajouté avec succès!');
+                closeAllModals();
+            });
+            
+            updateAnneeForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const yearName = document.getElementById('update-annee-name').value;
+                alert(`Année académique "${yearName}" mise à jour avec succès!`);
+                closeAllModals();
+            });
+            
+            // Recherche
+            const searchInput = document.querySelector('.search-bar input');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const tableCards = document.querySelectorAll('.table-card');
+                
+                tableCards.forEach(card => {
+                    const title = card.querySelector('.table-title').textContent.toLowerCase();
+                    const description = card.querySelector('.table-info').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Gestion des boutons delete
+            const deleteButtons = document.querySelectorAll('.element-btn.delete');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const elementName = this.closest('.element-item').querySelector('.element-name').textContent;
+                    if (confirm(`Êtes-vous sûr de vouloir supprimer "${elementName}" ?`)) {
+                        this.closest('.element-item').remove();
+                        alert('Élément supprimé avec succès!');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

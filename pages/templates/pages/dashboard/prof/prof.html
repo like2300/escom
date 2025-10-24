@@ -1,0 +1,1707 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusFlow - Mon Espace Professeur</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00a76f;
+            --primary-dark: #008c5d;
+            --primary-light: #4cce9d;
+            --secondary: #3366ff;
+            --dark: #212b36;
+            --light: #f9fafb;
+            --gray: #637381;
+            --success: #00a76f;
+            --warning: #ffab00;
+            --danger: #ff5630;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --hover-shadow: 0 10px 25px -5px rgba(0, 167, 111, 0.15);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+            background-color: #f5f7fa;
+            padding-top: 70px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .prof-header {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            top: 0;
+        }
+
+        .prof-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        .prof-logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .prof-logo-icon {
+            background: var(--gradient);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+
+        .prof-logo-text {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: var(--dark);
+        }
+
+        .prof-logo-text span {
+            color: var(--primary);
+        }
+
+        .prof-user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .prof-user-info {
+            text-align: right;
+            display: none;
+        }
+
+        .prof-user-name {
+            font-weight: 600;
+            font-size: 0.9375rem;
+            white-space: nowrap;
+        }
+
+        .prof-user-role {
+            font-size: 0.8125rem;
+            color: var(--gray);
+            white-space: nowrap;
+        }
+
+        .prof-user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* Sidebar */
+        .prof-sidebar {
+            width: 260px;
+            background: white;
+            height: 100vh;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            padding: 20px 0;
+            box-shadow: 1px 0 3px rgba(0, 0, 0, 0.05);
+            overflow-y: auto;
+            z-index: 999;
+            transform: translateX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .prof-sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        .prof-sidebar-menu {
+            list-style: none;
+        }
+
+        .prof-menu-title {
+            padding: 10px 25px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray);
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .prof-menu-item {
+            margin: 5px 0;
+        }
+
+        .prof-menu-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .prof-menu-link:hover, .prof-menu-link.active {
+            background: rgba(0, 167, 111, 0.05);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .prof-menu-link i {
+            margin-right: 12px;
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .prof-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .prof-main {
+            flex: 1;
+            padding: 20px;
+            margin-left: 260px;
+            width: calc(100% - 260px);
+        }
+
+        .prof-main.expanded {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .prof-welcome {
+            background: var(--gradient);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(0, 167, 111, 0.15);
+        }
+
+        .prof-welcome h1 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .prof-welcome p {
+            opacity: 0.9;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .prof-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .prof-card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s;
+            border: 1px solid rgba(145, 158, 171, 0.1);
+        }
+
+        .prof-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .prof-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .prof-card-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+
+        .prof-card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            background: rgba(0, 167, 111, 0.1);
+        }
+
+        .prof-card-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+
+        .prof-card-text {
+            font-size: 0.8rem;
+            color: var(--gray);
+            line-height: 1.4;
+        }
+
+        .prof-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .prof-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .prof-section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .prof-section-link {
+            color: var(--primary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .prof-section-link i {
+            margin-left: 5px;
+            font-size: 0.75rem;
+        }
+
+        .prof-courses {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .prof-course-card {
+            border: 1px solid rgba(145, 158, 171, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .prof-course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .prof-course-image {
+            height: 120px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+        }
+
+        .prof-course-body {
+            padding: 18px;
+        }
+
+        .prof-course-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--dark);
+            line-height: 1.4;
+        }
+
+        .prof-course-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+
+        .meta-item i {
+            width: 16px;
+            color: var(--primary);
+        }
+
+        .prof-course-info {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            font-size: 0.8rem;
+            margin-bottom: 6px;
+            color: var(--dark);
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-item strong {
+            color: var(--gray);
+        }
+
+        .prof-course-btn {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .prof-course-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .prof-schedule {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        .prof-schedule th {
+            background: #34495e;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+            border: 1px solid #2c3e50;
+        }
+
+        .prof-schedule td {
+            padding: 12px;
+            border: 1px solid #bdc3c7;
+            text-align: center;
+            vertical-align: top;
+            height: 70px;
+        }
+
+        .time-cell {
+            background: #ecf0f1 !important;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .prof-schedule-course {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .prof-schedule-room {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            background: #ecf0f1;
+            padding: 2px 6px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .prof-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .prof-badge-primary {
+            background: rgba(0, 167, 111, 0.1);
+            color: var(--primary);
+        }
+
+        .prof-badge-success {
+            background: rgba(0, 167, 111, 0.1);
+            color: var(--success);
+        }
+
+        .prof-badge-warning {
+            background: rgba(255, 171, 0, 0.1);
+            color: var(--warning);
+        }
+
+        .prof-badge-danger {
+            background: rgba(255, 86, 48, 0.1);
+            color: var(--danger);
+        }
+
+        .status-present {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .status-absent {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        .status-pending {
+            color: var(--warning);
+            font-weight: 600;
+        }
+
+        .status-paid {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            border: none;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--gray);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #55606c;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.75rem;
+        }
+
+        .btn-icon {
+            margin-right: 8px;
+        }
+
+        /* Documents List */
+        .documents-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .document-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: rgba(0, 167, 111, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 167, 111, 0.1);
+        }
+
+        .document-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            background: var(--primary);
+            color: white;
+        }
+
+        .document-info {
+            flex: 1;
+        }
+
+        .document-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .document-status {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .document-status.verified {
+            color: var(--success);
+        }
+
+        .document-status.missing {
+            color: var(--danger);
+        }
+
+        /* Tabs System */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* AI Assistant Button */
+        .ai-assistant {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 55px;
+            height: 55px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0, 167, 111, 0.3);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border: 3px solid white;
+        }
+
+        .ai-assistant:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 25px rgba(0, 167, 111, 0.4);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--gradient);
+            color: white;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: white;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            opacity: 0.8;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .complaint-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(0, 167, 111, 0.2);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1199px) {
+            .prof-card-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 991px) {
+            .prof-card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .prof-sidebar {
+                width: 240px;
+                transform: translateX(-100%);
+            }
+            
+            .prof-sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .prof-main {
+                margin-left: 0;
+                width: 100%;
+                padding: 15px;
+            }
+
+            .prof-welcome h1 {
+                font-size: 1.3rem;
+            }
+
+            .prof-welcome p {
+                font-size: 0.85rem;
+            }
+
+            .prof-section-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+                align-items: stretch;
+            }
+
+            .prof-section-title {
+                text-align: center;
+            }
+
+            .prof-section-link {
+                justify-content: center;
+            }
+
+            .prof-courses {
+                grid-template-columns: 1fr;
+            }
+
+            .prof-user-info {
+                display: block;
+                max-width: 120px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .prof-logo-text {
+                font-size: 1.1rem;
+            }
+
+            .prof-logo-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+
+            .ai-assistant {
+                bottom: 15px;
+                right: 15px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.1rem;
+            }
+
+            .prof-schedule th,
+            .prof-schedule td {
+                padding: 8px;
+                font-size: 0.8rem;
+            }
+
+            .prof-schedule {
+                font-size: 0.8rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .prof-header {
+                padding: 10px 15px;
+            }
+            
+            .prof-navbar {
+                padding: 10px 0;
+            }
+
+            .prof-user-menu {
+                gap: 10px;
+            }
+
+            .prof-user-info {
+                display: none;
+            }
+
+            .prof-user-name,
+            .prof-user-role {
+                font-size: 0.8rem;
+            }
+
+            .prof-welcome {
+                padding: 20px;
+            }
+
+            .prof-card-grid {
+                gap: 12px;
+            }
+
+            .prof-card {
+                padding: 15px;
+            }
+
+            .prof-card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .prof-card-title {
+                font-size: 0.8rem;
+            }
+
+            .prof-card-value {
+                font-size: 1.3rem;
+            }
+
+            .prof-card-text {
+                font-size: 0.75rem;
+            }
+
+            .prof-section {
+                padding: 15px;
+            }
+
+            .prof-section-header {
+                margin-bottom: 12px;
+            }
+
+            .prof-section-title {
+                font-size: 1rem;
+            }
+
+            .prof-menu-title {
+                padding: 8px 20px;
+                font-size: 0.7rem;
+            }
+
+            .prof-menu-link {
+                padding: 10px 20px;
+                font-size: 0.85rem;
+            }
+
+            .prof-menu-link i {
+                margin-right: 8px;
+            }
+
+            .prof-course-btn {
+                width: 100%;
+            }
+
+            .prof-schedule th,
+            .prof-schedule td {
+                padding: 6px;
+                font-size: 0.75rem;
+            }
+
+            .document-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .document-info,
+            .document-icon {
+                width: 100%;
+            }
+
+            .document-icon {
+                margin-right: 0;
+            }
+        }
+
+        /* Overlay for mobile menu */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            backdrop-filter: blur(5px);
+        }
+
+        .overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="prof-header">
+        <div class="container">
+            <nav class="prof-navbar">
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="#" class="prof-logo">
+                    <div class="prof-logo-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="prof-logo-text">my<span>ESCOM</span></div>
+                </a>
+                
+                <div class="prof-user-menu">
+                    <div class="prof-user-info">
+                        <div class="prof-user-name">{{prof.enseignant_utilisateur.nom}} {{prof.enseignant_utilisateur.prenom}}</div>
+                        <div class="prof-user-role">{{contrat.description}}</div>
+                    </div>
+                    <div class="prof-user-avatar">{{prof.enseignant_utilisateur.nom|first}}{{prof.enseignant_utilisateur.prenom|first}}</div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Overlay for mobile -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Main Container -->
+    <div class="prof-container">
+        <!-- Sidebar -->
+        <aside class="prof-sidebar" id="profSidebar">
+            <ul class="prof-sidebar-menu">
+                <li class="prof-menu-title">Menu Principal</li>
+                <li class="prof-menu-item">
+                    <a href="#" class="prof-menu-link active" data-tab="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Tableau de bord</span>
+                    </a>
+                </li>
+                <li class="prof-menu-item">
+                    <a href="#" class="prof-menu-link" data-tab="courses">
+                        <i class="fas fa-book"></i>
+                        <span>Mes Matieres</span>
+                    </a>
+                </li>
+                <li class="prof-menu-item">
+                    <a href="#" class="prof-menu-link" data-tab="schedule">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Emploi du temps</span>
+                    </a>
+                </li>
+
+                <li class="prof-menu-item">
+                    <a href="#" class="prof-menu-link" data-tab="presences">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Mes Présences</span>
+                    </a>
+                </li>
+                <li class="prof-menu-title">Parametres</li>
+                <li class="prof-menu-item">
+                    <a href="{% url 'out' %}" class="prof-menu-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Déconnexion</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="prof-main" id="profMain">
+            <!-- Action Buttons -->
+            <!-- Tableau de bord -->
+            <div id="dashboard" class="tab-content active">
+                <section class="prof-welcome">
+                    <h1>Bienvenue, Mr {{prof.enseignant_utilisateur.nom}}</h1>
+                    <p>Consultez avec toute facilité les différentes informations qui vous concernent.</p>
+                    <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
+                        <span class="prof-badge prof-badge-success">Actif</span>
+                        <span class="prof-badge prof-badge-primary">5 cours actifs</span>
+                    </div>
+                </section>
+
+                <div class="prof-card-grid">
+                    <div class="prof-card">
+                        <div class="prof-card-header">
+                            <div class="prof-card-title">Étudiants</div>
+                            <div class="prof-card-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="prof-card-value">{{etudiants}}</div>
+                        <div class="prof-card-text">Dans vos {{classes}} classes</div>
+                    </div>
+                </div>
+
+                <section class="prof-section">
+                    <div class="prof-section-header">
+                        <h2 class="prof-section-title">Informations Personnelles</h2>
+                        <a href="{% url "pdf_contrat"  contrat.id %}" class="prof-section-link">
+                            Télécharger le contrat <i class="fas fa-download"></i>
+                        </a>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        <div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-size: 0.875rem; color: var(--gray); margin-bottom: 5px;">Nom complet</div>
+                                <div style="font-weight: 600;">{{contrat.enseignant.enseignant_utilisateur.nom}} {{prof.enseignant_utilisateur.prenom}}</div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-size: 0.875rem; color: var(--gray); margin-bottom: 5px;">Email</div>
+                                <div style="font-weight: 600;">{{ contrat.enseignant.enseignant_utilisateur.email|default:"Non spécifié" }}</div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-size: 0.875rem; color: var(--gray); margin-bottom: 5px;">Téléphone</div>
+                                <div style="font-weight: 600;">{{ contrat.enseignant.enseignant_utilisateur.numero_telephone|default:"Non spécifié" }}</div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-size: 0.875rem; color: var(--gray); margin-bottom: 5px;">Spécialité</div>
+                                <div style="font-weight: 600;">{{ contrat.description|default:"Mathématiques" }}</div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-size: 0.875rem; color: var(--gray); margin-bottom: 5px;">ID du contrat</div>
+                                <div style="font-weight: 600;">{{contrat.id }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="prof-section">
+                    <div class="prof-section-header">
+                        <h2 class="prof-section-title">Prochains Cours</h2>
+                        <a href="#" class="prof-section-link" data-tab="schedule">
+                            Voir emploi du temps <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </div>
+                    
+                    <table class="prof-schedule">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Heure</th>
+                                <th>Matière</th>
+                                <th>Classe</th>
+                                <th>Salle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cours in today %}
+                            <tr>
+                                <td>Aujourd'hui</td>
+                                <td>{{ cours.heure_debut|time:"H:i" }} - {{ cours.heure_fin|time:"H:i" }}</td>
+                                <td>
+                                    <div class="prof-schedule-course">{{ cours.matiere.nom }}</div>
+                                </td>
+                                <td>{{ cours.classe.nom }} </td>
+                                <td>{{ cours.salle.nom|default:"Non spécifié" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" style="text-align: center;">Aucun cours aujourd'hui</td>
+                            </tr>
+                            {% endfor %}
+                            
+                            {% for cour in yers %}
+                            <tr>
+                                <td>Demain</td>
+                                <td>{{ cour.heure_debut|time:"H:i" }} - {{ cour.heure_fin|time:"H:i" }}</td>
+                                <td>
+                                    <div class="prof-schedule-course">{{ cour.matiere.nom }}</div>
+                                </td>
+                                <td>{{ cour.classe.nom }} </td>
+                                <td>{{ cour.salle.nom|default:"Non spécifié" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" style="text-align: center;" >Aucun cours pour demain</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+
+            <!-- Mes Cours -->
+            <div id="courses" class="tab-content">
+                <section class="prof-welcome">
+                    <h1>Mes Matières</h1>
+                    <p>Liste des matières que vous enseignez par classe.</p>
+                </section>
+
+                <div class="prof-card-grid">
+                    <div class="prof-card">
+                        <div class="prof-card-header">
+                            <div class="prof-card-title">Total Matières</div>
+                            <div class="prof-card-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                        </div>
+                        <div class="prof-card-value">{{ total_matieres }}</div>
+                        <div class="prof-card-text">Matières enseignées</div>
+                    </div>
+                    
+                    <div class="prof-card">
+                        <div class="prof-card-header">
+                            <div class="prof-card-title">Classes</div>
+                            <div class="prof-card-icon">
+                                <i class="fas fa-chalkboard"></i>
+                            </div>
+                        </div>
+                        <div class="prof-card-value">{{ classes }}</div>
+                        <div class="prof-card-text">Classes différentes</div>
+                    </div>
+                    
+                    <div class="prof-card">
+                        <div class="prof-card-header">
+                            <div class="prof-card-title">Heures/Semaine</div>
+                            <div class="prof-card-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="prof-card-value">{{ heure }}</div>
+                        <div class="prof-card-text">Heures d'enseignement</div>
+                    </div>
+                </div>
+
+                <section class="prof-section">
+                    <div class="prof-section-header">
+                        <h2 class="prof-section-title">Matières par classe</h2>
+                    </div>
+                    
+                    <div class="prof-courses">
+                        {% for classe_nom, matieres in classes_matieres.items %}
+                            {% for matiere_nom, matiere_data in matieres.items %}
+                            <div class="prof-course-card">
+                                <div class="prof-course-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                                <div class="prof-course-body">
+                                    <h3 class="prof-course-title">{{ matiere_data.nom }}</h3>
+                                    <div class="prof-course-meta">
+                                        <span><i class="fas fa-users"></i> {{ matiere_data.classe }}</span>
+                                        <span><i class="fas fa-clock"></i> {{ matiere_data.heures_semaine }}h/semaine</span>
+                                    </div>
+                                    <div style="margin-bottom: 15px;">
+                                        <span class="prof-badge prof-badge-primary">{{ matiere_data.classe }}</span>
+                                        <span class="prof-badge prof-badge-success">{{ matiere_data.heures_semaine }}h</span>
+                                    </div>
+                                    <button class="prof-course-btn">
+                                        <i class="fas fa-eye"></i> Voir les détails
+                                    </button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% empty %}
+                        <div class="prof-card" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--gray); background: white; border-radius: 12px; border: 2px dashed rgba(145, 158, 171, 0.3);">
+                            <i class="fas fa-book" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                            <h3>Aucune matière assignée</h3>
+                            <p>Vous n'avez pas encore de matières assignées pour le moment.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+            </div>
+
+            <!-- Emploi du temps -->
+            <div id="schedule" class="tab-content">
+                <section class="prof-welcome">
+                    <h1>Emploi du temps</h1>
+                    <p>Consultez votre planning de la semaine et vos prochains cours.</p>
+                </section>
+
+                <div class="prof-card-grid">
+                    <div class="prof-card">
+                        <div class="prof-card-header">
+                            <div class="prof-card-title">Cours cette semaine</div>
+                            <div class="prof-card-icon">
+                                <i class="fas fa-calendar-week"></i>
+                            </div>
+                        </div>
+                        <div class="prof-card-value">{{cours|default:"Aucun cours"}}</div>
+                        <div class="prof-card-text">Heures de cours</div>
+                    </div>
+                    <div class="prof-card">
+                        <div class="prof-card-header">
+                            <div class="prof-card-title">Nombre d'heure</div>
+                            <div class="prof-card-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="prof-card-value">{{heure}} h</div>
+                        <div class="prof-card-text"> cette semaine</div>
+                    </div>
+                </div>
+
+                <section class="prof-section">
+                    <div class="prof-section-header">
+                        <h2 class="prof-section-title">Semaine en cours</h2>
+                    </div>
+                    <table class="prof-schedule">
+                        <thead>
+                            <tr>
+                                <th>Jour</th>
+                                <th>Heure</th>
+                                <th>Matière</th>
+                                <th>Classe</th>
+                                <th>Salle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cours in lundi %}
+                            <tr>
+                                <td>Lundi</td>
+                                <td>{{ cours.heure_debut|time:"H:i" }} - {{ cours.heure_fin|time:"H:i" }}</td>
+                                <td>{{ cours.matiere.nom }}</td>
+                                <td>{{ cours.classe.nom }}</td>
+                                <td>{{ cours.salle.nom|default:"Non spécifiée" }}</td>
+                            </tr>
+                            {% endfor %}
+                            
+                            {% for cours in mardi %}
+                            <tr>
+                                <td>Mardi</td>
+                                <td>{{ cours.heure_debut|time:"H:i" }} - {{ cours.heure_fin|time:"H:i" }}</td>
+                                <td>{{ cours.matiere.nom }}</td>
+                                <td>{{ cours.classe.nom }}</td>
+                                <td>{{ cours.salle.nom|default:"Non spécifiée" }}</td>
+                            </tr>
+                            {% endfor %}
+                            
+                            {% for cours in mercredi %}
+                            <tr>
+                                <td>Mercredi</td>
+                                <td>{{ cours.heure_debut|time:"H:i" }} - {{ cours.heure_fin|time:"H:i" }}</td>
+                                <td>{{ cours.matiere.nom }}</td>
+                                <td>{{ cours.classe.nom }}</td>
+                                <td>{{ cours.salle.nom|default:"Non spécifiée" }}</td>
+                            </tr>
+                            {% endfor %}
+                            
+                            {% for cours in jeudi %}
+                            <tr>
+                                <td>Jeudi</td>
+                                <td>{{ cours.heure_debut|time:"H:i" }} - {{ cours.heure_fin|time:"H:i" }}</td>
+                                <td>{{ cours.matiere.nom }}</td>
+                                <td>{{ cours.classe.nom }}</td>
+                                <td>{{ cours.salle.nom|default:"Non spécifiée" }}</td>
+                            </tr>
+                            {% endfor %}
+                            
+                            {% for cours in vendredi %}
+                            <tr>
+                                <td>Vendredi</td>
+                                <td>{{ cours.heure_debut|time:"H:i" }} - {{ cours.heure_fin|time:"H:i" }}</td>
+                                <td>{{ cours.matiere.nom }}</td>
+                                <td>{{ cours.classe.nom }}</td>
+                                <td>{{ cours.salle.nom|default:"Non spécifiée" }}</td>
+                            </tr>
+                            {% endfor %}
+                            
+                            {% for cours in samedi %}
+                            <tr>
+                                <td>Samedi</td>
+                                <td>{{ cours.heure_debut|time:"H:i" }} - {{ cours.heure_fin|time:"H:i" }}</td>
+                                <td>{{ cours.matiere.nom }}</td>
+                                <td>{{ cours.classe.nom }}</td>
+                                <td>{{ cours.salle.nom|default:"Non spécifiée" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+
+            <!-- Mes Présences -->
+            <div id="presences" class="tab-content">
+                <section class="prof-welcome">
+                    <h1>Mes Présences aux Cours</h1>
+                    <p>Historique de vos présences et heures enseignées.</p>
+                </section>
+
+                <div class="prof-card-grid">
+                    <div class="prof-card">
+                        <div class="prof-card-header">
+                            <div class="prof-card-title">Total Présences</div>
+                            <div class="prof-card-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                        </div>
+                        <div class="prof-card-value">{{ total_presences }}</div>
+                        <div class="prof-card-text">Cours effectués</div>
+                    </div>
+                    
+                    <div class="prof-card">
+                        <div class="prof-card-header">
+                            <div class="prof-card-title">Heures Enseignées</div>
+                            <div class="prof-card-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="prof-card-value">{{ heures_enseignees }}</div>
+                        <div class="prof-card-text">Heures totales</div>
+                    </div>
+                    
+                    <div class="prof-card">
+                        <div class="prof-card-header">
+                            <div class="prof-card-title">Dernière Présence</div>
+                            <div class="prof-card-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                        </div>
+                        <div class="prof-card-value">
+                            {% if presences %}
+                                {{ presences.0.date_cours|date:"j F Y" }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
+                        <div class="prof-card-text">
+                            {% if presences %}
+                                {{ presences.0.matiere.nom }}
+                            {% else %}
+                                Aucune présence
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <section class="prof-section">
+                    <div class="prof-section-header">
+                        <h2 class="prof-section-title">Historique des Présences</h2>
+                    </div>
+                    
+                    {% if presences %}
+                    <table class="prof-schedule">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Heure</th>
+                                <th>Matière</th>
+                                <th>Classe</th>
+                                <th>Salle</th>
+                                <th>Durée</th>
+                                <th>Jour</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for presence in presences %}
+                            <tr>
+                                <td>{{ presence.date_cours|date:"d/m/Y" }}</td>
+                                <td>{{ presence.heure_debut|time:"H:i" }} - {{ presence.heure_fin|time:"H:i" }}</td>
+                                <td>
+                                    <div class="prof-schedule-course">{{ presence.matiere.nom }}</div>
+                                </td>
+                                <td>{{ presence.classe.nom }}</td>
+                                <td>{{ presence.salle.nom|default:"Non spécifié" }}</td>
+                                <td>
+                                    <span class="prof-badge prof-badge-primary">{{ presence.nombre_heure }}h</span>
+                                </td>
+                                <td>{{ presence.jour.nom }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div style="text-align: center; padding: 40px; color: var(--gray);">
+                        <i class="fas fa-calendar-times" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                        <h3>Aucune présence enregistrée</h3>
+                        <p>Vous n'avez effectué aucun cours jusqu'à présent</p>
+                    </div>
+                    {% endif %}
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- AI Assistant Button -->
+    <div class="ai-assistant" id="aiAssistant">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <!-- Modal pour l'assistant IA -->
+    <div class="modal-overlay" id="assistantModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-robot"></i>
+                    Assistant CampusFlow
+                </h3>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="complaint-form" id="complaintForm">
+                    <div class="form-group">
+                        <label class="form-label" for="complaint-type">Type de préoccupation</label>
+                        <select class="form-select" id="complaint-type" name="complaint-type" required>
+                            <option value="">Sélectionnez un type</option>
+                            <option value="cours">Problème avec un cours</option>
+                            <option value="etudiants">Problème avec des étudiants</option>
+                            <option value="notes">Question sur les notes</option>
+                            <option value="emploi_du_temps">Problème d'emploi du temps</option>
+                            <option value="honoraires">Question sur les honoraires</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="complaint-subject">Sujet</label>
+                        <input type="text" class="form-control" id="complaint-subject" name="complaint-subject" placeholder="Entrez le sujet de votre message" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="complaint-message">Description détaillée</label>
+                        <textarea class="form-control" id="complaint-message" name="complaint-message" placeholder="Décrivez votre préoccupation en détail..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="complaint-urgency">Niveau d'urgence</label>
+                        <select class="form-select" id="complaint-urgency" name="complaint-urgency" required>
+                            <option value="faible">Faible</option>
+                            <option value="moyen" selected>Moyen</option>
+                            <option value="eleve">Élevé</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelComplaint">Annuler</button>
+                <button class="btn btn-primary" id="submitComplaint">Envoyer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Système d'onglets
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuLinks = document.querySelectorAll('.prof-menu-link[data-tab]');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.getAttribute('data-tab')) {
+                        e.preventDefault();
+                        
+                        // Retirer la classe active de tous les liens et onglets
+                        menuLinks.forEach(l => l.classList.remove('active'));
+                        tabContents.forEach(tab => tab.classList.remove('active'));
+                        
+                        // Ajouter la classe active au lien cliqué
+                        this.classList.add('active');
+                        
+                        // Afficher l'onglet correspondant
+                        const tabId = this.getAttribute('data-tab');
+                        document.getElementById(tabId).classList.add('active');
+                        
+                        // Fermer le menu mobile après sélection
+                        document.getElementById('profSidebar').classList.remove('active');
+                        document.getElementById('overlay').classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+            });
+
+            // Gestion des liens dans le contenu qui changent d'onglet
+            const contentLinks = document.querySelectorAll('[data-tab]');
+            contentLinks.forEach(link => {
+                if (link.classList.contains('prof-section-link')) {
+                    link.addEventListener('click', function(e) {
+                        if (this.getAttribute('data-tab')) {
+                            e.preventDefault();
+                            const tabId = this.getAttribute('data-tab');
+                            
+                            // Retirer la classe active de tous les liens et onglets
+                            menuLinks.forEach(l => l.classList.remove('active'));
+                            tabContents.forEach(tab => tab.classList.remove('active'));
+                            
+                            // Activer le lien du menu correspondant
+                            const correspondingMenuLink = document.querySelector(`.prof-menu-link[data-tab="${tabId}"]`);
+                            if (correspondingMenuLink) {
+                                correspondingMenuLink.classList.add('active');
+                            }
+                            
+                            // Afficher l'onglet correspondant
+                            document.getElementById(tabId).classList.add('active');
+                        }
+                    });
+                }
+            });
+
+            // Gestion du menu mobile
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const profSidebar = document.getElementById('profSidebar');
+            const overlay = document.getElementById('overlay');
+            const profMain = document.getElementById('profMain');
+
+            mobileMenuToggle.addEventListener('click', function() {
+                profSidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                
+                if (profSidebar.classList.contains('active')) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            });
+
+            overlay.addEventListener('click', function() {
+                profSidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+
+            // Gestion de l'assistant IA
+            const aiAssistant = document.getElementById('aiAssistant');
+            const assistantModal = document.getElementById('assistantModal');
+            const closeModal = document.getElementById('closeModal');
+            const cancelComplaint = document.getElementById('cancelComplaint');
+            const submitComplaint = document.getElementById('submitComplaint');
+            const complaintForm = document.getElementById('complaintForm');
+
+            // Ouvrir le modal
+            aiAssistant.addEventListener('click', function() {
+                assistantModal.classList.add('active');
+            });
+
+            // Fermer le modal
+            closeModal.addEventListener('click', function() {
+                assistantModal.classList.remove('active');
+            });
+
+            cancelComplaint.addEventListener('click', function() {
+                assistantModal.classList.remove('active');
+            });
+
+            // Soumettre le formulaire
+            submitComplaint.addEventListener('click', function() {
+                if (complaintForm.checkValidity()) {
+                    // Ici, vous devriez envoyer les données au serveur
+                    alert('Votre message a été envoyé avec succès ! Notre équipe vous répondra dans les plus brefs délais.');
+                    complaintForm.reset();
+                    assistantModal.classList.remove('active');
+                } else {
+                    alert('Veuillez remplir tous les champs obligatoires.');
+                }
+            });
+
+            // Fermer le modal en cliquant à l'extérieur
+            assistantModal.addEventListener('click', function(e) {
+                if (e.target === assistantModal) {
+                    assistantModal.classList.remove('active');
+                }
+            });
+
+            // Gestion des boutons d'action
+            document.getElementById('add-presence-btn').addEventListener('click', function() {
+                alert('Ouvrir le formulaire de marquage de présence');
+            });
+
+            document.getElementById('mark-presence-btn').addEventListener('click', function() {
+                alert('Ouvrir le formulaire de marquage de présence');
+            });
+            
+            document.getElementById('add-note-btn').addEventListener('click', function() {
+                alert('Ouvrir le formulaire de saisie de notes');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESCOM - École Supérieure de Commerce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7635dc;
+            --primary-dark: #5c2bb5;
+            --primary-light: #9364e8;
+            --secondary: #00a76f;
+            --dark: #212b36;
+            --light: #f9fafb;
+            --gray: #637381;
+            --success: #00a76f;
+            --warning: #ffab00;
+            --danger: #ff5630;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --hover-shadow: 0 10px 25px -5px rgba(118, 53, 220, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: white;
+            color: var(--dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Content Box */
+        .content-box {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 2.5rem;
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            border: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .content-icon {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .content-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .content-description {
+            color: var(--gray);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* Download Button */
+        .download-btn {
+            background: var(--primary);
+            color: white;
+            padding: 0.875rem 2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .download-btn:hover {
+            background: var(--primary-dark);
+            box-shadow: var(--hover-shadow);
+        }
+
+        /* Popup Overlay */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 12;
+            visibility: visible;
+            transition: all 0.3s ease;
+        }
+
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Popup Content */
+        .popup {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 500px;
+            padding: 2.5rem;
+            position: relative;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .popup-overlay.active .popup {
+            transform: translateY(0);
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .popup-close:hover {
+            color: var(--danger);
+        }
+
+        .popup-icon {
+            font-size: 3.5rem;
+            color: var(--success);
+            margin-bottom: 1.5rem;
+        }
+
+        .popup-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .popup-description {
+            color: var(--gray);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .popup-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            color: var(--dark);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 576px) {
+            .content-box {
+                padding: 2rem 1.5rem;
+            }
+            
+            .popup-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Content Box -->
+
+    
+    <!-- Popup Overlay -->
+    <div class="popup-overlay" id="contract-popup">
+        <div class="popup">
+            <button class="popup-close" id="close-popup" hidden >
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="popup-icon">
+                <i class="fas fa-file-download"></i>
+            </div>
+            <h2 class="popup-title">Téléchargement du Contrat</h2>
+            <p class="popup-description">
+                Votre contrat d'enregistrement de professeur est prêt à être téléchargé. Cliquez sur le bouton ci-dessous pour l'obtenir.{{url}}
+            </p>
+            <div class="popup-actions">
+                <a style="text-decoration:none" href="{% url "recrutement" %}" class="btn btn-outline" id="cancel-download">
+                    <i class="fas fa-times"></i> retour
+                </a>
+                <a  href='{% url "pdf_contrat"  url.id %}' style="text-decoration:none" class="btn btn-primary" id="confirm-download">
+                    <i class="fas fa-download"></i> Télécharger
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     // Gestion du popup de téléchargement
+        //     const downloadBtn = document.getElementById('download-contract-btn');
+        //     const popupOverlay = document.getElementById('contract-popup');
+        //     const closePopup = document.getElementById('close-popup');
+        //     const cancelDownload = document.getElementById('cancel-download');
+        //     const confirmDownload = document.getElementById('confirm-download');
+            
+        //     // Ouvrir le popup
+        //     downloadBtn.addEventListener('click', function() {
+        //         popupOverlay.classList.add('active');
+        //     });
+            
+        //     // Fermer le popup
+        //     function closePopupFunc() {
+        //         popupOverlay.classList.remove('active');
+        //     }
+            
+        //     closePopup.addEventListener('click', closePopupFunc);
+        //     cancelDownload.addEventListener('click', closePopupFunc);
+            
+        //     // Confirmer le téléchargement
+        //     confirmDownload.addEventListener('click', function() {
+        //         // Simuler le téléchargement
+        //         alert('Téléchargement du contrat en cours...');
+        //         closePopupFunc();
+                
+        //         // Dans une implémentation réelle, vous redirigeriez vers l'URL de téléchargement
+        //         // window.location.href = '/path/to/contract.pdf';
+        //     });
+            
+        //     // Fermer le popup en cliquant à l'extérieur
+        //     popupOverlay.addEventListener('click', function(e) {
+        //         if (e.target === popupOverlay) {
+        //             closePopupFunc();
+        //         }
+        //     });
+        // });
+    </script>
+</body>
+</html>

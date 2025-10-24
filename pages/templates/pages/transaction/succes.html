@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESCOM - École Supérieure de Commerce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7635dc;
+            --primary-dark: #5c2bb5;
+            --primary-light: #9364e8;
+            --secondary: #00a76f;
+            --dark: #212b36;
+            --light: #f9fafb;
+            --gray: #637381;
+            --success: #00a76f;
+            --warning: #ffab00;
+            --danger: #ff5630;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --hover-shadow: 0 10px 25px -5px rgba(118, 53, 220, 0.15);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .success-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(0, 167, 111, 0.1);
+            color: var(--success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2.5rem;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        .success-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .success-message {
+            color: var(--gray);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .payment-details {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .detail-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-label {
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .detail-value.amount {
+            color: var(--success);
+            font-size: 1.2rem;
+        }
+
+        .divider {
+            height: 1px;
+            background: rgba(145, 158, 171, 0.2);
+            margin: 1rem 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            color: var(--dark);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #00925d;
+            box-shadow: 0 10px 25px -5px rgba(0, 167, 111, 0.15);
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            opacity: 0;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-title, .success-message, .payment-details, .action-buttons {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .success-message {
+            animation-delay: 0.2s;
+        }
+
+        .payment-details {
+            animation-delay: 0.4s;
+        }
+
+        .action-buttons {
+            animation-delay: 0.6s;
+        }
+
+        @media (max-width: 576px) {
+            .success-card {
+                padding: 2rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="success-card">
+        <div class="success-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        
+        <h2 class="success-title">Paiement Réussi!</h2>
+        
+        <p class="success-message">
+            Votre paiement a été traité avec succès. Un reçu a été généré pour cette transaction.
+        </p>
+        
+        <div class="payment-details">
+            <div class="detail-item">
+                <span class="detail-label">Référence:</span>
+                <span class="detail-value">{{element.nature}}</span>
+            </div>
+            
+            <div class="detail-item">
+                <span class="detail-label">Date:</span>
+                <span class="detail-value">{{element.date}}</span>
+            </div>
+            
+            <div class="detail-item">
+                <span class="detail-label">Étudiant:</span>
+                <span class="detail-value">{{element.etudiant.utilisateur.nom}} {{ecolage.etudiant.utilisateur.prenom}}</span>
+            </div>
+            
+            <div class="detail-item">
+                <span class="detail-label">code recu:</span>
+                <span class="detail-value">{{element.recu}}</span>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="detail-item">
+                <span class="detail-label">Montant payé:</span>
+                <span class="detail-value amount">{{element.montant}} Fcfa</span>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="{% url 'inscription' %}" style="text-decoration: none;"  class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
+            
+            <a class="btn btn-primary" href="{% url 'pdf_trans' element.id %}" >
+                <i class="fas fa-print"></i> Imprimer le reçu
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animation de confetti
+            createConfetti();
+        });
+
+        function createConfetti() {
+            const colors = ['#7635dc', '#00a76f', '#ffab00', '#ff5630', '#00b8d9'];
+            const container = document.querySelector('.success-card');
+            
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                confetti.style.height = (Math.random() * 10 + 5) + 'px';
+                confetti.style.opacity = '0';
+                
+                container.appendChild(confetti);
+                
+                // Animation
+                setTimeout(() => {
+                    confetti.style.transition = 'all 1s ease-out';
+                    confetti.style.opacity = '1';
+                    confetti.style.transform = `translate(
+                        ${(Math.random() - 0.5) * 100}px, 
+                        ${(Math.random() - 0.5) * 100}px
+                    ) rotate(${Math.random() * 360}deg)`;
+                    
+                    // Disparition
+                    setTimeout(() => {
+                        confetti.style.opacity = '0';
+                    }, 800);
+                }, i * 100);
+            }
+        }
+    </script>
+</body>
+</html>

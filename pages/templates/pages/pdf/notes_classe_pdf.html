@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Notes - {{ classe.nom }}</title>
+    <style>
+        body { font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; font-size: 10px; color: #333; }
+        h1 { text-align: center; color: #4A5568; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 6px; text-align: center; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        .student-name { text-align: left; }
+    </style>
+</head>
+<body>
+    <h1>Relevé de Notes - {{ classe.nom }}</h1>
+    {% for matiere_id, data in notes_par_matiere.items %}
+        <h2>{{ data.matiere_nom }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Matricule</th>
+                    <th class="student-name">Nom & Prénom</th>
+                    <th>Devoir</th>
+                    <th>Session</th>
+                    <th>Moyenne</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for note in data.etudiants_notes %}
+                <tr>
+                    <td>{{ note.matricule }}</td>
+                    <td class="student-name">{{ note.nom }} {{ note.prenom }}</td>
+                    <td>{{ note.note_devoir|default:"-" }}</td>
+                    <td>{{ note.note_session|default:"-" }}</td>
+                    <td>{{ note.moyenne|default:"-" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+</body>
+</html>

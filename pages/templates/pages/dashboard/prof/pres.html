@@ -1,0 +1,975 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESCOM - École Supérieure de Commerce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        {% include 'pages/bases/dashboard/css.html' %}
+
+        :root {
+            --primary: #7635dc;
+            --primary-dark: #5c2bb5;
+            --primary-light: #9364e8;
+            --secondary: #00a76f;
+            --dark: #212b36;
+            --light: #f9fafb;
+            --gray: #637381;
+            --success: #00a76f;
+            --warning: #ffab00;
+            --danger: #ff5630;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --hover-shadow: 0 10px 25px -5px rgba(118, 53, 220, 0.15);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            height: 100vh;
+            position: fixed;
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            margin-bottom: 1rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            background: var(--gradient);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .logo-text {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--dark);
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        .nav-menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 1rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray);
+            padding: 0.5rem 1rem;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.2s;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(118, 53, 220, 0.05);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: rgba(118, 53, 220, 0.08);
+            border-left: 3px solid var(--primary);
+        }
+
+        .nav-icon {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .user-profile {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            width: 240px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(118, 53, 220, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .notification-btn {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.25rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            background: var(--gradient);
+            color: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(118, 53, 220, 0.24);
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+            opacity: 0.3;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-text h2 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .welcome-text p {
+            opacity: 0.9;
+            max-width: 600px;
+        }
+
+        /* Dashboard Stats */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-change {
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+
+        .card-change.positive {
+            color: var(--success);
+        }
+
+        .card-change.negative {
+            color: var(--danger);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            background: rgba(118, 53, 220, 0.08);
+            color: var(--primary);
+        }
+
+        /* Intervenants List */
+        .intervenants-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .view-all {
+            color: var(--primary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .intervenants-list {
+            list-style: none;
+        }
+
+        .intervenant-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            transition: all 0.2s;
+        }
+
+        .intervenant-item:hover {
+            background: rgba(118, 53, 220, 0.02);
+        }
+
+        .intervenant-item:last-child {
+            border-bottom: none;
+        }
+
+        .intervenant-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .intervenant-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            background: var(--primary);
+        }
+
+        .intervenant-details h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .intervenant-details p {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        .intervenant-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-present {
+            background: rgba(0, 167, 111, 0.1);
+            color: var(--success);
+        }
+
+        .status-absent {
+            background: rgba(255, 86, 48, 0.1);
+            color: var(--danger);
+        }
+
+        .status-pending {
+            background: rgba(255, 171, 0, 0.1);
+            color: var(--warning);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #00925f;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            color: var(--dark);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Popup Styles */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup-overlay.active {
+            display: flex;
+        }
+
+        .popup {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: popupSlideIn 0.3s ease-out;
+        }
+
+        @keyframes popupSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .popup-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .popup-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .popup-close {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+        }
+
+        .popup-close:hover {
+            background: rgba(145, 158, 171, 0.1);
+        }
+
+        .popup-body {
+            padding: 2rem;
+        }
+
+        .intervenant-info-popup {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(118, 53, 220, 0.05);
+            border-radius: 8px;
+        }
+
+        .intervenant-avatar-popup {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            background: var(--primary);
+        }
+
+        .intervenant-details-popup h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .intervenant-details-popup p {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        .time-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            background-color: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(118, 53, 220, 0.2);
+        }
+
+        .popup-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+                overflow: hidden;
+            }
+            
+            .logo-text, .nav-title, .user-info, .nav-link span {
+                display: none;
+            }
+            
+            .logo {
+                justify-content: center;
+                padding: 0 0 1.5rem;
+            }
+            
+            .nav-icon {
+                margin-right: 0;
+                font-size: 1.25rem;
+            }
+            
+            .nav-link {
+                justify-content: center;
+                padding: 1rem 0;
+            }
+            
+            .user-profile {
+                justify-content: center;
+                padding: 1rem 0;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .search-bar input {
+                width: 180px;
+            }
+
+            .intervenant-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .intervenant-status {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .time-inputs {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .popup {
+                width: 95%;
+                margin: 1rem;
+            }
+            
+            .popup-body {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        {% include 'pages/bases/dashboard/logo.html' %}
+
+        {% include 'pages/bases/dashboard/presence.html' %}
+        {% include 'pages/bases/dashboard/user.html' %}
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <div class="page-title">
+                <h1>Présences des Intervenants</h1>
+            </div>
+            
+            <div class="header-actions">
+                <div class="search-bar">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="Rechercher un intervenant...">
+                </div>
+                
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Welcome Card -->
+        <div class="welcome-card">
+            <div class="welcome-content">
+                <div class="welcome-text">
+                    <h2>Gestion des présences</h2>
+                    <p>Enregistrez la présence des intervenants pour la journée du {{jour}}. <br>   {{presence_count}} intervenants sont présents sur {{total_count}} attendus.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dashboard Stats -->
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Intervenants du jour</div>
+                        <div class="card-value">{{total_count}}</div>
+                        <div class="card-change positive">
+                            
+                        </div>
+                    </div>
+                    <div class="card-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Présences Enregistrées</div>
+                        <div class="card-value">{{presence_count}}</div>
+                        <div class="card-change positive">
+                            <i class="fas fa-check-circle"></i> {{presence_percentage}}% complété
+                        </div>
+                    </div>
+                    <div class="card-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                </div>
+            </div>
+            
+            </div>
+        </div>
+        
+        <!-- Intervenants List -->
+        <div class="intervenants-container">
+            <div class="section-header">
+                <h2 class="section-title">Liste des Intervenants du {{jour}}</h2>
+                <a href="#" class="view-all">Voir tout</a>
+            </div>
+            
+            <ul class="intervenants-list" id="intervenantsList">
+                {% for key, value in emploie.items %}
+                <li class="intervenant-item">
+                    <div class="intervenant-info">
+                        <div class="intervenant-avatar">{{ value.prenom|first }}{{ value.nom|first }}</div>
+                        <div class="intervenant-details">
+                            <h3>{{ value.nom }} {{ value.prenom }}</h3>
+                            <p>{{ value.matiere }} ({{ value.salle }}) • {{ value.heure_debut }}h - {{ value.heure_fin }}h</p>
+                        </div>
+                    </div>
+                    
+                    <div class="intervenant-status">
+                        {% if value.present %}
+                        <span class="status-badge status-present">Présence enregistrée</span>
+                        {% else %}
+                        <span class="status-badge status-pending">En attente</span>
+                        <button class="btn btn-primary btn-enregistrer" 
+                                onclick="openEnregistrementPopup('{{ key }}', '{{ value.nom }}', '{{ value.prenom }}', '{{ value.matiere }}', '{{ value.salle }}', '{{ value.heure_debut }}', '{{ value.heure_fin }}')">
+                            <i class="fas fa-check"></i> Enregistrer
+                        </button>
+                        {% endif %}
+                    </div>
+                </li>
+                {% empty %}
+                <li class="intervenant-item">
+                    <div class="intervenant-info">
+                        <div class="intervenant-details">
+                            <p>Aucun intervenant aujourd'hui</p>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </main>
+
+    <!-- Popup d'enregistrement de présence -->
+    <div class="popup-overlay" id="enregistrementPopup">
+        <div class="popup">
+            <div class="popup-header">
+                <h3 class="popup-title">Enregistrer la présence</h3>
+                <button class="popup-close" onclick="closeEnregistrementPopup()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="popup-body">
+                <div class="intervenant-info-popup">
+                    <div class="intervenant-avatar-popup" id="popupAvatar">JD</div>
+                    <div class="intervenant-details-popup">
+                        <h3 id="popupNom">John Doe</h3>
+                        <p id="popupDetails">Mathématiques (Salle A12) • 08h00 - 10h00</p>
+                    </div>
+                </div>
+                
+                <form id="enregistrementForm" method="POST" action="{% url 'enregistrement_presence' 0 %}">
+                    {% csrf_token %}
+                    <input type="hidden" id="popupIntervenantId" name="intervenant_id">
+                    
+                    <div class="time-inputs">
+                        <div class="form-group">
+                            <label class="form-label">Heure de début du cours</label>
+                            <input type="time" class="form-control" id="popupHeureDebut" name="heure_debut" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Heure de fin du cours</label>
+                            <input type="time" class="form-control" id="popupHeureFin" name="heure_fin" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Remarques (optionnel)</label>
+                        <textarea class="form-control" id="popupRemarques" name="remarques" rows="3" placeholder="Notes supplémentaires..."></textarea>
+                    </div>
+                    
+                    <div class="popup-actions">
+                        <button type="button" class="btn btn-outline" onclick="closeEnregistrementPopup()">
+                            <i class="fas fa-times"></i> Annuler
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Enregistrer la présence
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% include 'pages/bases/dashboard/script.html' %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion de la recherche
+            const searchInput = document.querySelector('.search-bar input');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const intervenants = document.querySelectorAll('.intervenant-item');
+                
+                intervenants.forEach(intervenant => {
+                    const name = intervenant.querySelector('h3').textContent.toLowerCase();
+                    const course = intervenant.querySelector('p').textContent.toLowerCase();
+                    
+                    if (name.includes(searchTerm) || course.includes(searchTerm)) {
+                        intervenant.style.display = 'flex';
+                    } else {
+                        intervenant.style.display = 'none';
+                    }
+                });
+            });
+
+            // Gestion des notifications
+            const notificationBtn = document.querySelector('.notification-btn');
+            notificationBtn.addEventListener('click', function() {
+                alert('Affichage des notifications');
+            });
+        });
+
+        // Fonction pour ouvrir le popup d'enregistrement
+        function openEnregistrementPopup(intervenantId, nom, prenom, matiere, salle, heureDebut, heureFin) {
+            // Remplir le popup avec les données
+            document.getElementById('popupIntervenantId').value = intervenantId;
+            document.getElementById('popupNom').textContent = `${nom} ${prenom}`;
+            document.getElementById('popupDetails').textContent = `${matiere} (${salle}) • ${heureDebut} - ${heureFin}`;
+            document.getElementById('popupAvatar').textContent = `${prenom[0]}${nom[0]}`;
+            
+            // Mettre à jour l'action du formulaire avec le bon ID
+            const form = document.getElementById('enregistrementForm');
+            form.action = form.action.replace('/0/', `/${intervenantId}/`);
+            
+            // Remplir les heures par défaut
+            document.getElementById('popupHeureDebut').value = formatTimeForInput(heureDebut);
+            document.getElementById('popupHeureFin').value = formatTimeForInput(heureFin);
+            
+            // Afficher le popup
+            document.getElementById('enregistrementPopup').classList.add('active');
+        }
+
+        // Fonction pour formater l'heure pour l'input time
+        function formatTimeForInput(timeString) {
+            if (!timeString) return '';
+            
+            // Supprimer "h" et formater en HH:MM
+            const cleaned = timeString.replace('h', '').trim();
+            const [hours, minutes = '00'] = cleaned.split(':');
+            
+            return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+        }
+
+        // Fonction pour fermer le popup
+        function closeEnregistrementPopup() {
+            document.getElementById('enregistrementPopup').classList.remove('active');
+        }
+    </script>
+</body>
+</html>

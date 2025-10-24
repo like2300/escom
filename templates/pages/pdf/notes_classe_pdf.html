@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Notes - {{ classe.nom }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #7635dc;
+        }
+        .header h1 {
+            margin: 0;
+            color: #7635dc;
+            font-size: 1.5em;
+        }
+        .class-info {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .date-info {
+            text-align: right;
+            font-size: 0.8em;
+            color: #888;
+            margin-bottom: 15px;
+        }
+        .matiere-section {
+            margin-bottom: 30px;
+        }
+        .matiere-title {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin: 0;
+            color: #333;
+            font-size: 1.1em;
+            border-left: 4px solid #7635dc;
+        }
+        .stats {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 0.8em;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #7635dc;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+        .note-excellent { color: #00a76f; font-weight: bold; }
+        .note-good { color: #ffab00; font-weight: bold; }
+        .note-poor { color: #ff5630; font-weight: bold; }
+        .note-absent { color: #637381; font-style: italic; }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.8em;
+            color: #888;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Relevé de Notes - {{ classe.nom }}</h1>
+    </div>
+    
+    <div class="class-info">
+        <strong>Classe:</strong> {{ classe.nom }} ({{ classe.option }}-{{ classe.niveau }}) |
+        <strong>Étudiants:</strong> {{ total_etudiants }} |
+        <strong>Matieres:</strong> {{ matieres|length }}
+    </div>
+    
+    <div class="date-info">
+        Généré le: {{ date_generation }}
+    </div>
+
+    {% for matiere_id, data in notes_par_matiere.items %}
+    <div class="matiere-section">
+        <h2 class="matiere-title">{{ data.matiere_nom }}</h2>
+        
+        <div class="stats">
+            <strong>Statistiques:</strong> 
+            {{ data.statistiques.total_etudiants }} étudiants | 
+            {{ data.statistiques.admis }} admis | 
+            {{ data.statistiques.echecs }} échecs | 
+            {{ data.statistiques.taux_reussite }}% de réussite
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nom</th>
+                    <th>Matricule</th>
+                    <th>Devoir</th>
+                    <th>Session</th>
+                    <th>Moyenne</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for etudiant in data.etudiants_notes %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ etudiant.nom }} {{ etudiant.prenom }}</td>
+                    <td>{{ etudiant.matricule }}</td>
+                    <td class="
+                        {% if etudiant.note_devoir %}
+                            {% if etudiant.note_devoir >= 16 %}note-excellent
+                            {% elif etudiant.note_devoir >= 12 %}note-good
+                            {% elif etudiant.note_devoir >= 10 %}note-poor
+                            {% else %}note-absent{% endif %}
+                        {% else %}note-absent{% endif %}">
+                        {{ etudiant.note_devoir|default:"-" }}
+                    </td>
+                    <td class="
+                        {% if etudiant.note_session %}
+                            {% if etudiant.note_session >= 16 %}note-excellent
+                            {% elif etudiant.note_session >= 12 %}note-good
+                            {% elif etudiant.note_session >= 10 %}note-poor
+                            {% else %}note-absent{% endif %}
+                        {% else %}note-absent{% endif %}">
+                        {{ etudiant.note_session|default:"-" }}
+                    </td>
+                    <td class="
+                        {% if etudiant.moyenne %}
+                            {% if etudiant.moyenne >= 16 %}note-excellent
+                            {% elif etudiant.moyenne >= 12 %}note-good
+                            {% elif etudiant.moyenne >= 10 %}note-poor
+                            {% else %}note-absent{% endif %}
+                        {% else %}note-absent{% endif %}">
+                        {{ etudiant.moyenne|default:"-" }}
+                    </td>
+                    <td>
+                        {% if etudiant.moyenne and etudiant.moyenne >= 10 %}
+                        <span style="color: #00a76f; font-weight: bold;">Admis</span>
+                        {% else %}
+                        <span style="color: #ff5630; font-weight: bold;">Échec</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+
+    <div class="footer">
+        École Supérieure de Commerce - Système de Gestion des Notes<br>
+        Généré par le système le {{ date_generation }}
+    </div>
+</body>
+</html>

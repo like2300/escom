@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reçu de Contrat de Recrutement - ESCOM</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 2px solid #333;
+            box-sizing: border-box;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #0056b3;
+        }
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .info-item {
+            margin-bottom: 10px;
+        }
+        .label {
+            font-weight: bold;
+            display: inline-block;
+            width: 150px;
+        }
+        .signature-section {
+            margin-top: 50px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        .signature-area {
+            height: 100px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 10px;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+        @media print {
+            body {
+                padding: 0;
+            }
+            .container {
+                border: none;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">ÉCOLE SUPÉRIEURE ESCOM</div>
+            <div>123 Avenue de l'Éducation, Brazzaville</div>
+            <div>Tél: 06 844 92 18| Email: mivdenzel@gmail.com</div>
+        </div>
+
+        <div class="title">REÇU DE CONTRAT DE RECRUTEMENT D'ENSEIGNANT</div>
+
+        <div class="section">
+            <div class="section-title">INFORMATIONS SUR LE CONTRAT</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="label">Numéro de contrat:</span>
+                    <span>{{element.id}}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Date d'émission:</span>
+                    <span> {{element.date|date:"d/m/Y"}}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Type de contrat:</span>
+                    <span>CDD Temps plein</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Salaire mensuel:</span>
+                    <span>1500  FCfa/h</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">INFORMATIONS SUR L'ENSEIGNANT</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="label">Nom:</span>
+                    <span>{{element.enseignant.enseignant_utilisateur.nom}} </span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Prénom:</span>
+                    <span>{{element.enseignant.enseignant_utilisateur.prenom}}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Date de naissance:</span>
+                    <span>{{element.enseignant.enseignant_utilisateur.date_naissance|date:"d/m/Y"}}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Lieu de naissance:</span>
+                    <span>{{element.enseignant.enseignant_utilisateur.lieu_naissance}}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Adresse:</span>
+                    <span>{{element.enseignant.enseignant_utilisateur.adresse}}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Téléphone:</span>
+                    <span>{{element.enseignant.enseignant_utilisateur.numero_telephone}}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Email:</span>
+                    <span>{{element.enseignant.enseignant_utilisateur.email}}</span>
+                </div>
+                <!-- <div class="info-item">
+                    <span class="label">Diplôme:</span>
+                    <span>{{element.niveau}}</span>
+                </div> -->
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">DÉTAILS DE L'EMPLOI</div>
+            <div class="info-item">
+                <span class="label">Specialite:</span>
+                <span>{{element.description}}</span>
+            </div>
+            <!-- <div class="info-item">
+                <span class="label">Matière(s):</span>
+                <span>Pédagogie générale, Méthodologie de recherche</span>
+            </div> -->
+            <!-- <div class="info-item">
+                <span class="label">Volume horaire:</span>
+                <span>192 heures annuelles</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Avantages:</span>
+                <span>Mutuelle santé, Titres restaurant, Prise en charge transport à 50%</span>
+            </div> -->
+        </div>
+
+        <div class="signature-section">
+            <div>
+                <div>Fait à Brazzaville, le  {% now "d/m/Y H:i" %}</div>
+                <div>Pour l'enseignant</div>
+                <div class="signature-area"></div>
+                <div>Signature précédée de la mention "Lu et approuvé"</div>
+            </div>
+            <div>
+                <div>Pour l'École ESCOM</div>
+                <div class="signature-area"></div>
+                <div>Signature du Directeur</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Ce document fait office de reçu officiel pour le contrat de recrutement. Conservez-le précieusement.</p>
+            <p>ESCOM - École Supérieure - CODE :  {{element.id}}</p>
+        </div>
+    </div>
+</body>
+</html>

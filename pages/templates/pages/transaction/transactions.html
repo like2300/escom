@@ -1,0 +1,997 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESCOM - École Supérieure de Commerce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        {% include 'pages/bases/dashboard/css.html' %}
+        :root {
+            --primary: #7635dc;
+            --primary-dark: #5c2bb5;
+            --primary-light: #9364e8;
+            --secondary: #00a76f;
+            --dark: #212b36;
+            --light: #f9fafb;
+            --gray: #637381;
+            --success: #00a76f;
+            --warning: #ffab00;
+            --danger: #ff5630;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --hover-shadow: 0 10px 25px -5px rgba(118, 53, 220, 0.15);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            height: 100vh;
+            position: fixed;
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            margin-bottom: 1rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            background: var(--gradient);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .logo-text {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--dark);
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        .nav-menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 1rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray);
+            padding: 0.5rem 1rem;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.2s;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(118, 53, 220, 0.05);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: rgba(118, 53, 220, 0.08);
+            border-left: 3px solid var(--primary);
+        }
+
+        .nav-icon {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        /* Sous-menu */
+        .submenu {
+            margin-left: 2rem;
+            padding-left: 0.5rem;
+            border-left: 2px solid rgba(118, 53, 220, 0.1);
+            display: none;
+        }
+
+        .submenu.show {
+            display: block;
+        }
+
+        .submenu .nav-link {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .has-submenu .nav-link {
+            position: relative;
+        }
+
+        .has-submenu .nav-link::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 1rem;
+            transition: transform 0.2s;
+            font-size: 0.75rem;
+        }
+
+        .has-submenu.active .nav-link::after {
+            transform: rotate(180deg);
+        }
+
+        .user-profile {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            width: 240px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(118, 53, 220, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .notification-btn {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.25rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Tabs */
+        .tabs-container {
+            margin-bottom: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .tab {
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+            color: var(--gray);
+        }
+
+        .tab:hover {
+            color: var(--primary);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .tab-content {
+            padding: 2rem;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Table Styles */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .table-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            color: var(--dark);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #00925d;
+            box-shadow: 0 10px 25px -5px rgba(0, 167, 111, 0.15);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        th {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        tbody tr:hover {
+            background-color: rgba(118, 53, 220, 0.02);
+        }
+
+        .status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-completed {
+            background: rgba(0, 167, 111, 0.1);
+            color: var(--success);
+        }
+
+        .status-pending {
+            background: rgba(255, 171, 0, 0.1);
+            color: var(--warning);
+        }
+
+        .action-cell {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(118, 53, 220, 0.08);
+            color: var(--primary);
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Summary Cards */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .summary-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-change {
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+            color: var(--success);
+        }
+
+        .summary-change.negative {
+            color: var(--danger);
+        }
+
+        .cash-total {
+            background: var(--gradient);
+            color: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(118, 53, 220, 0.24);
+        }
+
+        .cash-total::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+            opacity: 0.3;
+        }
+
+        .cash-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cash-title {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .cash-amount {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .cash-subtitle {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .summary-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .table-container {
+                overflow-x: auto;
+            }
+            
+            table {
+                min-width: 800px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+                overflow: hidden;
+            }
+            
+            .logo-text, .nav-title, .user-info, .nav-link span {
+                display: none;
+            }
+            
+            .logo {
+                justify-content: center;
+                padding: 0 0 1.5rem;
+            }
+            
+            .nav-icon {
+                margin-right: 0;
+                font-size: 1.25rem;
+            }
+            
+            .nav-link {
+                justify-content: center;
+                padding: 1rem 0;
+            }
+            
+            .user-profile {
+                justify-content: center;
+                padding: 1rem 0;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .search-bar input {
+                width: 180px;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab {
+                border-bottom: none;
+                border-left: 2px solid transparent;
+            }
+
+            .tab.active {
+                border-bottom: none;
+                border-left: 2px solid var(--primary);
+            }
+            
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .table-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .btn {
+                flex: 1;
+                justify-content: center;
+            }
+            
+            .cash-amount {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+     <aside class="sidebar">
+        {% include 'pages/bases/dashboard/logo.html' %}
+
+        {% include 'pages/bases/dashboard/transactions.html' %}
+        
+        {% include 'pages/bases/dashboard/user.html' %}
+
+    </aside>
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <div class="page-title">
+                <h1>Gestion des Transactions</h1>
+            </div>
+            
+            <div class="header-actions">
+                <div class="search-bar">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="Rechercher...">
+                </div>
+                
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card">
+                <div class="summary-title">Total Entrées</div>
+                <div class="cash-amount"><span class="summary-value cash-amount">{{total_entree}}</span>Fcfa </div>
+                <div class="summary-change">
+                    <i class="fas fa-arrow-up"></i> 12% vs mois dernier
+                </div>
+            </div>
+            
+            <div class="summary-card">
+                <div class="summary-title">Total Sorties</div>
+                <div class="cash-amount"><span class="summary-value cash-amount">{{total_sortie}}</span>Fcfa </div>
+                <div class="summary-change negative">
+                    <i class="fas fa-arrow-down"></i> 5% vs mois dernier
+                </div>
+            </div>
+            
+            <div class="summary-card">
+                <div class="summary-title">Solde Net</div>
+                <div class="cash-amount"><span class="summary-value cash-amount">{{total}}</span>Fcfa </div>
+                <div class="summary-change">
+                    <i class="fas fa-arrow-up"></i> 8% vs mois dernier
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cash Total -->
+        <div class="cash-total">
+            <div class="cash-content">
+                <div class="cash-title">Total en Caisse</div>
+                <div class="cash-amount"><span class="summary-value cash-amount">{{total}}</span><span>Fcfa</span></div>
+                <div class="cash-subtitle"></div>
+            </div>
+        </div>
+        
+        <!-- Tabs -->
+        <div class="tabs-container">
+            <div class="tabs">
+                <div class="tab active" data-tab="entries">Entrées</div>
+                <div class="tab" data-tab="expenses">Sorties</div>
+            </div>
+            
+            <!-- Entrées Tab -->
+            <div class="tab-content active" id="entries-tab">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2 class="table-title">Transactions d'Entrée</h2>
+                        <div class="table-actions">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Nouvelle Entrée
+                            </button>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-filter"></i> Filtrer
+                            </button>
+                        </div>
+                    </div>
+                    <p>{{ transaction.annee_academique.annee }}</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Référence</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Étudiant</th>
+                                <th>Montant</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        {% if transaction or paiement or soutenance %}
+                        {% for transaction in transaction %}
+                            <tr>
+                                <td>{{ transaction.id }}</td>
+                                <td>{{ transaction.date|date:"d/m/Y" }}</td>
+                                <td>{{ transaction.nature }}</td>
+                                <td>{{ transaction.etudiant.utilisateur.nom }} {{ transaction.etudiant.utilisateur.prenom }}</td>
+                                <td>{{ transaction.montant}}</td>
+                                <td>
+                                    {% if transaction.nature == "inscription"  %}
+                                        {% if tarif.frais_inscription == transaction.montant %}
+                                        <span class="status status-completed">Complet</span>
+                                        {% else %}
+                                        <span class="status status-pending">incomplet</span>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if transaction.nature == "reinscription"  %}
+                                        {% if tarif.frais_reinscription == transaction.montant %}
+                                        <span class="status status-completed">Complet</span>
+                                        {% else %}
+                                        <span class="status status-pending">incomplet</span>
+                                        {% endif %}
+                                    {% endif %} 
+                                </td>
+                                <td class="action-cell">
+                                    <a class="action-btn pdf-btn" href="{% url 'pdf_trans' transaction.id %}" title="Imprimer reçu">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% for paiement in paiement %}
+                            <tr>
+                                <td>{{ paiement.id }}</td>
+                                <td>{{ paiement.date|date:"d/m/Y" }}</td>
+                                <td> Ecolage du mois de {{ paiement.mois.nom }}</td>
+                                <td>{{ paiement.etudiant.utilisateur.nom }} {{ paiement.etudiant.utilisateur.prenom }}</td>
+                                <td>{{ paiement.montant }} Fcfa</td>
+                                <td>
+                                    {% if tarif.frais_mensuels == paiement.montant %}
+                                        <span class="status status-completed">Complet</span>
+                                        {% else %}
+                                        <span class="status status-pending">incomplet</span>
+                                    {% endif %}
+
+                                </td>
+                                <td class="action-cell">
+                                    <a  style="text-decoration: none;"  href="{% url 'pdf' paiement.id %}" class="action-btn pdf-btn" title="Imprimer reçu">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% for soutenance in soutenance %}
+                            <tr>
+                                <td>{{ soutenance.id }}</td>
+                                <td>{{ soutenance.date|date:"d/m/Y"|default:"None"}}</td>
+                                <td>Soutenace promotion {{ soutenance.annee_academique.annee }}</td>
+                                <td>{{ soutenance.etudiant.utilisateur.nom }} {{ paiement.etudiant.utilisateur.prenom }}</td>
+                                <td>{{ soutenance.montant }} Fcfa</td>
+                                <td>
+                                    {% if tarif.frais_mensuels == soutenance.montant %}
+                                        <span class="status status-completed">Complet</span>
+                                        {% else %}
+                                        <span class="status status-pending">incomplet</span>
+                                    {% endif %}
+
+                                </td>
+                                <td class="action-cell">
+                                    <a  style="text-decoration: none;"  href="#" class="action-btn pdf-btn" title="Imprimer reçu">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                         {% else %}
+                            <tr>
+                                <td colspan="6" style="text-align: center;">Aucun paiement enregistré</td>
+                            </tr>
+                        {% endif %} 
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Sorties Tab -->
+            <div class="tab-content" id="expenses-tab">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2 class="table-title">Transactions de Sortie</h2>
+                        <div class="table-actions">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Nouvelle Sortie
+                            </button>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-filter"></i> Filtrer
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Référence</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Bénéficiaire</th>
+                                <th>Montant</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>HON-2023-021</td>
+                                <td>11/09/2023</td>
+                                <td>Honoraire</td>
+                                <td>Prof. Martin</td>
+                                <td>€850.00</td>
+                                <td><span class="status status-completed">Complété</span></td>
+                                <td class="action-cell">
+                                    <button class="action-btn pdf-btn" title="Imprimer reçu">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </button>
+                                    <button class="action-btn" title="Voir détails">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>HON-2023-022</td>
+                                <td>10/09/2023</td>
+                                <td>Honoraire</td>
+                                <td>Prof. Dubois</td>
+                                <td>€720.00</td>
+                                <td><span class="status status-completed">Complété</span></td>
+                                <td class="action-cell">
+                                    <button class="action-btn pdf-btn" title="Imprimer reçu">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </button>
+                                    <button class="action-btn" title="Voir détails">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>HON-2023-023</td>
+                                <td>09/09/2023</td>
+                                <td>Honoraire</td>
+                                <td>Prof. Leroy</td>
+                                <td>€680.00</td>
+                                <td><span class="status status-pending">En attente</span></td>
+                                <td class="action-cell">
+                                    <button class="action-btn pdf-btn" title="Imprimer reçu">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </button>
+                                    <button class="action-btn" title="Voir détails">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>FOU-2023-015</td>
+                                <td>07/09/2023</td>
+                                <td>Fourniture</td>
+                                <td>Papeterie Centrale</td>
+                                <td>€420.00</td>
+                                <td><span class="status status-completed">Complété</span></td>
+                                <td class="action-cell">
+                                    <button class="action-btn pdf-btn" title="Imprimer reçu">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </button>
+                                    <button class="action-btn" title="Voir détails">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>ENT-2023-009</td>
+                                <td>05/09/2023</td>
+                                <td>Entretien</td>
+                                <td>Services Proprete</td>
+                                <td>€350.00</td>
+                                <td></td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    {% include 'pages/bases/dashboard/script.html' %}
+    <script>
+    function formatNumber(number) {
+        return new Intl.NumberFormat('fr-FR').format(number);
+    }
+
+// Appliquer à tous les éléments avec la classe 'number-format'
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.summary-value').forEach(element => {
+                const number = parseFloat(element.textContent);
+                if (!isNaN(number)) {
+                    element.textContent = formatNumber(number);
+                }
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion des onglets
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const target = this.getAttribute('data-tab');
+                    
+                    // Désactiver tous les onglets
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(tc => tc.classList.remove('active'));
+                    
+                    // Activer l'onglet cliqué
+                    this.classList.add('active');
+                    document.getElementById(`${target}-tab`).classList.add('active');
+                });
+            });
+            
+            // // Gestion des sous-menus
+            // const menuItems = document.querySelectorAll('.has-submenu');
+            
+            // menuItems.forEach(item => {
+            //     const link = item.querySelector('.nav-link');
+            //     link.addEventListener('click', function(e) {
+            //         e.preventDefault();
+            //         item.classList.toggle('active');
+            //         const submenu = item.querySelector('.submenu');
+            //         submenu.classList.toggle('show');
+            //     });
+            // });
+            
+            
+            // Gestion des notifications
+            const notificationBtn = document.querySelector('.notification-btn');
+            notificationBtn.addEventListener('click', function() {
+                alert('Affichage des notifications');
+            });
+        });
+    </script>
+</body>
+</html>

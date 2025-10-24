@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESCOM - École Supérieure de Commerce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Variables CSS pour la cohérence */
+        :root {
+            --primary-color: #1a5f7a;
+            --primary-dark: #0d475a;
+            --secondary-color: #57cc99;
+            --secondary-dark: #38b382;
+            --accent-color: #22577a;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gray-color: #6c757d;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --transition: all 0.3s ease;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 15px 30px rgba(0, 0, 0, 0.15);
+            --border-radius: 8px;
+        }
+        
+        /* Reset et styles de base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-main);
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: var(--light-color);
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Boutons */
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-dark);
+            z-index: -1;
+            transition: var(--transition);
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+        
+        .btn:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: var(--dark-color);
+        }
+        
+        .btn-secondary::before {
+            background: var(--secondary-dark);
+        }
+        
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        .animate-fade-in-left {
+            animation: fadeInLeft 0.6s ease forwards;
+        }
+        
+        .animate-fade-in-right {
+            animation: fadeInRight 0.6s ease forwards;
+        }
+        
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .delay-1 {
+            animation-delay: 0.1s;
+        }
+        
+        .delay-2 {
+            animation-delay: 0.2s;
+        }
+        
+        .delay-3 {
+            animation-delay: 0.3s;
+        }
+        
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            animation: fadeInLeft 0.6s ease;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-right: 10px;
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            animation: fadeInRight 0.6s ease;
+        }
+        
+        .user-actions a {
+            margin-left: 15px;
+            font-weight: 500;
+        }
+        
+        .login-btn {
+            background-color: var(--secondary-color);
+            color: var(--dark-color);
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .login-btn:hover {
+            background-color: var(--secondary-dark);
+            transform: translateY(-2px);
+        }
+        
+        /* Navigation */
+        nav {
+            background-color: var(--primary-color);
+        }
+        
+        .nav-links {
+            display: flex;
+        }
+        
+        .nav-links li {
+            position: relative;
+        }
+        
+        .nav-links a {
+            display: block;
+            padding: 15px 20px;
+            color: white;
+            transition: var(--transition);
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary-color);
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+        
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 70%;
+        }
+        
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-links a.active {
+            background-color: var(--secondary-color);
+            color: var(--dark-color);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(26, 95, 122, 0.85), rgba(34, 87, 122, 0.9)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
+            color: white;
+            padding: 120px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 20%, rgba(26, 95, 122, 0.3) 100%);
+        }
+        
+        .hero h2 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            animation: fadeInUp 0.8s ease;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            animation: fadeInUp 0.8s ease 0.1s both;
+        }
+        
+        .hero-btn {
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+        
+        /* Sections de contenu */
+        .section {
+            padding: 100px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 70px;
+            color: var(--primary-color);
+            position: relative;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+        
+        .section-title p {
+            color: var(--gray-color);
+            max-width: 700px;
+            margin: 20px auto 0;
+            animation: fadeInUp 0.6s ease 0.1s both;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .card-img {
+            height: 200px;
+            background-color: var(--gray-color);
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .card-content {
+            padding: 25px;
+        }
+        
+        .card h3 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            font-size: 1.4rem;
+        }
+        
+        .card p {
+            color: var(--gray-color);
+            margin-bottom: 15px;
+        }
+        
+        /* Section Histoire */
+        .history-timeline {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        .history-timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            margin-bottom: 40px;
+            position: relative;
+            width: 50%;
+            padding-right: 40px;
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: fadeInRight 0.6s ease forwards;
+        }
+        
+        .timeline-item:nth-child(even) {
+            margin-left: 50%;
+            padding-right: 0;
+            padding-left: 40px;
+            transform: translateX(30px);
+            animation: fadeInLeft 0.6s ease forwards;
+        }
+        
+        .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+        .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.3s; }
+        .timeline-item:nth-child(4) { animation-delay: 0.4s; }
+        .timeline-item:nth-child(5) { animation-delay: 0.5s; }
+        
+        .timeline-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+        
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            top: 25px;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content::before {
+            right: -10px;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content::before {
+            left: -10px;
+        }
+        
+        .timeline-year {
+            position: absolute;
+            top: 0;
+            right: -70px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            z-index: 1;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-year {
+            right: auto;
+            left: -70px;
+        }
+        
+        /* Table des tarifs avec scroll */
+        .pricing-section {
+            background-color: var(--light-color);
+        }
+        
+        .pricing-container {
+            position: relative;
+            overflow-x: auto;
+            padding: 20px 0;
+            border-radius: var(--border-radius);
+        }
+        
+        .pricing-table {
+            width: 100%;
+            min-width: 600px; /* Pour forcer le scroll horizontal sur mobile */
+            border-collapse: collapse;
+            margin-top: 30px;
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        .pricing-table th, .pricing-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .pricing-table th {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        
+        .pricing-table tr:nth-child(even) {
+            background-color: rgba(87, 204, 153, 0.05);
+        }
+        
+        .pricing-table tr:hover {
+            background-color: rgba(87, 204, 153, 0.1);
+        }
+        
+        .pricing-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* Section Options */
+        .programs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .program-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .program-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .program-content {
+            padding: 25px;
+        }
+        
+        .program-card h3 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .program-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .detail {
+            text-align: center;
+        }
+        
+        .detail-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .detail-label {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+        }
+        
+        /* Formulaire de contact */
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(87, 204, 153, 0.2);
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        /* Section Bibliothèque */
+        .library-preview {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .library-content {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .library-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: 20px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--dark-color), var(--primary-color));
+            color: white;
+            padding: 80px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-column a:hover {
+            color: var(--secondary-color);
+            padding-left: 5px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        
+        .social-links a:hover {
+            background-color: var(--secondary-color);
+            color: var(--dark-color);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray-color);
+        }
+        
+        /* Bouton de remontée */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 999;
+        }
+        
+        .scroll-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .scroll-top:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1199px) {
+            .hero h2 {
+                font-size: 3rem;
+            }
+        }
+        
+        @media (max-width: 991px) {
+            .nav-links {
+                flex-direction: column;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+            }
+            
+            .nav-links.active {
+                max-height: 1000px;
+            }
+            
+            .nav-toggle {
+                display: block;
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                color: white;
+                cursor: pointer;
+                position: absolute;
+                right: 20px;
+                top: 15px;
+            }
+            
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .section {
+                padding: 80px 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2.2rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .header-top {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .user-actions {
+                margin-top: 15px;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .history-timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-right: 0;
+                padding-left: 70px;
+                margin-left: 0 !important;
+            }
+            
+            .timeline-item:nth-child(even) {
+                margin-left: 0 !important;
+                padding-left: 70px;
+            }
+            
+            .timeline-year {
+                left: 0 !important;
+                right: auto !important;
+            }
+            
+            .timeline-item:nth-child(even) .timeline-year {
+                left: 0 !important;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .section-title h2 {
+                font-size: 1.5rem;
+            }
+            
+            .section {
+                padding: 60px 0;
+            }
+            
+            .content-grid,
+            .programs-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-table th,
+            .pricing-table td {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+            
+            .card-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap logo-icon"></i>
+                    <h1>ESCOM</h1>
+                </div>
+                <div class="user-actions">
+                    <a href="{% url "login" %}" class="login-btn" id="loginBtn"><i class="fas fa-user"></i> Se connecter</a>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <div class="container">
+                <button class="nav-toggle" id="navToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#histoire" class="active">Histoire</a></li>
+                    <li><a href="#tarifs">Tarifs</a></li>
+                    <li><a href="#options">Formations</a></li>
+                    <li><a href="#contact">Contactez-nous</a></li>
+                    <li><a href="#bibliotheque">Bibliothèque</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>École Supérieure de Commerce</h2>
+            <p>Former les leaders de demain grâce à une éducation d'excellence et une approche innovante du monde des affaires.</p>
+            <a href="#options" class="btn btn-secondary hero-btn">Découvrir nos formations</a>
+        </div>
+    </section>
+
+    <!-- Section Histoire -->
+    <section id="histoire" class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Notre Histoire</h2>
+                <p>Découvrez l'héritage et la vision qui ont façonné l'ESCOM depuis sa création.</p>
+            </div>
+            <div class="history-timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">1985</div>
+                    <div class="timeline-content">
+                        <h3>Fondation de l'ESCOM</h3>
+                        <p>L'ESCOM a été fondée avec pour mission de former des professionnels compétents et éthiques dans le domaine du commerce et du management.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1995</div>
+                    <div class="timeline-content">
+                        <h3>Premiers partenariats internationaux</h3>
+                        <p>L'école établit ses premiers partenariats avec des universités européennes, ouvrant la voie à des échanges étudiants internationaux.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2005</div>
+                    <div class="timeline-content">
+                        <h3>Accréditation internationale</h3>
+                        <p>L'ESCOM obtient son accréditation internationale, reconnaissant la qualité de ses formations et de sa pédagogie.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2015</div>
+                    <div class="timeline-content">
+                        <h3>Nouveau campus</h3>
+                        <p>Inauguration du nouveau campus écoconçu, offrant des espaces d'apprentissage modernes et innovants.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2023</div>
+                    <div class="timeline-content">
+                        <h3>Innovation pédagogique</h3>
+                        <p>L'ESCOM lance de nouveaux programmes axés sur la transformation digitale et l'entrepreneuriat.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Tarifs -->
+    <section id="tarifs" class="section pricing-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Nos Tarifs</h2>
+                <p>Des formations d'excellence accessibles grâce à notre politique tarifaire transparente.</p>
+            </div>
+            
+            <div class="pricing-container">
+                <table class="pricing-table">
+                    <thead>
+                        <tr>
+                            <th>Programme</th>
+                            <th>Durée</th>
+                            <th>Frais de scolarité</th>
+                            <th>Frais d'inscription</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Bachelor en Management</td>
+                            <td>3 ans</td>
+                            <td>300 000/an</td>
+                            <td>30 000</td>
+                        </tr>
+                        <tr>
+                            <td>Master en Finance</td>
+                            <td>2 ans</td>
+                            <td>300 000/an</td>
+                            <td>30 000</td>
+                        </tr>
+                        <tr>
+                            <td>Master en Marketing</td>
+                            <td>2 ans</td>
+                            <td>300 000/an</td>
+                            <td>30 000</td>
+                        </tr>
+                        <tr>
+                            <td>MBA Executive</td>
+                            <td>1 an</td>
+                            <td>300 000/an</td>
+                            <td>30 000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <p>Des bourses et aides financières sont disponibles pour les étudiants éligibles.</p>
+                <a href="#contact" class="btn" style="margin-top: 15px;">Demander des informations</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Options -->
+    <section id="options" class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Nos Formations</h2>
+                <p>Découvrez notre large gamme de programmes conçus pour répondre aux besoins du marché.</p>
+            </div>
+            <div class="programs-grid">
+                <div class="program-card">
+                    <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80')"></div>
+                    <div class="program-content">
+                        <h3>Bachelor en Management</h3>
+                        <p>Formation généraliste en management préparant aux fonctions opérationnelles dans tous les secteurs d'activité.</p>
+                        <div class="program-details">
+                            <div class="detail">
+                                <div class="detail-value">3 ans</div>
+                                <div class="detail-label">Durée</div>
+                            </div>
+                            <div class="detail">
+                                <div class="detail-value">180</div>
+                                <div class="detail-label">ECTS</div>
+                            </div>
+                            <div class="detail">
+                                <div class="detail-value">Stage</div>
+                                <div class="detail-label">Inclus</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="program-card">
+                    <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80')"></div>
+                    <div class="program-content">
+                        <h3>Master en Finance</h3>
+                        <p>Spécialisation en finance d'entreprise, marchés financiers et gestion de patrimoine.</p>
+                        <div class="program-details">
+                            <div class="detail">
+                                <div class="detail-value">2 ans</div>
+                                <div class="detail-label">Durée</div>
+                            </div>
+                            <div class="detail">
+                                <div class="detail-value">120</div>
+                                <div class="detail-label">ECTS</div>
+                            </div>
+                            <div class="detail">
+                                <div class="detail-value">Stage</div>
+                                <div class="detail-label">6 mois</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="program-card">
+                    <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80')"></div>
+                    <div class="program-content">
+                        <h3>Master en Marketing</h3>
+                        <p>Approfondissement des techniques marketing digital, études de marché et stratégie de marque.</p>
+                        <div class="program-details">
+                            <div class="detail">
+                                <div class="detail-value">2 ans</div>
+                                <div class="detail-label">Durée</div>
+                            </div>
+                            <div class="detail">
+                                <div class="detail-value">120</div>
+                                <div class="detail-label">ECTS</div>
+                            </div>
+                            <div class="detail">
+                                <div class="detail-value">Stage</div>
+                                <div class="detail-label">6 mois</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="#contact" class="btn">Postuler maintenant</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Contact -->
+    <section id="contact" class="section" style="background-color: #f8f9fa;">
+        <div class="container">
+            <div class="section-title">
+                <h2>Contactez-nous</h2>
+                <p>Notre équipe est à votre disposition pour répondre à toutes vos questions.</p>
+            </div>
+            <div class="contact-form">
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Nom complet</label>
+                        <input type="text" id="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Adresse email</label>
+                        <input type="email" id="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Sujet</label>
+                        <input type="text" id="subject" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" class="form-control" required></textarea>
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%;">Envoyer le message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Bibliothèque -->
+    <section id="bibliotheque" class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Bibliothèque</h2>
+                <p>Un espace de savoir et d'apprentissage au service de votre réussite académique.</p>
+            </div>
+            <div class="content-grid">
+                <div class="library-preview">
+                    <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80')"></div>
+                    <div class="library-content">
+                        <h3>Ressources documentaires</h3>
+                        <p>Accédez à notre collection de plus de 25 000 ouvrages spécialisés, 200 revues académiques </p>
+                        <div class="library-stats">
+                            <div class="stat">
+                                <div class="stat-value">25K+</div>
+                                <div class="stat-label">Ouvrages</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">200+</div>
+                                <div class="stat-label">Revues</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <h3>Services de la bibliothèque</h3>
+                        <p>La bibliothèque ESCOM met à votre disposition une gamme complète de services pour soutenir vos études et recherches :</p>
+                        <ul style="margin-top: 15px; padding-left: 20px;">
+                            <li style="list-style: disc; margin-bottom: 8px;">Prêt de documents (livres, revues, multimédias)</li>
+                            <li style="list-style: disc; margin-bottom: 8px;">Accès aux ressources numériques 24/7</li>
+                            <li style="list-style: disc; margin-bottom: 8px;">Espaces de travail collaboratif</li>
+                            <li style="list-style: disc; margin-bottom: 8px;">Aide à la recherche documentaire</li>
+                            <li style="list-style: disc; margin-bottom: 8px;">Formations aux outils de recherche</li>
+                        </ul>
+                        <a href="#" class="btn" style="margin-top: 20px;">Visiter la bibliothèque</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>ESCOM</h3>
+                    <p>École Supérieure de Commerce</p>
+                    <p>123 Avenue de l'Éducation, Brazzaville</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Liens rapides</h3>
+                    <ul>
+                        <li><a href="#histoire">Histoire</a></li>
+                        <li><a href="#tarifs">Tarifs</a></li>
+                        <li><a href="#options">Formations</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="#bibliotheque">Bibliothèque</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Ressources</h3>
+                    <ul>
+                        <li><a href="#">Portail étudiant</a></li>
+                        <li><a href="#">Espace professeurs</a></li>
+                        <li><a href="#">Carrières</a></li>
+                        <li><a href="#">Mentions légales</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Newsletter</h3>
+                    <p>Inscrivez-vous pour recevoir nos actualités</p>
+                    <form style="margin-top: 15px;">
+                        <input type="email" class="form-control" placeholder="Votre email" style="margin-bottom: 10px;">
+                        <button type="submit" class="btn btn-secondary" style="width: 100%;">S'inscrire</button>
+                    </form>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 ESCOM - École Supérieure de Commerce. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bouton de remontée -->
+    <button class="scroll-top" id="scrollTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Gestion du menu mobile
+        const navToggle = document.getElementById('navToggle');
+        const navLinks = document.getElementById('navLinks');
+        
+        navToggle.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+        });
+        
+        // Animation au défilement
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in-up');
+                }
+            });
+        }, observerOptions);
+        
+        // Observer les éléments à animer
+        document.querySelectorAll('.section-title, .card, .program-card, .library-preview').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Bouton de remontée
+        const scrollTopBtn = document.getElementById('scrollTop');
+        
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                scrollTopBtn.classList.add('show');
+            } else {
+                scrollTopBtn.classList.remove('show');
+            }
+        });
+        
+        scrollTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Gestion du formulaire de contact
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Votre message a été envoyé. Nous vous répondrons dans les plus brefs délais.');
+            this.reset();
+        });
+        
+        // Navigation fluide
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Fermer le menu mobile si ouvert
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+        
+        // Mise en évidence de l'onglet actif
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-links a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

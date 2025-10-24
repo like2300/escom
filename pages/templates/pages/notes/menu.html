@@ -1,0 +1,1205 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESCOM - École Supérieure de Commerce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7635dc;
+            --primary-dark: #5c2bb5;
+            --primary-light: #9364e8;
+            --secondary: #00a76f;
+            --dark: #212b36;
+            --light: #f9fafb;
+            --gray: #637381;
+            --success: #00a76f;
+            --warning: #ffab00;
+            --danger: #ff5630;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --hover-shadow: 0 10px 25px -5px rgba(118, 53, 220, 0.15);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            height: 100vh;
+            position: fixed;
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            margin-bottom: 1rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            background: var(--gradient);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .logo-text {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--dark);
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        .nav-menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 1rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray);
+            padding: 0.5rem 1rem;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.2s;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(118, 53, 220, 0.05);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: rgba(118, 53, 220, 0.08);
+            border-left: 3px solid var(--primary);
+        }
+
+        .nav-icon {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .submenu {
+            margin-left: 2rem;
+            padding-left: 0.5rem;
+            border-left: 2px solid rgba(118, 53, 220, 0.1);
+            display: none;
+        }
+
+        .submenu.show {
+            display: block;
+        }
+
+        .submenu .nav-link {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .has-submenu .nav-link {
+            position: relative;
+        }
+
+        .has-submenu .nav-link::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 1rem;
+            transition: transform 0.2s;
+            font-size: 0.75rem;
+        }
+
+        .has-submenu.active .nav-link::after {
+            transform: rotate(180deg);
+        }
+
+        .user-profile {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .page-title p {
+            color: var(--gray);
+            margin-top: 0.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            width: 240px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(118, 53, 220, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .notification-btn {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.25rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            background: var(--gradient);
+            color: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(118, 53, 220, 0.24);
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+            opacity: 0.3;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-text h2 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .welcome-text p {
+            opacity: 0.9;
+            max-width: 600px;
+        }
+
+        /* Stats Overview */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Selected Class Info */
+        .selected-class-info {
+            background: rgba(0, 167, 111, 0.05);
+            border: 1px solid var(--success);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .selected-class-info.show {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .class-display {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .class-display-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--success);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Classes Grid */
+        .classes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .class-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            transition: all 0.3s;
+            border-left: 4px solid var(--primary);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .class-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .class-card.selected {
+            border-left: 4px solid var(--success);
+            background: rgba(0, 167, 111, 0.02);
+        }
+
+        .class-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .class-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .class-code {
+            font-size: 0.875rem;
+            color: var(--gray);
+            background: rgba(145, 158, 171, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .class-info {
+            margin-bottom: 1.5rem;
+        }
+
+        .class-detail {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        .class-detail i {
+            margin-right: 0.5rem;
+            width: 16px;
+            color: var(--primary);
+        }
+
+        .class-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .student-count {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .student-count i {
+            font-size: 1.2rem;
+        }
+
+        .class-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            color: var(--dark);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #009960;
+            box-shadow: 0 10px 25px -5px rgba(0, 167, 111, 0.15);
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(145, 158, 171, 0.3);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            margin-bottom: 2rem;
+            background: rgba(145, 158, 171, 0.02);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(118, 53, 220, 0.02);
+        }
+
+        .upload-area.active {
+            border-color: var(--success);
+            background: rgba(0, 167, 111, 0.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .upload-text h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .upload-text p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-info {
+            background: rgba(145, 158, 171, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .file-info.show {
+            display: block;
+        }
+
+        .file-details {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .file-icon {
+            color: var(--success);
+            font-size: 1.5rem;
+        }
+
+        .file-name {
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .file-size {
+            color: var(--gray);
+            font-size: 0.875rem;
+        }
+
+        .instructions {
+            background: rgba(118, 53, 220, 0.05);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .instructions h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .instructions-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .naming-convention, .file-structure {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .instructions h5 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .instructions ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .instructions li {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .instructions li i {
+            color: var(--success);
+            margin-top: 0.25rem;
+            flex-shrink: 0;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--danger);
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: auto;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 86, 48, 0.05);
+        }
+
+        .logout-icon {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray);
+            grid-column: 1 / -1;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+                overflow: hidden;
+            }
+            
+            .logo-text, .nav-title, .user-info, .nav-link span {
+                display: none;
+            }
+            
+            .logo {
+                justify-content: center;
+                padding: 0 0 1.5rem;
+            }
+            
+            .nav-icon {
+                margin-right: 0;
+                font-size: 1.25rem;
+            }
+            
+            .nav-link {
+                justify-content: center;
+                padding: 1rem 0;
+            }
+            
+            .user-profile {
+                justify-content: center;
+                padding: 1rem 0;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .search-bar input {
+                width: 180px;
+            }
+
+            .classes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .instructions-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .class-actions {
+                flex-direction: column;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        {% include 'pages/bases/dashboard/logo.html' %}
+
+        {% include 'pages/bases/dashboard/notes_s.html' %}
+        {% include 'pages/bases/dashboard/user.html' %}
+
+
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <div class="page-title">
+                <h1>Gestion des Notes</h1>
+                <p>Sélectionnez une classe et importez les notes depuis Excel</p>
+            </div>
+            
+            <div class="header-actions">
+                <div class="search-bar">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchClasses" placeholder="Rechercher une classe...">
+                </div>
+                
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Welcome Card -->
+        <div class="welcome-card">
+            <div class="welcome-content">
+                <div class="welcome-text">
+                    <h2>Gestion Centralisée des Notes</h2>
+                    <p>Sélectionnez une classe dans la liste ci-dessous, puis importez les notes depuis un fichier Excel. Assurez-vous que le fichier respecte le format demandé.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-number">{{ classes|length }}</div>
+                <div class="stat-label">Classes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ etudiant.count }}</div>
+                <div class="stat-label">Étudiants</div>
+            </div>
+        </div>
+
+        <!-- Selected Class Info -->
+        <div class="selected-class-info" id="selectedClassInfo">
+            <div class="class-display">
+                <div class="class-display-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div>
+                    <div class="class-title" id="selectedClassName">Classe sélectionnée</div>
+                    <div class="class-detail">Prête pour l'importation des notes</div>
+                </div>
+            </div>
+            <button class="btn btn-outline" onclick="deselectClass()">
+                <i class="fas fa-times"></i> Changer
+            </button>
+        </div>
+
+        <!-- Classes Grid -->
+        <div class="classes-grid" id="classesGrid">
+            {% for classe in classes %}
+            <div class="class-card" data-class-id="{{ classe.id }}" data-class-name="{{ classe.nom }}" data-filiere="{{ classe.option }}" data-niveau="{{ classe.niveau }}" data-effectif="{{ classe.nombre_etudiants }}">
+                <div class="class-header">
+                    <div>
+                        <h3 class="class-title">{{ classe.nom }}</h3>
+                        <span class="class-code">{{ classe.code }}</span>
+                    </div>
+                    <div class="class-badge">
+                        <span style="background: var(--primary); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">{{ classe.nombre_etudiants }} étudiant{{ classe.nombre_etudiants|pluralize }}</span>
+                    </div>
+                </div>
+                <div class="class-info">
+                    <div class="class-detail">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Cycle: {{ classe.cycle }}</span>
+                    </div>
+                    <div class="class-detail">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Niveau: {{ classe.niveau }}</span>
+                    </div>
+                    <div class="class-detail">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Option: {{ classe.option }}</span>
+                    </div>
+                    {% if classe.description %}
+                    <div class="class-detail">
+                        <i class="fas fa-info-circle"></i>
+                        <span>{{ classe.description }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="class-stats">
+                    <div class="student-count">
+                        <i class="fas fa-user-graduate"></i>
+                        {{ classe.nombre_etudiants }} étudiant{{ classe.nombre_etudiants|pluralize }}
+                    </div>
+                    
+                    <div class="class-actions">
+                        <a href="{% url 'notes_classe' classe.id %}" class="btn btn-outline">
+                            <i class="fas fa-eye"></i> Voir
+                        </a>
+                        <a  href="{% url 'notes_saisie' classe.id %}" class="btn btn-primary" >
+                            <i class="fas fa-edit"></i> Ajouter
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fas fa-school"></i>
+                <h3>Aucune classe trouvée</h3>
+                <p>Commencez par créer des classes dans l'administration.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <div class="section-header">
+                <h2 class="section-title">Importation des Notes depuis Excel</h2>
+                <button class="btn btn-outline" onclick="downloadTemplate()">
+                    <i class="fas fa-download"></i> Télécharger le Modèle
+                </button>
+            </div>
+
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                    <i class="fas fa-file-excel"></i>
+                </div>
+                <div class="upload-text">
+                    <h3>Glissez-déposez votre fichier Excel ici</h3>
+                    <p>ou cliquez pour parcourir vos fichiers</p>
+                </div>
+                <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls" name="excel_file">
+                <button type="button" class="btn btn-primary" onclick="document.getElementById('fileInput').click()" id="uploadBtn" disabled>
+                    <i class="fas fa-folder-open"></i> Choisir un fichier
+                </button>
+                <div class="file-info" id="fileInfo">
+                    <div class="file-details">
+                        <i class="fas fa-check-circle file-icon"></i>
+                        <div>
+                            <div class="file-name" id="fileName">fichier.xlsx</div>
+                            <div class="file-size" id="fileSize">0 KB</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="instructions">
+                <h4><i class="fas fa-info-circle"></i> Instructions pour l'importation</h4>
+                <div class="instructions-content">
+                    <div class="naming-convention">
+                        <h5><i class="fas fa-tag"></i> Convention de nommage</h5>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Format: <code>Notes_Classe_Semestre_Année.xlsx</code></li>
+                            <li><i class="fas fa-check"></i> Exemple: <code>Notes_L1-INFO_S1_2024.xlsx</code></li>
+                            <li><i class="fas fa-check"></i> Classe: Code de la classe (ex: L1-INFO)</li>
+                            <li><i class="fas fa-check"></i> Semestre: S1 ou S2</li>
+                            <li><i class="fas fa-check"></i> Année: Année académique (ex: 2024)</li>
+                        </ul>
+                    </div>
+                    <div class="file-structure">
+                        <h5><i class="fas fa-table"></i> Structure du fichier Excel</h5>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Colonne A: Matricule (obligatoire)</li>
+                            <li><i class="fas fa-check"></i> Colonne B: Nom (obligatoire)</li>
+                            <li><i class="fas fa-check"></i> Colonne C: Prénom (obligatoire)</li>
+                            <li><i class="fas fa-check"></i> Colonne D: Note (0-20, obligatoire)</li>
+                            <li><i class="fas fa-check"></i> Colonne E: Type d'évaluation (Devoir/Session)</li>
+                            <li><i class="fas fa-check"></i> Pas de ligne d'en-tête supprimée</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" onclick="resetUpload()">
+                    <i class="fas fa-redo"></i> Réinitialiser
+                </button>
+                <button type="button" class="btn btn-success" id="importBtn" disabled onclick="importNotes()">
+                    <i class="fas fa-upload"></i> Importer les Notes
+                </button>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        let selectedClassId = null;
+        let selectedClassName = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion des sous-menus
+            const menuItems = document.querySelectorAll('.has-submenu');
+            
+            menuItems.forEach(item => {
+                const link = item.querySelector('.nav-link');
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    item.classList.toggle('active');
+                    const submenu = item.querySelector('.submenu');
+                    submenu.classList.toggle('show');
+                });
+            });
+
+            // Recherche de classes
+            const searchInput = document.getElementById('searchClasses');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const classCards = document.querySelectorAll('.class-card');
+                
+                classCards.forEach(card => {
+                    const title = card.querySelector('.class-title').textContent.toLowerCase();
+                    const code = card.querySelector('.class-code').textContent.toLowerCase();
+                    const filiere = card.dataset.filiere.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || code.includes(searchTerm) || filiere.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
+            // Gestion du drag and drop pour l'upload
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const fileInfo = document.getElementById('fileInfo');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const importBtn = document.getElementById('importBtn');
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                uploadArea.classList.add('active');
+            }
+
+            function unhighlight() {
+                uploadArea.classList.remove('active');
+            }
+
+            uploadArea.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                fileInput.files = files;
+                handleFiles(files);
+            }
+
+            fileInput.addEventListener('change', function() {
+                handleFiles(this.files);
+            });
+
+            function handleFiles(files) {
+                if (files.length > 0 && selectedClassId) {
+                    const file = files[0];
+                    if (file.type.includes('spreadsheet') || file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+                        document.getElementById('fileName').textContent = file.name;
+                        document.getElementById('fileSize').textContent = formatFileSize(file.size);
+                        fileInfo.classList.add('show');
+                        importBtn.disabled = false;
+                        uploadArea.classList.add('active');
+                    } else {
+                        alert('Veuillez sélectionner un fichier Excel valide (.xlsx ou .xls)');
+                    }
+                } else if (!selectedClassId) {
+                    alert('Veuillez d\'abord sélectionner une classe');
+                    fileInput.value = '';
+                }
+            }
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            // Gestion des notifications
+            const notificationBtn = document.querySelector('.notification-btn');
+            notificationBtn.addEventListener('click', function() {
+                alert('Affichage des notifications');
+            });
+        });
+
+        // Sélection d'une classe
+        function selectClass(button) {
+            const classCard = button.closest('.class-card');
+            const classId = classCard.dataset.classId;
+            const className = classCard.dataset.className;
+            
+            // Désélectionner toutes les classes
+            document.querySelectorAll('.class-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Sélectionner la classe cliquée
+            classCard.classList.add('selected');
+            selectedClassId = classId;
+            selectedClassName = className;
+            
+            // Mettre à jour l'affichage de la classe sélectionnée
+            document.getElementById('selectedClassName').textContent = className;
+            document.getElementById('selectedClassInfo').classList.add('show');
+            
+            // Activer le bouton d'upload
+            document.getElementById('uploadBtn').disabled = false;
+            
+            // Faire défiler jusqu'à la section d'upload
+            document.querySelector('.upload-section').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        // Désélectionner une classe
+        function deselectClass() {
+            selectedClassId = null;
+            selectedClassName = null;
+            document.querySelectorAll('.class-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.getElementById('selectedClassInfo').classList.remove('show');
+            document.getElementById('uploadBtn').disabled = true;
+            document.getElementById('importBtn').disabled = true;
+            resetUpload();
+        }
+
+        // Télécharger le modèle Excel
+        function downloadTemplate() {
+            if (!selectedClassId) {
+                alert('Veuillez d\'abord sélectionner une classe');
+                return;
+            }
+            
+            // Simuler le téléchargement du modèle
+            alert('Téléchargement du modèle Excel pour ' + selectedClassName);
+            // Ici, vous ajouteriez la logique réelle de téléchargement
+        }
+
+        // Importer les notes
+        function importNotes() {
+            if (!selectedClassId || !document.getElementById('fileInput').files.length) {
+                alert('Veuillez sélectionner une classe et un fichier Excel');
+                return;
+            }
+
+            const file = document.getElementById('fileInput').files[0];
+            const fileName = file.name;
+            
+            // Validation du nom de fichier
+            if (!validateFileName(fileName)) {
+                alert('Le nom du fichier ne respecte pas la convention de nommage. Veuillez utiliser le format: Notes_Classe_Semestre_Année.xlsx');
+                return;
+            }
+
+            // Simulation de l'importation
+            importBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Importation...';
+            importBtn.disabled = true;
+
+            setTimeout(() => {
+                alert('Notes importées avec succès pour ' + selectedClassName + '!\nFichier: ' + fileName);
+                importBtn.innerHTML = '<i class="fas fa-upload"></i> Importer les Notes';
+                importBtn.disabled = false;
+                resetUpload();
+            }, 2000);
+        }
+
+        // Valider le nom du fichier
+        function validateFileName(fileName) {
+            // Pattern: Notes_Classe_Semestre_Année.xlsx
+            const pattern = /^Notes_[A-Z0-9-]+_S[12]_\d{4}\.xlsx?$/i;
+            return pattern.test(fileName);
+        }
+
+        // Réinitialiser l'upload
+        function resetUpload() {
+            document.getElementById('fileInput').value = '';
+            document.getElementById('fileInfo').classList.remove('show');
+            document.getElementById('uploadArea').classList.remove('active');
+            document.getElementById('importBtn').disabled = true;
+        }
+    </script>
+</body>
+</html>

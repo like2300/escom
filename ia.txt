@@ -1,0 +1,110 @@
+ <a
+                            href="{% url 'telecharger_notes_matiere_excel' classe.id matiere_id %}"
+                            class="btn btn-success"
+                        >
+                            <i class="fas fa-file-excel"></i> Excel Matière
+                        </a>
+
+
+
+python
+# settings.py
+OPENAI_API_KEY = "votre-clé-api-openai"
+OPENAI_MODEL = "gpt-4"  # ou "gpt-3.5-turbo"
+
+# services/ai_service.py
+import openai
+import os
+from django.conf import settings
+import json
+
+class AITutorService:
+    def __init__(self):
+        self.api_key = settings.OPENAI_API_KEY
+        self.model = settings.OPENAI_MODEL
+        openai.api_key = self.api_key
+
+    def get_course_context_prompt(self, course_name, course_content=None):
+        """Crée le prompt contextuel pour le cours"""
+        base_prompt = f"""
+        Tu es un tuteur IA spécialisé dans l'enseignement supérieur.
+        L'étudiant suit le cours : {course_name}
+
+        Ton rôle :
+        - Expliquer les concepts complexes de manière simple
+        - Donner des exemples concrets
+        - Proposer des exercices pratiques
+        - Répondre aux questions spécifiques du cours
+        - Aider à la compréhension et à la mémorisation
+
+        Réponds de manière pédagogique et encourageante.
+        """
+
+        return base_prompt
+
+    def ask_question(self, course_name, user_question, conversation_history=None):
+        """Envoie une question à l'API OpenAI"""
+        try:
+            messages = [
+                {
+                    "role": "system",
+                    "content": self.get_course_context_prompt(course_name)
+                }
+            ]
+
+            # Ajouter l'historique de conversation
+            if conversation_history:
+                for msg in conversation_history[-6:]:  # Garder les 6 derniers messages
+                    messages.append(msg)
+
+            # Ajouter la nouvelle question
+            messages.append({
+                "role": "user",
+                "content": user_question
+            })
+
+            response = openai.ChatCompletion.create(
+                model=self.model,
+                messages=messages,
+                temperature=0.7,
+                max_tokens=1000
+            )
+
+            return {
+                "success": True,
+                "answer": response.choices[0].message.content,
+                "usage": response.usage
+            }
+
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e)
+            }
+
+    def generate_study_plan(self, course_name, topics):
+        """Génère un plan d'étude personnalisé"""
+        prompt = f"""
+        Crée un plan d'étude détaillé pour le cours "{course_name}"
+        couvrant les thèmes suivants : {', '.join(topics)}
+
+        Structure le plan en :
+        1. Objectifs d'apprentissage
+        2. Programme hebdomadaire
+        3. Points clés à maîtriser
+        4. Exercices recommandés
+        5. Ressources supplémentaires
+        """
+
+        try:
+            response = openai.ChatCompletion.create(
+                model=self.model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.7,
+                max_tokens=1500
+            )
+
+            return response.choices[0].message.content
+
+        except Exception as e:
+            return f"Erreur lors de la génération du plan d'étude : {str(e)}"

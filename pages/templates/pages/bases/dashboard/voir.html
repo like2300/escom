@@ -1,0 +1,159 @@
+        <nav class="nav-menu">
+            <div class="nav-title">Menu Principal</div>
+            
+            <div class="nav-item">
+                <a href="{% url "admin_dashboard" %}" class="nav-link ">
+                    <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+                    <span>Tableau de Bord</span>
+                </a>
+            </div>
+            
+            <div class="nav-item has-submenu  ">
+                <a href="#" class="nav-link " id="financial-transactions">
+                    <span class="nav-icon"><i class="fas fa-file-invoice-dollar"></i></span>
+                    <span>Transactions</span>
+                </a>
+                <div class="submenu  ">
+                    <div class="nav-item">
+                        <a href="{% url "reinscription" %}" class="nav-link ">
+                            <span class="nav-icon"><i class="fas fa-graduation-cap"></i></span>
+                            <span>Écolage</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{% url "reinscription" %}" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-book"></i></span>
+                            <span>Soutenance</span>
+                        </a>
+                    </div>
+
+                    <div class="nav-item">
+                        <a href="{% url "inscription" %}" class="nav-link ">
+                            <span class="nav-icon"><i class="fas fa-user-plus"></i></span>
+                            <span>Inscriptions</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{% url "reinscription" %}"  class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-redo"></i></span>
+                            <span>Réinscriptions</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{% url 'honoraire' %}" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-money-bill"></i></span>
+                            <span>Honoraire</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{% url "transactions" %}" class="nav-link ">
+                            <span class="nav-icon"><i class="fas fa-list"></i></span>
+                            <span>Voir les transactions</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div   class="nav-item has-submenu">
+                <a href="#" class="nav-link active ">
+                    <span class="nav-icon"><i class="fas fa-chalkboard-teacher"></i></span>
+                    <span>Enseignants</span>
+                </a>
+                <div class="submenu show">
+                    <div class="nav-item">
+                        <a href="{% url "recrutement" %}" class="nav-link ">
+                            <span class="nav-icon"><i class="fas fa-user-plus"></i></span>
+                            <span>Recrutement</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{% url "menu_prof" %}" class="nav-link active">
+                            <span class="nav-icon"><i class="fas fa-users"></i></span>
+                            <span>Voir enseignants cette année</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-user"></i></span>
+                            <span>details</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-item has-submenu">
+                <a href="#" class="nav-link">
+                    <span class="nav-icon"><i class="fas fa-user-graduate"></i></span>
+                    <span>Étudiants</span>
+                </a>
+                <div class="submenu">
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-users"></i></span>
+                            <span>Voir étudiants</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-user-plus"></i></span>
+                            <span>Enregistrement nouvel élève</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-user"></i></span>
+                            <span>details</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item has-submenu ">
+                <a href="#" class="nav-link" id="notes-menu">
+                    <span class="nav-icon"><i class="fas fa-file-alt"></i></span>
+                    <span>Gestion des Notes</span>
+                </a>
+                <div class="submenu ">
+                    <div class="nav-item">
+                        <a href="{% url 'menu_notes' %}" class="nav-link ">
+                            <span class="nav-icon"><i class="fas fa-list"></i></span>
+                            <span>Menu des Notes</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon"><i class="fas fa-edit"></i></span>
+                            <span>Saisie Manuelle</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-item">
+                <a href="{% url 'presence' %}" class="nav-link">
+                    <span class="nav-icon"><i class="fas fa-clipboard-check"></i></span>
+                    <span>Présences aux Cours</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="{% url 'stats' %}"  class="nav-link">
+                    <span class="nav-icon"><i class="fas fa-money-bill-trend-up"></i></span>
+                    <span>Informations sur les paiement</span>
+                </a>
+            </div>
+            
+            <div class="nav-title">Administration</div>
+            
+            <div class="nav-item">
+                <a href="/admin/" class="nav-link">
+                    <span class="nav-icon"><i class="fas fa-database"></i> </span>
+                    <span>base de donnees</span>
+                </a>
+            </div>
+
+            <!-- Logout Button -->
+            <a href="{% url "out" %}" class="logout-btn" id="logout-btn">
+                <span class="logout-icon"><i class="fas fa-sign-out-alt"></i></span>
+                <span>Déconnexion</span>
+            </a>
+        </nav>
+        <!-- faire des includes par rapport a toute mes pages pour adapter les actifs sans difficulte -->

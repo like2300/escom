@@ -1,0 +1,976 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESCOM - École Supérieure de Commerce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        {% include 'pages/bases/dashboard/css.html' %}
+        :root {
+            --primary: #7635dc;
+            --primary-dark: #5c2bb5;
+            --primary-light: #9364e8;
+            --secondary: #00a76f;
+            --dark: #212b36;
+            --light: #f9fafb;
+            --gray: #637381;
+            --success: #00a76f;
+            --warning: #ffab00;
+            --danger: #ff5630;
+            --info: #00b8d9;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --hover-shadow: 0 10px 25px -5px rgba(118, 53, 220, 0.15);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            height: 100vh;
+            position: fixed;
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            margin-bottom: 1rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            background: var(--gradient);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .logo-text {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--dark);
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        .nav-menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 1rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray);
+            padding: 0.5rem 1rem;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.2s;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(118, 53, 220, 0.05);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: rgba(118, 53, 220, 0.08);
+            border-left: 3px solid var(--primary);
+        }
+
+        .nav-icon {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        /* Sous-menu */
+        .submenu {
+            margin-left: 2rem;
+            padding-left: 0.5rem;
+            border-left: 2px solid rgba(118, 53, 220, 0.1);
+            display: none;
+        }
+
+        .submenu.show {
+            display: block;
+        }
+
+        .submenu .nav-link {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .has-submenu .nav-link {
+            position: relative;
+        }
+
+        .has-submenu .nav-link::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 1rem;
+            transition: transform 0.2s;
+            font-size: 0.75rem;
+        }
+
+        .has-submenu.active .nav-link::after {
+            transform: rotate(180deg);
+        }
+
+        .user-profile {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            width: 240px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(118, 53, 220, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .notification-btn {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.25rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            background: var(--gradient);
+            color: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(118, 53, 220, 0.24);
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+            opacity: 0.3;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-text h2 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .welcome-text p {
+            opacity: 0.9;
+            max-width: 600px;
+        }
+
+        /* Dashboard Stats */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-change {
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+
+        .card-change.positive {
+            color: var(--success);
+        }
+
+        .card-change.negative {
+            color: var(--danger);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .card-icon.students {
+            background: rgba(0, 167, 111, 0.08);
+            color: var(--success);
+        }
+
+        .card-icon.classes {
+            background: rgba(118, 53, 220, 0.08);
+            color: var(--primary);
+        }
+
+        .card-icon.rooms {
+            background: rgba(0, 184, 217, 0.08);
+            color: var(--info);
+        }
+
+        .card-icon.subjects {
+            background: rgba(255, 171, 0, 0.08);
+            color: var(--warning);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-btn {
+            background: white;
+            border: none;
+            border-radius: 8px;
+            padding: 1.25rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--card-shadow);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .action-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+            font-size: 1.25rem;
+            background: rgba(118, 53, 220, 0.08);
+            color: var(--primary);
+        }
+
+        .action-text {
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* Recent Activity */
+        .recent-activity {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .view-all {
+            color: var(--primary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1rem;
+            background: rgba(118, 53, 220, 0.08);
+            color: var(--primary);
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        /* Rooms and Subjects Section */
+        .resources-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .resources-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+
+        .resources-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .resources-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .resources-count {
+            color: var(--gray);
+            font-size: 0.875rem;
+        }
+
+        .resources-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .resource-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.1);
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+
+        .resource-item:hover {
+            background-color: rgba(118, 53, 220, 0.03);
+        }
+
+        .resource-item:last-child {
+            border-bottom: none;
+        }
+
+        .resource-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 0.875rem;
+        }
+
+        .resource-icon.room {
+            background: rgba(0, 184, 217, 0.1);
+            color: var(--info);
+        }
+
+        .resource-icon.subject {
+            background: rgba(255, 171, 0, 0.1);
+            color: var(--warning);
+        }
+
+        .resource-info {
+            flex: 1;
+        }
+
+        .resource-name {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .resource-details {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        .resource-status {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .status-available {
+            background: rgba(0, 167, 111, 0.1);
+            color: var(--success);
+        }
+
+        .status-occupied {
+            background: rgba(255, 86, 48, 0.1);
+            color: var(--danger);
+        }
+
+        .status-maintenance {
+            background: rgba(255, 171, 0, 0.1);
+            color: var(--warning);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+                overflow: hidden;
+            }
+            
+            .logo-text, .nav-title, .user-info, .nav-link span {
+                display: none;
+            }
+            
+            .logo {
+                justify-content: center;
+                padding: 0 0 1.5rem;
+            }
+            
+            .nav-icon {
+                margin-right: 0;
+                font-size: 1.25rem;
+            }
+            
+            .nav-link {
+                justify-content: center;
+                padding: 1rem 0;
+            }
+            
+            .user-profile {
+                justify-content: center;
+                padding: 1rem 0;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .search-bar input {
+                width: 180px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .resources-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+
+        {% include 'pages/bases/dashboard/logo.html' %}
+        {% include 'pages/bases/dashboard/dashbord.html' %}
+        {% include 'pages/bases/dashboard/user.html' %}
+
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <div class="page-title">
+                <h1>Tableau de Bord</h1>
+            </div>
+            
+            <div class="header-actions">
+                <div class="search-bar">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="Rechercher...">
+                </div>
+                
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Welcome Card -->
+        <div class="welcome-card">
+            <div class="welcome-content">
+                <div class="welcome-text">
+                    <h2>Bienvenue My ESCOM </h2>
+                    <p>Votre système de gestion adapté et optimisable pour gérer au mieux votre structure scolaire.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dashboard Stats -->
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Étudiants Actifs</div>
+                        <div class="card-value">{{inscriptions.count|default:"0"}}</div>
+                        <div class="card-change positive">
+                            au cours de cette année académique
+                        </div>
+                    </div>
+                    <div class="card-icon students">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                </div>
+            </div>            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Classes prises en compte</div>
+                        <div class="card-value">{{classe.count}}</div>
+                        <div class="card-change positive">
+                            +2 depuis le mois dernier
+                        </div>
+                    </div>
+                    <div class="card-icon rooms">
+                        <i class="fas fa-door-open"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Matières enseignées</div>
+                        <div class="card-value">{{matiere.count}}</div>
+                        <div class="card-change positive">
+                            +3 cette année
+                        </div>
+                    </div>
+                    <div class="card-icon subjects">
+                        <i class="fas fa-book"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="{% url "reinscription" %}"  style="text-decoration: none;" class="action-btn">
+                <div class="action-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <span class="action-text">Nouvelle Transaction</span>
+            </a>
+            
+            <a  href="{% url "inscription" %}" style="text-decoration: none;" class="action-btn">
+                <div class="action-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <span class="action-text">Ajouter Étudiant</span>
+            </a>
+                    
+            <a href="#" style="text-decoration: none;" class="action-btn">
+                <div class="action-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <span class="action-text">Accéder à la base de données</span>
+            </a>
+            
+
+        </div>
+        
+        <!-- Rooms and Subjects Section -->
+        <div class="resources-section">
+            <!-- Rooms Card -->
+            <div class="resources-card">
+                <div class="resources-header">
+                    <h3 class="resources-title">Salles de Classe</h3>
+                    <span class="resources-count">{{salle.count}} salles</span>
+                </div>
+                <div class="resources-list">
+                    {% for salle  in salle %}
+                    <div class="resource-item">
+                        <div class="resource-icon room">
+                            <i class="fas fa-door-open"></i>
+                        </div>
+                        <div class="resource-info">
+                            <div class="resource-name">Salle:{{salle.nom}}</div>
+                            <div class="resource-details">Capacité: {{salle.capacite}} étudiants</div>
+                        </div>
+                        <div class="resource-status status-available">Disponible</div>
+                    </div>
+                    {% empty %}
+                    <p>Aucun </p>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Subjects Card -->
+            <div class="resources-card">
+                <div class="resources-header">
+                    <h3 class="resources-title">Matières</h3>
+                    <span class="resources-count">{{matiere.count}}matières</span>
+                </div>
+                <div class="resources-list">
+                    {% for matiere in matiere  %}
+
+                    <div class="resource-item">
+                        <div class="resource-icon subject">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="resource-info">
+                            <div class="resource-name">{{matiere.nom}}</div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p>Aucun </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Activity -->
+        <div class="recent-activity">
+            <div class="section-header">
+                <h2 class="section-title">Activité Récente</h2>
+                <a href="{% url "transactions" %}" class="view-all">Voir toutes les transactions</a>
+            </div>
+            
+            <ul class="activity-list">
+                {% if transaction or inscription or emploie or matiere %}
+                {% if transaction %}
+                <li class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Nouveau paiement reçu -ecolage de l'etudiant {{transaction.etudiant.utilisateur.nom}} {{transaction.etudiant.utilisateur.prenom}} </div>
+                        <div class="activity-time">mois • {{transaction.mois.nom}}</div>
+                        <div class="activity-time">montant • {{transaction.montant}} franc CFA</div>
+
+                    </div>
+                </li>
+                {% else %}
+                <p><p>
+                {% endif %}
+                {% if inscription %}
+                <li class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Nouvel étudiant inscrit - {{inscription.etudiant.utilisateur.nom}} {{inscription.etudiant.utilisateur.prenom}}</div>
+                        <div class="activity-time">classe • {{inscription.classe.nom}}</div>
+                    </div>
+                </li>
+                {% else %}
+                <p></p>
+                {% endif %}
+                {% if emploie %}
+                <li class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Emploi du temps modifié - {{emploie.classe.nom}}</div>
+                        <div class="activity-time">detaits:  {{emploie}}</div>
+                    </div>
+                </li>
+                {% else %}
+                <p></p>
+                {% endif %}
+                {% if matiere %}               
+                <li class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Nouveau programme ajouté - {{matieres.nom}}</div>
+                        <div class="activity-time">details: {{matieres.classe.nom}} semestre({{matieres.semestre.nom_semestre}}) </div>
+                    </div>
+                </li>
+                {% else %}
+                <p></p>
+                {% endif %}
+                {% else %}
+                Aucune information enregistre depuis lors
+                
+                {% endif %}
+                
+
+                
+
+
+            </ul>
+        </div>
+    </main>
+    {% include 'pages/bases/dashboard/script.html' %}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+
+            // Gestion des notifications
+            const notificationBtn = document.querySelector('.notification-btn');
+            notificationBtn.addEventListener('click', function() {
+                alert('Affichage des notifications');
+                // Ici vous pourriez ouvrir un dropdown avec les notifications
+            });
+            
+            // Gestion des actions rapides
+            const actionButtons = document.querySelectorAll('.action-btn');
+            actionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const actionText = this.querySelector('.action-text').textContent;
+                    alert(`Action: ${actionText}`);
+                    // Ici vous pourriez rediriger vers le formulaire approprié
+                });
+            });
+            
+            // Gestion des liens de navigation
+
+        });
+    </script>
+</body>
+</html>

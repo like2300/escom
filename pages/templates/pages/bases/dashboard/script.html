@@ -1,0 +1,17 @@
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion des sous-menus
+            const menuItems = document.querySelectorAll('.has-submenu');
+            
+            menuItems.forEach(item => {
+                const link = item.querySelector('.nav-link');
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    item.classList.toggle('active');
+                    const submenu = item.querySelector('.submenu');
+                    submenu.classList.toggle('show');
+                });
+            });
+        });
+    </script>

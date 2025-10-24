@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Emploi du Temps - {{ classe.nom }}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #4a5568; /* Gris foncé */
+            color: #ffffff;
+            padding: 25px 30px;
+            text-align: center;
+            border-bottom: 5px solid #2d3748; /* Gris plus foncé */
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .header p {
+            margin: 8px 0 0;
+            font-size: 18px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .schedule-table th,
+        .schedule-table td {
+            border: 1px solid #e2e8f0; /* Gris clair */
+            padding: 15px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 14px;
+        }
+
+        .schedule-table thead {
+            background-color: #edf2f7; /* Gris très clair */
+        }
+
+        .schedule-table th {
+            font-weight: 500;
+            color: #2d3748; /* Gris foncé */
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+
+        .time-cell {
+            font-weight: 500;
+            color: #4a5568; /* Gris moyen */
+            background-color: #f7fafc; /* Blanc cassé */
+            width: 120px;
+        }
+
+        .course-cell {
+            padding: 12px;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .course-name {
+            font-weight: 700;
+            font-size: 15px;
+            color: #2c5282; /* Bleu foncé */
+            margin-bottom: 6px;
+        }
+
+        .course-teacher,
+        .course-salle {
+            font-size: 13px;
+            color: #4a5568; /* Gris moyen */
+            line-height: 1.4;
+        }
+        
+        .course-teacher::before,
+        .course-salle::before {
+            font-family: "Font Awesome 5 Free";
+            margin-right: 6px;
+            opacity: 0.7;
+        }
+
+        .course-teacher::before {
+            content: "👤"; /* Icône utilisateur */
+        }
+
+        .course-salle::before {
+            content: "📍"; /* Icône lieu */
+        }
+
+        .empty-cell {
+            color: #a0aec0; /* Gris léger */
+            font-style: italic;
+        }
+
+        /* Alternating row colors for better readability */
+        .schedule-table tbody tr:nth-child(even) {
+            background-color: #f7fafc; /* Blanc cassé */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Emploi du Temps</h1>
+            <p>{{ classe.nom }} | Semestre: {{ semestre.nom_semestre }}</p>
+        </div>
+
+        <table class="schedule-table">
+            <thead>
+                <tr>
+                    <th>Heure / Jour</th>
+                    <th>Lundi</th>
+                    <th>Mardi</th>
+                    <th>Mercredi</th>
+                    <th>Jeudi</th>
+                    <th>Vendredi</th>
+                    <th>Samedi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="time-cell">
+                        {% if classe.niveau.libelle == "L1" %}08h00 - 10h00
+                        {% elif classe.niveau.libelle == "L2" %}12h25 - 14h25
+                        {% elif classe.niveau.libelle == "L3" %}16h45 - 18h30
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if E1.lundi.premier.existe %}
+                            <div class="course-cell">
+                                <div class="course-name">{{ E1.lundi.premier.details.0 }}</div>
+                                <div class="course-teacher">{{ E1.lundi.premier.details.1 }}</div>
+                                <div class="course-salle">{{ E1.lundi.premier.details.2 }}</div>
+                            </div>
+                        {% else %}<div class="empty-cell">-</div>{% endif %}
+                    </td>
+                    <td>
+                        {% if E1.mardi.premier.existe %}
+                            <div class="course-cell">
+                                <div class="course-name">{{ E1.mardi.premier.details.0 }}</div>
+                                <div class="course-teacher">{{ E1.mardi.premier.details.1 }}</div>
+                                <div class="course-salle">{{ E1.mardi.premier.details.2 }}</div>
+                            </div>
+                        {% else %}<div class="empty-cell">-</div>{% endif %}
+                    </td>
+                    <td>
+                        {% if E1.mercredi.premier.existe %}
+                            <div class="course-cell">
+                                <div class="course-name">{{ E1.mercredi.premier.details.0 }}</div>
+                                <div class="course-teacher">{{ E1.mercredi.premier.details.1 }}</div>
+                                <div class="course-salle">{{ E1.mercredi.premier.details.2 }}</div>
+                            </div>
+                        {% else %}<div class="empty-cell">-</div>{% endif %}
+                    </td>
+                    <td>
+                        {% if E1.jeudi.premier.existe %}
+                            <div class="course-cell">
+                                <div class="course-name">{{ E1.jeudi.premier.details.0 }}</div>
+                                <div class="course-teacher">{{ E1.jeudi.premier.details.1 }}</div>
+                                <div class="course-salle">{{ E1.jeudi.premier.details.2 }}</div>
+                            </div>
+                        {% else %}<div class="empty-cell">-</div>{% endif %}
+                    </td>
+                    <td>
+                        {% if E1.vendredi.premier.existe %}
+                            <div class="course-cell">
+                                <div class="course-name">{{ E1.vendredi.premier.details.0 }}</div>
+                                <div class="course-teacher">{{ E1.vendredi.premier.details.1 }}</div>
+                                <div class="course-salle">{{ E1.vendredi.premier.details.2 }}</div>
+                            </div>
+                        {% else %}<div class="empty-cell">-</div>{% endif %}
+                    </td>
+                    <td>
+                        {% if E1.samedi.premier.existe %}
+                            <div class="course-cell">
+                                <div class="course-name">{{ E1.samedi.premier.details.0 }}</div>
+                                <div class="course-teacher">{{ E1.samedi.premier.details.1 }}</div>
+                                <div class="course-salle">{{ E1.samedi.premier.details.2 }}</div>
+                            </div>
+                        {% else %}<div class="empty-cell">-</div>{% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="time-cell">
+                        {% if classe.niveau.libelle == "L1" %}10h15 - 12h15
+                        {% elif classe.niveau.libelle == "L2" %}14h35 - 16h35
+                        {% elif classe.niveau.libelle == "L3" %}18h45 - 19h45
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if E1.lundi.deuxieme.existe %}
+                            <div class="course-cell">
+                                <div class="course-name">{{ E1.lundi.deuxieme.details.0 }}</div>
+                                <div class="course-teacher">{{ E1.lundi.deuxieme.details.1 }}</div>
+                                <div class="course-salle">{{ E1.lundi.deuxieme.details.2 }}</div>
+                            </div>
+                        {% else %}<div class="empty-cell">-</div>{% endif %}
+                    </td>
+                    <td>
+                        {% if E1.mardi.deuxieme.existe %}
+                            <div class="course-cell">
+                                <div class="course-name">{{ E1.mardi.deuxieme.details.0 }}</div>
+                                <div class="course-teacher">{{ E1.mardi.deuxieme.details.1 }}</div>
+                                <div class="course-salle">{{ E1.mardi.deuxieme.details.2 }}</div>
+                            </div>
+                        {% else %}<div class="empty-cell">-</div>{% endif %}
+                    </td>
+                    <td>
+                        {% if E1.mercredi.deuxieme.existe %}
+                            <div class="course-cell">
+                                <div class="course-name">{{ E1.mercredi.deuxieme.details.0 }}</div>
+                                <div class="course-teacher">{{ E1.mercredi.deuxieme.details.1 }}</div>
+                                <div class="course-salle">{{ E1.mercredi.deuxieme.details.2 }}</div>
+                            </div>
+                        {% else %}<div class="empty-cell">-</div>{% endif %}
+                    </td>
+                    <td>
+                        {% if E1.jeudi.deuxieme.existe %}
+                            <div class="course-cell">
+                                <div class="course-name">{{ E1.jeudi.deuxieme.details.0 }}</div>
+                                <div class="course-teacher">{{ E1.jeudi.deuxieme.details.1 }}</div>
+                                <div class="course-salle">{{ E1.jeudi.deuxieme.details.2 }}</div>
+                            </div>
+                        {% else %}<div class="empty-cell">-</div>{% endif %}
+                    </td>
+                    <td>
+                        {% if E1.vendredi.deuxieme.existe %}
+                            <div class="course-cell">
+                                <div class="course-name">{{ E1.vendredi.deuxieme.details.0 }}</div>
+                                <div class="course-teacher">{{ E1.vendredi.deuxieme.details.1 }}</div>
+                                <div class="course-salle">{{ E1.vendredi.deuxieme.details.2 }}</div>
+                            </div>
+                        {% else %}<div class="empty-cell">-</div>{% endif %}
+                    </td>
+                    <td>
+                        {% if E1.samedi.deuxieme.existe %}
+                            <div class="course-cell">
+                                <div class="course-name">{{ E1.samedi.deuxieme.details.0 }}</div>
+                                <div class="course-teacher">{{ E1.samedi.deuxieme.details.1 }}</div>
+                                <div class="course-salle">{{ E1.samedi.deuxieme.details.2 }}</div>
+                            </div>
+                        {% else %}<div class="empty-cell">-</div>{% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

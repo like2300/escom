@@ -1,0 +1,2590 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESCOM - École Supérieure de Commerce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        {% include 'pages/bases/dashboard/css.html' %}
+
+        :root {
+            --primary: #7635dc;
+            --primary-dark: #5c2bb5;
+            --primary-light: #9364e8;
+            --secondary: #00a76f;
+            --dark: #212b36;
+            --light: #f9fafb;
+            --gray: #637381;
+            --success: #00a76f;
+            --warning: #ffab00;
+            --danger: #ff5630;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --hover-shadow: 0 10px 25px -5px rgba(118, 53, 220, 0.15);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            --sidebar-width: 280px;
+        }
+        /* Styles pour les messages d'alerte */
+        .alert {
+            position: relative;
+            padding: 12px 20px;
+            margin: 10px 0;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        /* Animation d'apparition */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Style pour les messages de succès */
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        /* Style pour les messages d'erreur */
+        .alert-error,
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        /* Style pour les messages d'avertissement */
+        .alert-warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+
+        /* Style pour les messages d'information */
+        .alert-info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+
+        /* Bouton de fermeture */
+        .alert .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            color: inherit;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            line-height: 1;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .alert .close-btn:hover {
+            opacity: 1;
+        }
+
+        /* Conteneur pour les messages */
+        .messages-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        /* Style pour les messages dans le conteneur fixe */
+        .messages-container .alert {
+            margin-bottom: 10px;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Disposition automatique disparition */
+        .alert.auto-dismiss {
+            animation: slideInRight 0.3s ease-out, slideOutRight 0.3s ease-in 4.7s forwards;
+        }
+
+        @keyframes slideOutRight {
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        /* Version responsive */
+        @media (max-width: 768px) {
+            .messages-container {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+            
+            .alert {
+                padding: 10px 15px;
+                font-size: 13px;
+            }
+            
+            .alert .close-btn {
+                top: 10px;
+                right: 10px;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 1.5rem 1rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .modal-close {
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            transition: color 0.2s;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .modal-close:hover {
+            color: var(--dark);
+            background: rgba(145, 158, 171, 0.1);
+        }
+
+        .modal-form {
+            padding: 1rem 1.5rem 1.5rem;
+        }
+
+        /* Form Styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input, .form-select {
+            padding: 0.75rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(118, 53, 220, 0.1);
+        }
+
+        .form-input:disabled {
+            background: #f9fafb;
+            color: var(--gray);
+            cursor: not-allowed;
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23637381' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px;
+            padding-right: 2.5rem;
+        }
+
+        /* Button Styles */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--gray);
+            border: 1px solid rgba(145, 158, 171, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: #f9fafb;
+            color: var(--dark);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .modal {
+                padding: 1rem;
+            }
+            
+            .modal-content {
+                max-width: 100%;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            height: 100vh;
+            position: fixed;
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            margin-bottom: 1rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            background: var(--gradient);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .logo-text {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--dark);
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        .nav-menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 1rem;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray);
+            padding: 0.5rem 1rem;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.2s;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(118, 53, 220, 0.05);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: rgba(118, 53, 220, 0.08);
+            border-left: 3px solid var(--primary);
+        }
+
+        .nav-icon {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        /* Sous-menu */
+        .submenu {
+            margin-left: 2rem;
+            padding-left: 0.5rem;
+            border-left: 2px solid rgba(118, 53, 220, 0.1);
+            display: none;
+        }
+
+        .submenu.show {
+            display: block;
+        }
+
+        .submenu .nav-link {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .has-submenu .nav-link {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .has-submenu .nav-link::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 1rem;
+            transition: transform 0.2s;
+            font-size: 0.75rem;
+        }
+
+        .has-submenu.active .nav-link::after {
+            transform: rotate(180deg);
+        }
+
+        .user-profile {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            width: 240px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(118, 53, 220, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .notification-btn {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.25rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Notification de classe */
+        .class-notification {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #f6f4ff 0%, #f0edff 100%);
+            border-left: 4px solid var(--primary);
+        }
+
+        .class-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .class-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(118, 53, 220, 0.1);
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+
+        .class-details h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--primary-dark);
+        }
+
+        .class-details p {
+            color: var(--gray);
+            font-size: 0.875rem;
+        }
+
+        .class-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .student-count {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        /* Liste des étudiants */
+        .students-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .students-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .students-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .generate-link {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+        }
+
+        .generate-link:hover {
+            background: var(--primary-dark);
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .filter-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .filter-select {
+            padding: 0.75rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: #f9fafb;
+            transition: all 0.2s;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(118, 53, 220, 0.1);
+        }
+
+        .students-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .students-table th {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 2px solid rgba(145, 158, 171, 0.2);
+            font-weight: 600;
+            color: var(--dark);
+            background: #f9fafb;
+        }
+
+        .students-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.1);
+        }
+
+        .students-table tr:hover {
+            background-color: rgba(118, 53, 220, 0.03);
+        }
+
+        .student-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .action-button {
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: all 0.2s;
+        }
+
+        .btn-details {
+            background: rgba(118, 53, 220, 0.1);
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-details:hover {
+            background: rgba(118, 53, 220, 0.2);
+            transform: scale(1.1);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: rgba(0, 167, 111, 0.1);
+            color: var(--secondary);
+        }
+
+        .status-inactive {
+            background: rgba(255, 86, 48, 0.1);
+            color: var(--danger);
+        }
+
+        .payment-status {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .payment-paid {
+            background: rgba(0, 167, 111, 0.1);
+            color: var(--secondary);
+        }
+
+        .payment-pending {
+            background: rgba(255, 171, 0, 0.1);
+            color: var(--warning);
+        }
+
+        .payment-overdue {
+            background: rgba(255, 86, 48, 0.1);
+            color: var(--danger);
+        }
+
+        /* Nouveaux styles pour emploi du temps et intervenants */
+        .section-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .view-all:hover {
+            text-decoration: underline;
+        }
+
+        /* Informations semestre */
+        .semester-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .info-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray);
+        }
+
+        .info-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* Emploi du temps */
+        .schedule-container {
+            overflow-x: auto;
+            margin-bottom: 2rem;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        .schedule-table th {
+            background: #f9fafb;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            color: var(--dark);
+            border: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .schedule-table td {
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid rgba(145, 158, 171, 0.1);
+            height: 80px;
+            vertical-align: top;
+        }
+
+        .time-cell {
+            background: #f9fafb;
+            font-weight: 500;
+        }
+
+        .course-cell {
+            background: rgba(118, 53, 220, 0.05);
+            border-radius: 6px;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .course-name {
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+
+        .course-teacher {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        .course-salle {
+            font-size: 0.75rem;
+            color: var(--gray);
+            font-style: italic;
+        }
+
+        .empty-cell {
+            background: rgba(145, 158, 171, 0.05);
+            color: var(--gray);
+            font-style: italic;
+        }
+
+        /* Intervenants */
+        .teachers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .teacher-card {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.2s;
+            border: 1px solid rgba(145, 158, 171, 0.1);
+        }
+
+        .teacher-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--hover-shadow);
+            border-color: var(--primary-light);
+        }
+
+        .teacher-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+
+        .teacher-info {
+            flex: 1;
+        }
+
+        .teacher-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .teacher-subject {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        .teacher-contact {
+            margin-top: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .contact-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            color: var(--primary);
+            border: 1px solid rgba(145, 158, 171, 0.2);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .contact-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+        }
+
+        .empty-state i {
+            font-size: 20px;
+            color: rgba(145, 158, 171, 0.5);
+        }
+
+        .btn-add-emploi {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-add-emploi:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .modal-content {
+            animation: modalFadeIn 0.3s;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Bouton d'impression */
+        .btn-print {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-print:hover {
+            background: #009960;
+            transform: scale(1.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+                overflow: hidden;
+            }
+            
+            .logo-text, .nav-title, .user-info, .nav-link span {
+                display: none;
+            }
+            
+            .logo {
+                justify-content: center;
+                padding: 0 0 1.5rem;
+            }
+            
+            .nav-icon {
+                margin-right: 0;
+                font-size: 1.25rem;
+            }
+            
+            .nav-link {
+                justify-content: center;
+                padding: 1rem 0;
+            }
+            
+            .user-profile {
+                justify-content: center;
+                padding: 1rem 0;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .search-bar input {
+                width: 180px;
+            }
+
+            .class-notification {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .class-stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .students-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .student-actions {
+                flex-direction: column;
+            }
+
+            .teachers-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .semester-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .filters {
+                flex-direction: column;
+            }
+            
+            .filter-group {
+                width: 100%;
+            }
+            
+            .students-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .generate-link {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Styles pour l'impression */
+        @media print {
+            .sidebar, .header-actions, .btn-add-emploi, .view-all, .generate-link {
+                display: none !important;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 0;
+            }
+            
+            .section-container {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+            
+            body {
+                background: white;
+                font-size: 12pt;
+            }
+            
+            .schedule-table {
+                font-size: 10pt;
+            }
+            
+            .course-cell {
+                background: #f5f5f5 !important;
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        {% include 'pages/bases/dashboard/logo.html' %}
+
+        {% include 'pages/bases/dashboard/reinscription_i.html' %}
+        {% include 'pages/bases/dashboard/user.html' %}
+
+
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <div class="page-title">
+                <h1>Liste des Étudiants</h1>
+            </div>
+            
+            <div class="header-actions">
+                <div class="search-bar">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="Rechercher un étudiant...">
+                </div>
+                
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+            </div>
+        </div>
+        <div class="messages-container">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                        <button type="button" class="close-btn" aria-label="Fermer">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <!-- Notification de classe -->
+        <div class="class-notification">
+            <div class="class-info">
+                <div class="class-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="class-details">
+                    <h2>{{classe}}</h2>
+                    <p>Année académique {{annee}}| <span class="student-count">{{nombre}}</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Liste des étudiants -->
+        <div class="students-container">
+            <div class="students-header">
+                <h2 class="students-title">Liste des étudiants</h2>
+                <a href="{% url 'generer_matricules' classe.id %}" class="generate-link">
+                    <i class="fas fa-id-card"></i> Générer les matricules
+                </a>
+            </div>
+            
+            <table class="students-table">
+                <thead>
+                    <tr>
+                        <th>Matricule</th>
+                        <th>Code accès</th>
+                        <th>Nom & Prénom</th>
+                        <th>Informations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for liste in etudiant %}
+                    <tr>
+                        <td>{{ liste.etudiant.utilisateur.matricule|default:"Non attribué" }}</td>
+                        <td>{{ liste.etudiant.username|default:"-" }}</td>
+                        <td>{{ liste.etudiant.utilisateur.nom }} {{ liste.etudiant.utilisateur.prenom }}</td>
+                        <td>
+                            <a style="text-decoration: none;" href="{% url 'etudiant_details' liste.etudiant.id %}" class="btn-details" data-student-id="{{ liste.etudiant.utilisateur.matricule }}" data-student-name="{{liste.etudiant.utilisateur.nom }} {{ liste.etudiant.utilisateur.prenom }}">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center;">Aucun étudiant trouvé</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Premier semestre -->
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Semestre {{ S1.nom_semestre }}</h2>
+                <a href="{% url 'pdf_emp' classe.id S1.id %}" style="text-decoration: none;" class="btn-print" >
+                    <i class="fas fa-print"></i> Imprimer
+                </a>
+            </div>
+            
+            <!-- Informations du semestre -->
+            <div class="semester-info">
+                <div class="info-item">
+                    <span class="info-label">Mois de début</span>
+                    <span class="info-value">{{ S1.mois_debut }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Mois de fin</span>
+                    <span class="info-value">{{ S1.mois_fin }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Nombre de matières</span>
+                    <span class="info-value">{{ matiere.count|default:"Aucun"}}</span>
+                </div>
+            </div>
+            
+            <!-- Emploi du temps pour ce semestre -->
+            <h3 style="margin-bottom: 1rem; color: var(--dark);">Emploi du temps</h3>
+            <div class="schedule-container">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Heure/Jour</th>
+                            <th>Lundi</th>
+                            <th>Mardi</th>
+                            <th>Mercredi</th>
+                            <th>Jeudi</th>
+                            <th>Vendredi</th>
+                            <th>Samedi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Premier créneau -->
+                        <tr>
+                            <td class="time-cell">                                
+                                {% if classe.niveau.libelle == "L1" %}
+                                <p>08h00-10h00</p>
+                                {% elif classe.niveau.libelle == "L2" %} 
+                                <p>12h25-14h25</p>   
+                                {% elif classe.niveau.libelle == "L3" %}
+                                <p>16h45-18h30</p>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Lundi -->
+                            <td>
+                                {% if E1.lundi.premier.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E1.lundi.premier.details.0 }}</div>
+                                    <div class="course-teacher">{{ E1.lundi.premier.details.1 }}</div>
+                                    <div class="course-salle">{{ E1.lundi.premier.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="lundi"
+                                            data-creneau="premier"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S1.id }}"
+                                            data-semestrenom="{{ S1.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}08:00{% elif classe.niveau.libelle == 'L2' %}12:25{% elif classe.niveau.libelle == 'L3' %}16:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}10:00{% elif classe.niveau.libelle == 'L2' %}14:25{% elif classe.niveau.libelle == 'L3' %}18:30{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Mardi -->
+                            <td>
+                                {% if E1.mardi.premier.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E1.mardi.premier.details.0 }}</div>
+                                    <div class="course-teacher">{{ E1.mardi.premier.details.1 }}</div>
+                                    <div class="course-salle">{{ E1.mardi.premier.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="mardi"
+                                            data-creneau="premier"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S1.id }}"
+                                            data-semestrenom="{{ S1.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}08:00{% elif classe.niveau.libelle == 'L2' %}12:25{% elif classe.niveau.libelle == 'L3' %}16:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}10:00{% elif classe.niveau.libelle == 'L2' %}14:25{% elif classe.niveau.libelle == 'L3' %}18:30{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Mercredi -->
+                            <td>
+                                {% if E1.mercredi.premier.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E1.mercredi.premier.details.0 }}</div>
+                                    <div class="course-teacher">{{ E1.mercredi.premier.details.1 }}</div>
+                                    <div class="course-salle">{{ E1.mercredi.premier.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="mercredi"
+                                            data-creneau="premier"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S1.id }}"
+                                            data-semestrenom="{{ S1.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}08:00{% elif classe.niveau.libelle == 'L2' %}12:25{% elif classe.niveau.libelle == 'L3' %}16:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}10:00{% elif classe.niveau.libelle == 'L2' %}14:25{% elif classe.niveau.libelle == 'L3' %}18:30{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Jeudi -->
+                            <td>
+                                {% if E1.jeudi.premier.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E1.jeudi.premier.details.0 }}</div>
+                                    <div class="course-teacher">{{ E1.jeudi.premier.details.1 }}</div>
+                                    <div class="course-salle">{{ E1.jeudi.premier.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="jeudi"
+                                            data-creneau="premier"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S1.id }}"
+                                            data-semestrenom="{{ S1.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}08:00{% elif classe.niveau.libelle == 'L2' %}12:25{% elif classe.niveau.libelle == 'L3' %}16:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}10:00{% elif classe.niveau.libelle == 'L2' %}14:25{% elif classe.niveau.libelle == 'L3' %}18:30{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Vendredi -->
+                            <td>
+                                {% if E1.vendredi.premier.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E1.vendredi.premier.details.0 }}</div>
+                                    <div class="course-teacher">{{ E1.vendredi.premier.details.1 }}</div>
+                                    <div class="course-salle">{{ E1.vendredi.premier.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="vendredi"
+                                            data-creneau="premier"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S1.id }}"
+                                            data-semestrenom="{{ S1.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}08:00{% elif classe.niveau.libelle == 'L2' %}12:25{% elif classe.niveau.libelle == 'L3' %}16:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}10:00{% elif classe.niveau.libelle == 'L2' %}14:25{% elif classe.niveau.libelle == 'L3' %}18:30{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Samedi -->
+                            <td>
+                                {% if E1.samedi.premier.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E1.samedi.premier.details.0 }}</div>
+                                    <div class="course-teacher">{{ E1.samedi.premier.details.1 }}</div>
+                                    <div class="course-salle">{{ E1.samedi.premier.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="samedi"
+                                            data-creneau="premier"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S1.id }}"
+                                            data-semestrenom="{{ S1.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}08:00{% elif classe.niveau.libelle == 'L2' %}12:25{% elif classe.niveau.libelle == 'L3' %}16:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}10:00{% elif classe.niveau.libelle == 'L2' %}14:25{% elif classe.niveau.libelle == 'L3' %}18:30{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        
+                        <!-- Deuxième créneau -->
+                        <tr>
+                            <td class="time-cell">                                
+                                {% if classe.niveau.libelle == "L1" %}
+                                <p>10h15-12h15</p>
+                                {% elif classe.niveau.libelle == "L2" %} 
+                                <p>14h35-16h35</p>   
+                                {% elif classe.niveau.libelle == "L3" %}
+                                <p>18h45-19h45</p>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Lundi -->
+                            <td>
+                                {% if E1.lundi.deuxieme.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E1.lundi.deuxieme.details.0 }}</div>
+                                    <div class="course-teacher">{{ E1.lundi.deuxieme.details.1 }}</div>
+                                    <div class="course-salle">{{ E1.lundi.deuxieme.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="lundi"
+                                            data-creneau="deuxieme"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S1.id }}"
+                                            data-semestrenom="{{ S1.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}10:15{% elif classe.niveau.libelle == 'L2' %}14:35{% elif classe.niveau.libelle == 'L3' %}18:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}12:15{% elif classe.niveau.libelle == 'L2' %}16:35{% elif classe.niveau.libelle == 'L3' %}19:45{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Mardi -->
+                            <td>
+                                {% if E1.mardi.deuxieme.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E1.mardi.deuxieme.details.0 }}</div>
+                                    <div class="course-teacher">{{ E1.mardi.deuxieme.details.1 }}</div>
+                                    <div class="course-salle">{{ E1.mardi.deuxieme.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="mardi"
+                                            data-creneau="deuxieme"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S1.id }}"
+                                            data-semestrenom="{{ S1.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}10:15{% elif classe.niveau.libelle == 'L2' %}14:35{% elif classe.niveau.libelle == 'L3' %}18:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}12:15{% elif classe.niveau.libelle == 'L2' %}16:35{% elif classe.niveau.libelle == 'L3' %}19:45{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Mercredi -->
+                            <td>
+                                {% if E1.mercredi.deuxieme.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E1.mercredi.deuxieme.details.0 }}</div>
+                                    <div class="course-teacher">{{ E1.mercredi.deuxieme.details.1 }}</div>
+                                    <div class="course-salle">{{ E1.mercredi.deuxieme.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="mercredi"
+                                            data-creneau="deuxieme"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S1.id }}"
+                                            data-semestrenom="{{ S1.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}10:15{% elif classe.niveau.libelle == 'L2' %}14:35{% elif classe.niveau.libelle == 'L3' %}18:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}12:15{% elif classe.niveau.libelle == 'L2' %}16:35{% elif classe.niveau.libelle == 'L3' %}19:45{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Jeudi -->
+                            <td>
+                                {% if E1.jeudi.deuxieme.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E1.jeudi.deuxieme.details.0 }}</div>
+                                    <div class="course-teacher">{{ E1.jeudi.deuxieme.details.1 }}</div>
+                                    <div class="course-salle">{{ E1.jeudi.deuxieme.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="jeudi"
+                                            data-creneau="deuxieme"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S1.id }}"
+                                            data-semestrenom="{{ S1.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}10:15{% elif classe.niveau.libelle == 'L2' %}14:35{% elif classe.niveau.libelle == 'L3' %}18:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}12:15{% elif classe.niveau.libelle == 'L2' %}16:35{% elif classe.niveau.libelle == 'L3' %}19:45{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Vendredi -->
+                            <td>
+                                {% if E1.vendredi.deuxieme.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E1.vendredi.deuxieme.details.0 }}</div>
+                                    <div class="course-teacher">{{ E1.vendredi.deuxieme.details.1 }}</div>
+                                    <div class="course-salle">{{ E1.vendredi.deuxieme.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="vendredi"
+                                            data-creneau="deuxieme"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S1.id }}"
+                                            data-semestrenom="{{ S1.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}10:15{% elif classe.niveau.libelle == 'L2' %}14:35{% elif classe.niveau.libelle == 'L3' %}18:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}12:15{% elif classe.niveau.libelle == 'L2' %}16:35{% elif classe.niveau.libelle == 'L3' %}19:45{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Samedi -->
+                            <td>
+                                {% if E1.samedi.deuxieme.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E1.samedi.deuxieme.details.0 }}</div>
+                                    <div class="course-teacher">{{ E1.samedi.deuxieme.details.1 }}</div>
+                                    <div class="course-salle">{{ E1.samedi.deuxieme.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="samedi"
+                                            data-creneau="deuxieme"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S1.id }}"
+                                            data-semestrenom="{{ S1.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}10:15{% elif classe.niveau.libelle == 'L2' %}14:35{% elif classe.niveau.libelle == 'L3' %}18:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}12:15{% elif classe.niveau.libelle == 'L2' %}16:35{% elif classe.niveau.libelle == 'L3' %}19:45{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Popup Formulaire d'ajout d'emploi du temps -->
+            <div id="emploi-modal" class="modal" style="display: none;">
+                <div class="modal-overlay"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Ajouter un cours</h3>
+                        <span class="modal-close">&times;</span>
+                    </div>
+                    <form id="emploi-form" method="POST" action=" {% url "cree_emploie_du_temps" %} " class="modal-form">
+                        {% csrf_token %}
+                        
+                        <div class="form-grid">
+                            <!-- Informations fixes (disabled) -->
+                            <div class="form-group">
+                                <label class="form-label">Classe</label>
+                                <input type="text" class="form-input" id="modal-classe-display" disabled>
+                                <input type="hidden" id="modal-classe" name="classe">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Semestre</label>
+                                <input type="text" class="form-input" id="modal-semestre-display" disabled>
+                                <input type="hidden" id="modal-semestre" name="semestre">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Jour</label>
+                                <input type="text" class="form-input" id="modal-jour-display" disabled>
+                                <input type="hidden" id="modal-jour" name="jour">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Créneau</label>
+                                <input type="text" class="form-input" id="modal-creneau-display" disabled>
+                                <input type="hidden" id="modal-creneau" name="creneau">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Heure de début</label>
+                                <input type="text" class="form-input" id="modal-heure-debut-display" disabled>
+                                <input type="hidden" id="modal-heure-debut" name="heure_debut">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Heure de fin</label>
+                                <input type="text" class="form-input" id="modal-heure-fin-display" disabled>
+                                <input type="hidden" id="modal-heure-fin" name="heure_fin">
+                            </div>
+                        </div>
+                        
+                        <!-- Champs à sélectionner -->
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="matiere" class="form-label">Matière *</label>
+                                <select id="matiere" name="matiere" required class="form-select">
+                                    <option value="">Sélectionner une matière</option>
+                                    {% for matiere in matieresS1 %}
+                                    <option value="{{ matiere.id }}">{{ matiere.nom }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="enseignant" class="form-label">Enseignant *</label>
+                                <select id="enseignant" name="enseignant" required class="form-select">
+                                    <option value="">Sélectionner un enseignant</option>
+                                    {% for enseignant in enseignants %}
+                                    <option value="{{ enseignant.enseignant.id}}">{{ enseignant.enseignant.enseignant_utilisateur.nom }} {{ enseignant.enseignant.enseignant_utilisateur.prenom }} - specialite: {{enseignant.description }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="salle" class="form-label">Salle *</label>
+                                <select id="salle" name="salle" required class="form-select">
+                                    <option value="">Sélectionner une salle</option>
+                                    {% for salle in salles %}
+                                    <option value="{{ salle.id }}">{{ salle.nom }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary btn-cancel">Annuler</button>
+                            <button type="submit" class="btn btn-primary btn-submit">
+                                <i class="fas fa-plus"></i> Ajouter le cours
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Intervenants pour ce semestre -->
+            <h3 style="margin: 2rem 0 1rem 0; color: var(--dark);">Intervenants : {{intervenants1.count}}</h3>
+            {% if intervenants1 %}
+            <div class="teachers-grid">
+                {% for intervenant in intervenants1 %}
+                <div class="teacher-card">
+                    <div class="teacher-avatar">{{ intervenant.enseignant_utilisateur.nom|first }}{{ intervenant.enseignant_utilisateur.prenom|first }}</div>
+                    <div class="teacher-info">
+                        <div class="teacher-name">{{ intervenant.enseignant_utilisateur.nom }} {{ intervenant.enseignant_utilisateur.prenom }}</div>
+                        <div class="teacher-contact">
+                            <a style="text-decoration: none;" href="mailto:{{ intervenant.enseignant_utilisateur.email }}" class="contact-btn"><i class="fas fa-envelope"></i></a>
+                            <a style="text-decoration: none;" href="tel:{{ intervenant.enseignant_utilisateur.numero_telephone }}" class="contact-btn"><i class="fas fa-phone"></i></a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <p>Aucun intervenant n'a été assigné à ce semestre.</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Deuxième semestre -->
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Semestre {{ S2.nom_semestre }}</h2>
+                <a href="{% url 'pdf_emp' classe.id S2.id %}" style="text-decoration: none;" class="btn-print" >
+                    <i class="fas fa-print"></i> Imprimer
+                </a>
+            </div>
+            
+            <!-- Informations du semestre -->
+            <div class="semester-info">
+                <div class="info-item">
+                    <span class="info-label">Date de début</span>
+                    <span class="info-value">{{ S2.mois_debut }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Date de fin</span>
+                    <span class="info-value">{{ S2.mois_fin }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Nombre de matières</span>
+                    <span class="info-value">{{ matiere1.count|default:"aucun" }}</span>
+                </div>
+            </div>
+            
+            <!-- Emploi du temps pour ce semestre -->
+            <h3 style="margin-bottom: 1rem; color: var(--dark);">Emploi du temps</h3>
+            <div class="schedule-container">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Heure/Jour</th>
+                            <th>Lundi</th>
+                            <th>Mardi</th>
+                            <th>Mercredi</th>
+                            <th>Jeudi</th>
+                            <th>Vendredi</th>
+                            <th>Samedi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Premier créneau -->
+                        <tr>
+                            <td class="time-cell">                                
+                                {% if classe.niveau.libelle == "L1" %}
+                                <p>08h00-10h00</p>
+                                {% elif classe.niveau.libelle == "L2" %} 
+                                <p>12h25-14h25</p>   
+                                {% elif classe.niveau.libelle == "L3" %}
+                                <p>16h45-18h30</p>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Lundi -->
+                            <td>
+                                {% if E2.lundi.premier.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E2.lundi.premier.details.0 }}</div>
+                                    <div class="course-teacher">{{ E2.lundi.premier.details.1 }}</div>
+                                    <div class="course-salle">{{ E2.lundi.premier.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="lundi"
+                                            data-creneau="premier"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S2.id }}"
+                                            data-semestrenom="{{ S2.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}08:00{% elif classe.niveau.libelle == 'L2' %}12:25{% elif classe.niveau.libelle == 'L3' %}16:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}10:00{% elif classe.niveau.libelle == 'L2' %}14:25{% elif classe.niveau.libelle == 'L3' %}18:30{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Mardi -->
+                            <td>
+                                {% if E2.mardi.premier.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E2.mardi.premier.details.0 }}</div>
+                                    <div class="course-teacher">{{ E2.mardi.premier.details.1 }}</div>
+                                    <div class="course-salle">{{ E2.mardi.premier.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="mardi"
+                                            data-creneau="premier"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S2.id }}"
+                                            data-semestrenom="{{ S2.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}08:00{% elif classe.niveau.libelle == 'L2' %}12:25{% elif classe.niveau.libelle == 'L3' %}16:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}10:00{% elif classe.niveau.libelle == 'L2' %}14:25{% elif classe.niveau.libelle == 'L3' %}18:30{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Mercredi -->
+                            <td>
+                                {% if E2.mercredi.premier.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E2.mercredi.premier.details.0 }}</div>
+                                    <div class="course-teacher">{{ E2.mercredi.premier.details.1 }}</div>
+                                    <div class="course-salle">{{ E2.mercredi.premier.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="mercredi"
+                                            data-creneau="premier"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S2.id }}"
+                                            data-semestrenom="{{ S2.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}08:00{% elif classe.niveau.libelle == 'L2' %}12:25{% elif classe.niveau.libelle == 'L3' %}16:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}10:00{% elif classe.niveau.libelle == 'L2' %}14:25{% elif classe.niveau.libelle == 'L3' %}18:30{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Jeudi -->
+                            <td>
+                                {% if E2.jeudi.premier.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E2.jeudi.premier.details.0 }}</div>
+                                    <div class="course-teacher">{{ E2.jeudi.premier.details.1 }}</div>
+                                    <div class="course-salle">{{ E2.jeudi.premier.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="jeudi"
+                                            data-creneau="premier"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S2.id }}"
+                                            data-semestrenom="{{ S2.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}08:00{% elif classe.niveau.libelle == 'L2' %}12:25{% elif classe.niveau.libelle == 'L3' %}16:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}10:00{% elif classe.niveau.libelle == 'L2' %}14:25{% elif classe.niveau.libelle == 'L3' %}18:30{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Vendredi -->
+                            <td>
+                                {% if E2.vendredi.premier.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E2.vendredi.premier.details.0 }}</div>
+                                    <div class="course-teacher">{{ E2.vendredi.premier.details.1 }}</div>
+                                    <div class="course-salle">{{ E2.vendredi.premier.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="vendredi"
+                                            data-creneau="premier"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S2.id }}"
+                                            data-semestrenom="{{ S2.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}08:00{% elif classe.niveau.libelle == 'L2' %}12:25{% elif classe.niveau.libelle == 'L3' %}16:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}10:00{% elif classe.niveau.libelle == 'L2' %}14:25{% elif classe.niveau.libelle == 'L3' %}18:30{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Samedi -->
+                            <td>
+                                {% if E2.samedi.premier.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E2.samedi.premier.details.0 }}</div>
+                                    <div class="course-teacher">{{ E2.samedi.premier.details.1 }}</div>
+                                    <div class="course-salle">{{ E2.samedi.premier.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="samedi"
+                                            data-creneau="premier"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S2.id }}"
+                                            data-semestrenom="{{ S2.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}08:00{% elif classe.niveau.libelle == 'L2' %}12:25{% elif classe.niveau.libelle == 'L3' %}16:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}10:00{% elif classe.niveau.libelle == 'L2' %}14:25{% elif classe.niveau.libelle == 'L3' %}18:30{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        
+                        <!-- Deuxième créneau -->
+                        <tr>
+                            <td class="time-cell">                                
+                                {% if classe.niveau.libelle == "L1" %}
+                                <p>10h15-12h15</p>
+                                {% elif classe.niveau.libelle == "L2" %} 
+                                <p>14h35-16h35</p>   
+                                {% elif classe.niveau.libelle == "L3" %}
+                                <p>18h45-19h45</p>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Lundi -->
+                            <td>
+                                {% if E2.lundi.deuxieme.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E2.lundi.deuxieme.details.0 }}</div>
+                                    <div class="course-teacher">{{ E2.lundi.deuxieme.details.1 }}</div>
+                                    <div class="course-salle">{{ E2.lundi.deuxieme.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="lundi"
+                                            data-creneau="deuxieme"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S2.id }}"
+                                            data-semestrenom="{{ S2.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}10:15{% elif classe.niveau.libelle == 'L2' %}14:35{% elif classe.niveau.libelle == 'L3' %}18:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}12:15{% elif classe.niveau.libelle == 'L2' %}16:35{% elif classe.niveau.libelle == 'L3' %}19:45{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Mardi -->
+                            <td>
+                                {% if E2.mardi.deuxieme.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E2.mardi.deuxieme.details.0 }}</div>
+                                    <div class="course-teacher">{{ E2.mardi.deuxieme.details.1 }}</div>
+                                    <div class="course-salle">{{ E2.mardi.deuxieme.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="mardi"
+                                            data-creneau="deuxieme"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S2.id }}"
+                                            data-semestrenom="{{ S2.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}10:15{% elif classe.niveau.libelle == 'L2' %}14:35{% elif classe.niveau.libelle == 'L3' %}18:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}12:15{% elif classe.niveau.libelle == 'L2' %}16:35{% elif classe.niveau.libelle == 'L3' %}19:45{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Mercredi -->
+                            <td>
+                                {% if E2.mercredi.deuxieme.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E2.mercredi.deuxieme.details.0 }}</div>
+                                    <div class="course-teacher">{{ E2.mercredi.deuxieme.details.1 }}</div>
+                                    <div class="course-salle">{{ E2.mercredi.deuxieme.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="mercredi"
+                                            data-creneau="deuxieme"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S2.id }}"
+                                            data-semestrenom="{{ S2.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}10:15{% elif classe.niveau.libelle == 'L2' %}14:35{% elif classe.niveau.libelle == 'L3' %}18:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}12:15{% elif classe.niveau.libelle == 'L2' %}16:35{% elif classe.niveau.libelle == 'L3' %}19:45{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Jeudi -->
+                            <td>
+                                {% if E2.jeudi.deuxieme.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E2.jeudi.deuxieme.details.0 }}</div>
+                                    <div class="course-teacher">{{ E2.jeudi.deuxieme.details.1 }}</div>
+                                    <div class="course-salle">{{ E2.jeudi.deuxieme.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="jeudi"
+                                            data-creneau="deuxieme"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S2.id }}"
+                                            data-semestrenom="{{ S2.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}10:15{% elif classe.niveau.libelle == 'L2' %}14:35{% elif classe.niveau.libelle == 'L3' %}18:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}12:15{% elif classe.niveau.libelle == 'L2' %}16:35{% elif classe.niveau.libelle == 'L3' %}19:45{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Vendredi -->
+                            <td>
+                                {% if E2.vendredi.deuxieme.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E2.vendredi.deuxieme.details.0 }}</div>
+                                    <div class="course-teacher">{{ E2.vendredi.deuxieme.details.1 }}</div>
+                                    <div class="course-salle">{{ E2.vendredi.deuxieme.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="vendredi"
+                                            data-creneau="deuxieme"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S2.id }}"
+                                            data-semestrenom="{{ S2.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}10:15{% elif classe.niveau.libelle == 'L2' %}14:35{% elif classe.niveau.libelle == 'L3' %}18:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}12:15{% elif classe.niveau.libelle == 'L2' %}16:35{% elif classe.niveau.libelle == 'L3' %}19:45{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Samedi -->
+                            <td>
+                                {% if E2.samedi.deuxieme.existe %}
+                                <div class="course-cell">
+                                    <div class="course-name">{{ E2.samedi.deuxieme.details.0 }}</div>
+                                    <div class="course-teacher">{{ E2.samedi.deuxieme.details.1 }}</div>
+                                    <div class="course-salle">{{ E2.samedi.deuxieme.details.2 }}</div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state" style="display:flex; justify-content:center;align-items:center;">
+                                    <button class="btn-add-emploi" 
+                                            data-jour="samedi"
+                                            data-creneau="deuxieme"
+                                            data-classe="{{ classe.id }}"
+                                            data-semestre="{{ S2.id }}"
+                                            data-semestrenom="{{ S2.nom_semestre }}"
+                                            data-heure-debut="{% if classe.niveau.libelle == 'L1' %}10:15{% elif classe.niveau.libelle == 'L2' %}14:35{% elif classe.niveau.libelle == 'L3' %}18:45{% endif %}"
+                                            data-heure-fin="{% if classe.niveau.libelle == 'L1' %}12:15{% elif classe.niveau.libelle == 'L2' %}16:35{% elif classe.niveau.libelle == 'L3' %}19:45{% endif %}">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Popup Formulaire d'ajout d'emploi du temps pour S2 -->
+            <div id="emploi-modal-s2" class="modal" style="display: none;">
+                <div class="modal-overlay"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Ajouter un cours - Semestre {{ S2.nom_semestre }}</h3>
+                        <span class="modal-close-s2">&times;</span>
+                    </div>
+                    <form id="emploi-form-s2" method="POST" action=" {% url "cree_emploie_du_temps" %} " class="modal-form">
+                        {% csrf_token %}
+                        
+                        <div class="form-grid">
+                            <!-- Informations fixes (disabled) -->
+                            <div class="form-group">
+                                <label class="form-label">Classe</label>
+                                <input type="text" class="form-input" id="modal-classe-display-s2" disabled>
+                                <input type="hidden" id="modal-classe-s2" name="classe">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Semestre</label>
+                                <input type="text" class="form-input" id="modal-semestre-display-s2" disabled>
+                                <input type="hidden" id="modal-semestre-s2" name="semestre">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Jour</label>
+                                <input type="text" class="form-input" id="modal-jour-display-s2" disabled>
+                                <input type="hidden" id="modal-jour-s2" name="jour">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Créneau</label>
+                                <input type="text" class="form-input" id="modal-creneau-display-s2" disabled>
+                                <input type="hidden" id="modal-creneau-s2" name="creneau">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Heure de début</label>
+                                <input type="text" class="form-input" id="modal-heure-debut-display-s2" disabled>
+                                <input type="hidden" id="modal-heure-debut-s2" name="heure_debut">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Heure de fin</label>
+                                <input type="text" class="form-input" id="modal-heure-fin-display-s2" disabled>
+                                <input type="hidden" id="modal-heure-fin-s2" name="heure_fin">
+                            </div>
+                        </div>
+                        
+                        <!-- Champs à sélectionner -->
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="matiere-s2" class="form-label">Matière *</label>
+                                <select id="matiere-s2" name="matiere" required class="form-select">
+                                    <option value="">Sélectionner une matière</option>
+                                    {% for matiere in matieresS2 %}
+                                    <option value="{{ matiere.id }}">{{ matiere.nom }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="enseignant-s2" class="form-label">Enseignant *</label>
+                                <select id="enseignant-s2" name="enseignant" required class="form-select">
+                                    <option value="">Sélectionner un enseignant</option>
+                                    {% for enseignant in enseignants %}
+                                    <option value="{{ enseignant.enseignant.id}}">{{ enseignant.enseignant.enseignant_utilisateur.nom }} {{ enseignant.enseignant.enseignant_utilisateur.prenom }} - specialite: {{enseignant.description }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="salle-s2" class="form-label">Salle *</label>
+                                <select id="salle-s2" name="salle" required class="form-select">
+                                    <option value="">Sélectionner une salle</option>
+                                    {% for salle in salles %}
+                                    <option value="{{ salle.id }}">{{ salle.nom }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary btn-cancel-s2">Annuler</button>
+                            <button type="submit" class="btn btn-primary btn-submit">
+                                <i class="fas fa-plus"></i> Ajouter le cours
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Intervenants pour ce semestre -->
+            <h3 style="margin: 2rem 0 1rem 0; color: var(--dark);">Intervenants : {{intervenants2.count}}</h3>
+            {% if intervenants2 %}
+            <div class="teachers-grid">
+                {% for intervenant in intervenants2 %}
+                <div class="teacher-card">
+                    <div class="teacher-avatar">{{ intervenant.enseignant_utilisateur.nom|first }}{{ intervenant.enseignant_utilisateur.prenom|first }}</div>
+                    <div class="teacher-info">
+                        <div class="teacher-name">{{ intervenant.enseignant_utilisateur.nom }} {{ intervenant.enseignant_utilisateur.prenom }}</div>
+                        <div class="teacher-contact">
+                            <a href="mailto:{{ intervenant.enseignant_utilisateur.email }}" class="contact-btn"><i class="fas fa-envelope"></i></a>
+                            <a href="tel:{{ intervenant.enseignant_utilisateur.telephone }}" class="contact-btn"><i class="fas fa-phone"></i></a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <p>Aucun intervenant n'a été assigné à ce semestre.</p>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <script>
+        class MessageManager {
+            constructor() {
+                this.autoDismissTime = 5000; // 5 secondes
+                this.init();
+            }
+
+            init() {
+                // Ajouter les boutons de fermeture aux messages existants
+                this.addCloseButtons();
+                
+                // Configurer la disparition automatique
+                this.setupAutoDismiss();
+                
+                // Empêcher l'accumulation des messages
+                this.preventMessageAccumulation();
+            }
+
+            // Ajouter des boutons de fermeture à tous les messages
+            addCloseButtons() {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    // Vérifier si le bouton de fermeture n'existe pas déjà
+                    if (!alert.querySelector('.close-btn')) {
+                        const closeBtn = document.createElement('button');
+                        closeBtn.innerHTML = '&times;';
+                        closeBtn.className = 'close-btn';
+                        closeBtn.setAttribute('aria-label', 'Fermer');
+                        closeBtn.addEventListener('click', () => this.dismissAlert(alert));
+                        alert.appendChild(closeBtn);
+                    }
+                });
+            }
+
+            // Configurer la disparition automatique
+            setupAutoDismiss() {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    // Ne pas fermer automatiquement les erreurs
+                    if (!alert.classList.contains('alert-error') && 
+                        !alert.classList.contains('alert-danger')) {
+                        alert.classList.add('auto-dismiss');
+                        setTimeout(() => {
+                            this.dismissAlert(alert);
+                        }, this.autoDismissTime);
+                    }
+                });
+            }
+
+            // Fermer un message d'alerte avec animation
+            dismissAlert(alert) {
+                alert.style.animation = 'slideOutRight 0.3s ease-in forwards';
+                setTimeout(() => {
+                    if (alert.parentNode) {
+                        alert.parentNode.removeChild(alert);
+                    }
+                }, 300);
+            }
+
+            // Empêcher l'accumulation des messages
+            preventMessageAccumulation() {
+                const container = document.querySelector('.messages-container');
+                if (container) {
+                    const alerts = container.querySelectorAll('.alert');
+                    if (alerts.length > 3) {
+                        // Garder seulement les 3 derniers messages
+                        for (let i = 0; i < alerts.length - 3; i++) {
+                            this.dismissAlert(alerts[i]);
+                        }
+                    }
+                }
+            }
+
+            // Méthode pour afficher un nouveau message (optionnel)
+            showMessage(message, type = 'info') {
+                const container = document.querySelector('.messages-container') || this.createMessagesContainer();
+                
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type}`;
+                alert.textContent = message;
+                
+                const closeBtn = document.createElement('button');
+                closeBtn.innerHTML = '&times;';
+                closeBtn.className = 'close-btn';
+                closeBtn.setAttribute('aria-label', 'Fermer');
+                closeBtn.addEventListener('click', () => this.dismissAlert(alert));
+                
+                alert.appendChild(closeBtn);
+                container.appendChild(alert);
+                
+                // Disparition automatique pour les types non-erreur
+                if (type !== 'error' && type !== 'danger') {
+                    alert.classList.add('auto-dismiss');
+                    setTimeout(() => {
+                        this.dismissAlert(alert);
+                    }, this.autoDismissTime);
+                }
+                
+                this.preventMessageAccumulation();
+            }
+
+            // Créer un conteneur pour les messages s'il n'existe pas
+            createMessagesContainer() {
+                const container = document.createElement('div');
+                container.className = 'messages-container';
+                document.body.appendChild(container);
+                return container;
+            }
+        }
+
+        // Initialisation quand le DOM est chargé
+        document.addEventListener('DOMContentLoaded', function() {
+            window.messageManager = new MessageManager();
+        });
+
+        // Fonction utilitaire pour afficher des messages rapidement
+        function showAlert(message, type = 'info') {
+            if (window.messageManager) {
+                window.messageManager.showMessage(message, type);
+            } else {
+                console.log(`[${type.toUpperCase()}] ${message}`);
+            }
+        }
+
+        // Gestion des popups d'ajout d'emploi du temps
+        document.addEventListener('DOMContentLoaded', function() {
+            // Modal pour S1
+            const modal = document.getElementById('emploi-modal');
+            const form = document.getElementById('emploi-form');
+            const closeBtn = document.querySelector('.modal-close');
+            const cancelBtn = document.querySelector('.btn-cancel');
+            
+            // Modal pour S2
+            const modalS2 = document.getElementById('emploi-modal-s2');
+            const formS2 = document.getElementById('emploi-form-s2');
+            const closeBtnS2 = document.querySelector('.modal-close-s2');
+            const cancelBtnS2 = document.querySelector('.btn-cancel-s2');
+            
+            const addButtons = document.querySelectorAll('.btn-add-emploi');
+            
+            // Fonction pour formater l'affichage du créneau
+            function formaterCreneau(creneau) {
+                return creneau === 'premier' ? 'Premier créneau' : 'Deuxième créneau';
+            }
+            
+            // Fonction pour formater l'affichage du jour
+            function formaterJour(jour) {
+                const jours = {
+                    'lundi': 'Lundi',
+                    'mardi': 'Mardi',
+                    'mercredi': 'Mercredi',
+                    'jeudi': 'Jeudi',
+                    'vendredi': 'Vendredi',
+                    'samedi': 'Samedi'
+                };
+                return jours[jour] || jour;
+            }
+            
+            // Ouvrir le modal approprié
+            addButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const jour = this.getAttribute('data-jour');
+                    const creneau = this.getAttribute('data-creneau');
+                    const classeId = this.getAttribute('data-classe');
+                    const semestreId = this.getAttribute('data-semestre');
+                    const heureDebut = this.getAttribute('data-heure-debut');
+                    const heureFin = this.getAttribute('data-heure-fin');
+                    const semestrenom = this.getAttribute('data-semestrenom');
+                    
+                    // Déterminer si c'est pour S1 ou S2
+                    const isS2 = semestrenom.includes('S2') || semestreId === '{{ S2.id }}';
+                    const targetModal = isS2 ? modalS2 : modal;
+                    const targetForm = isS2 ? formS2 : form;
+                    
+                    // Remplir les champs affichés (disabled)
+                    document.getElementById(isS2 ? 'modal-classe-display-s2' : 'modal-classe-display').value = '{{ classe.nom }}';
+                    document.getElementById(isS2 ? 'modal-semestre-display-s2' : 'modal-semestre-display').value = semestrenom;
+                    document.getElementById(isS2 ? 'modal-jour-display-s2' : 'modal-jour-display').value = formaterJour(jour);
+                    document.getElementById(isS2 ? 'modal-creneau-display-s2' : 'modal-creneau-display').value = formaterCreneau(creneau);
+                    document.getElementById(isS2 ? 'modal-heure-debut-display-s2' : 'modal-heure-debut-display').value = heureDebut + 'h';
+                    document.getElementById(isS2 ? 'modal-heure-fin-display-s2' : 'modal-heure-fin-display').value = heureFin + 'h';
+                    
+                    // Remplir les champs cachés
+                    document.getElementById(isS2 ? 'modal-classe-s2' : 'modal-classe').value = classeId;
+                    document.getElementById(isS2 ? 'modal-semestre-s2' : 'modal-semestre').value = semestreId;
+                    document.getElementById(isS2 ? 'modal-jour-s2' : 'modal-jour').value = jour;
+                    document.getElementById(isS2 ? 'modal-creneau-s2' : 'modal-creneau').value = creneau;
+                    document.getElementById(isS2 ? 'modal-heure-debut-s2' : 'modal-heure-debut').value = heureDebut + ':00';
+                    document.getElementById(isS2 ? 'modal-heure-fin-s2' : 'modal-heure-fin').value = heureFin + ':00';
+                    
+                    // Réinitialiser les sélections
+                    if (isS2) {
+                        document.getElementById('matiere-s2').value = '';
+                        document.getElementById('enseignant-s2').value = '';
+                        document.getElementById('salle-s2').value = '';
+                    } else {
+                        document.getElementById('matiere').value = '';
+                        document.getElementById('enseignant').value = '';
+                        document.getElementById('salle').value = '';
+                    }
+                    
+                    // Afficher le modal
+                    targetModal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            // Fermer les modals
+            function closeModal(modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            
+            // Événements pour S1
+            closeBtn.addEventListener('click', () => closeModal(modal));
+            cancelBtn.addEventListener('click', () => closeModal(modal));
+            
+            // Événements pour S2
+            closeBtnS2.addEventListener('click', () => closeModal(modalS2));
+            cancelBtnS2.addEventListener('click', () => closeModal(modalS2));
+            
+            // Fermer en cliquant en dehors des modals
+            [modal, modalS2].forEach(modalElement => {
+                modalElement.addEventListener('click', function(event) {
+                    if (event.target === modalElement || event.target.classList.contains('modal-overlay')) {
+                        closeModal(modalElement);
+                    }
+                });
+            });
+            
+            // Fermer avec la touche Escape
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    if (modal.style.display === 'flex') closeModal(modal);
+                    if (modalS2.style.display === 'flex') closeModal(modalS2);
+                }
+            });
+            
+            // Soumission des formulaires
+            [form, formS2].forEach(formElement => {
+                formElement.addEventListener('submit', function(e) {
+                    console.log('Formulaire soumis avec les données:', {
+                        classe: this.querySelector('input[name="classe"]').value,
+                        semestre: this.querySelector('input[name="semestre"]').value,
+                        jour: this.querySelector('input[name="jour"]').value,
+                        creneau: this.querySelector('input[name="creneau"]').value,
+                        heure_debut: this.querySelector('input[name="heure_debut"]').value,
+                        heure_fin: this.querySelector('input[name="heure_fin"]').value,
+                        matiere: this.querySelector('select[name="matiere"]').value,
+                        enseignant: this.querySelector('select[name="enseignant"]').value,
+                        salle: this.querySelector('select[name="salle"]').value
+                    });
+                });
+            });
+        });
+
+        // Script pour gérer les sous-menus
+        document.addEventListener('DOMContentLoaded', function() {
+            const submenuToggles = document.querySelectorAll('.has-submenu > .nav-link');
+            
+            submenuToggles.forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const parent = this.parentElement;
+                    const submenu = parent.querySelector('.submenu');
+                    
+                    parent.classList.toggle('active');
+                    
+                    if (parent.classList.contains('active')) {
+                        submenu.classList.add('show');
+                    } else {
+                        submenu.classList.remove('show');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reçu d'Inscription - ESCOM</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 2px solid #003366;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #003366;
+            padding-bottom: 20px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #003366;
+            margin-bottom: 10px;
+        }
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .info-item {
+            margin-bottom: 10px;
+        }
+        .info-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 150px;
+        }
+        .signature-area {
+            margin-top: 50px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        .signature-box {
+            border-top: 1px solid #333;
+            padding-top: 10px;
+            text-align: center;
+            height: 80px;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+        .amount {
+            font-weight: bold;
+            font-size: 18px;
+            color: #003366;
+        }
+        @media print {
+            body {
+                padding: 0;
+            }
+            .container {
+                border: none;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">ÉCOLE SUPÉRIEURE DE COMMERCE - ESCOM</div>
+            <div>123 Avenue de l'Éducation, Brazzaville</div>
+            <div>Tél: 06 844 92 18| Email: mivdenzel@gmail.com</div>
+            <div></div>
+        </div>
+        
+        <div class="title">REÇU D'INSCRIPTION / RÉINSCRIPTION</div>
+        
+        <div class="section">
+            <div class="section-title">INFORMATIONS SUR L'ÉTUDIANT(E)</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Nom et Prénom:</span>
+                    <span> {{ element.etudiant.utilisateur.nom }} {{ element.etudiant.utilisateur.prenom }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Matricule:</span>
+                    <span>{{ element.etudiant.utilisateur.matricule|default:"Non défini" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Filière:</span>
+                    <span>{{ element.classe.option.filiere }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Option:</span>
+                    <span>{{ element.classe.option }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Classe:</span>
+                    <span>{{ element.classe.nom }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Niveau:</span>
+                    <span>{{ element.classe.niveau }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Année académique:</span>
+                    <span>{{ element.annee_academique.annee }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Type:</span>
+                    <span>{{ element.nature }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">DÉTAILS DU PAIEMENT</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Date de paiement:</span>
+                    <span>{{ element.date|date:"d/m/Y"  }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Mode de paiement:</span>
+                    <span>Espece</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Référence:</span>
+                    <span>{{ element.id|slice:":8"|upper }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Montant:</span>
+                    <span class="amount">{{ element.montant }} FCFA</span>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        
+        <div class="signature-area">
+            <div>
+                <!-- <div class="signature-box"></div> -->
+                <div>Signature du Responsible Financier :</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div>Ce reçu est valable comme justificatif de paiement des frais d'inscription/réinscription</div>
+            <div>ESCOM - École Supérieure de Commerce</div>
+            <div class="info-item">
+            <span class="info-label">Date d'émission:  {% now "d/m/Y H:i" %} </span>
+            </div>
+        </div>
+    </div>
+        <script>
+
+        // const date = new Date();
+        // console.log('Date brute:', date);
+        // console.log('Format fr-FR:', date.toLocaleDateString('fr-FR'));
+        // document.getElementById('current-date').textContent = date.toLocaleDateString('fr-FR');
+        //     // const date = new Date();
+        //     // const jour = date.getDate().toString().padStart(2, '0');
+            // const mois = (date.getMonth() + 1).toString().padStart(2, '0');
+            // const annee = date.getFullYear();
+            // document.getElementById('current-date').textContent = `${jour}/${mois}/${annee}`;
+        // Afficher la date courante
+        // document.getElementById('current-date').textContent = new Date().toLocaleDateString('fr-FR', {
+        //     weekday: 'numeric',
+        //     year: 'numeric',
+        //     month: 'numeric',
+        //     day: 'numeric'
+        // });
+        // document.getElementById('current-date').textContent = new Date().toLocaleDateString('fr-FR');
+    </script>
+</body>
+</html>

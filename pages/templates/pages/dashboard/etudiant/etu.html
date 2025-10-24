@@ -1,0 +1,2138 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusFlow - Mon Espace Étudiant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00a76f;
+            --primary-dark: #008c5d;
+            --primary-light: #4cce9d;
+            --secondary: #3366ff;
+            --dark: #212b36;
+            --light: #f9fafb;
+            --gray: #637381;
+            --success: #00a76f;
+            --warning: #ffab00;
+            --danger: #ff5630;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --hover-shadow: 0 10px 25px -5px rgba(0, 167, 111, 0.15);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+            background-color: #f5f7fa;
+            padding-top: 70px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .student-header {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            top: 0;
+        }
+
+        .student-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        .student-logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .student-logo-icon {
+            background: var(--gradient);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+
+        .student-logo-text {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: var(--dark);
+        }
+
+        .student-logo-text span {
+            color: var(--primary);
+        }
+
+        .student-user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .student-user-info {
+            text-align: right;
+            display: none;
+        }
+
+        .student-user-name {
+            font-weight: 600;
+            font-size: 0.9375rem;
+            white-space: nowrap;
+        }
+
+        .student-user-role {
+            font-size: 0.8125rem;
+            color: var(--gray);
+            white-space: nowrap;
+        }
+
+        .student-user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* Sidebar */
+        .student-sidebar {
+            width: 260px;
+            background: white;
+            height: 100vh;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            padding: 20px 0;
+            box-shadow: 1px 0 3px rgba(0, 0, 0, 0.05);
+            overflow-y: auto;
+            z-index: 999;
+            transform: translateX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .student-sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        .student-sidebar-menu {
+            list-style: none;
+        }
+
+        .student-menu-title {
+            padding: 10px 25px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray);
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .student-menu-item {
+            margin: 5px 0;
+        }
+
+        .student-menu-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .student-menu-link:hover, .student-menu-link.active {
+            background: rgba(0, 167, 111, 0.05);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .student-menu-link i {
+            margin-right: 12px;
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .student-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .student-main {
+            flex: 1;
+            padding: 20px;
+            margin-left: 260px;
+            width: calc(100% - 260px);
+        }
+
+        .student-main.expanded {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .student-welcome {
+            background: var(--gradient);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(0, 167, 111, 0.15);
+        }
+
+        .student-welcome h1 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .student-welcome p {
+            opacity: 0.9;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .student-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .student-card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s;
+            border: 1px solid rgba(145, 158, 171, 0.1);
+        }
+
+        .student-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .student-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .student-card-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+
+        .student-card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            background: rgba(0, 167, 111, 0.1);
+        }
+
+        .student-card-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+
+        .student-card-text {
+            font-size: 0.8rem;
+            color: var(--gray);
+            line-height: 1.4;
+        }
+
+        .student-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .student-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .student-section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .student-section-link {
+            color: var(--primary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .student-section-link i {
+            margin-left: 5px;
+            font-size: 0.75rem;
+        }
+
+        .student-courses {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .student-course-card {
+            border: 1px solid rgba(145, 158, 171, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .student-course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .student-course-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .student-course-icon {
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .student-course-status .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .status-badge.verified {
+            background: rgba(0, 167, 111, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .status-badge.pending {
+            background: rgba(255, 171, 0, 0.2);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .student-course-body {
+            padding: 18px;
+        }
+
+        .student-course-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--dark);
+            line-height: 1.4;
+        }
+
+        .student-course-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+
+        .meta-item i {
+            width: 16px;
+            color: var(--primary);
+        }
+
+        .student-course-info {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            font-size: 0.8rem;
+            margin-bottom: 6px;
+            color: var(--dark);
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-item strong {
+            color: var(--gray);
+        }
+
+        .student-course-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .course-btn {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .download-btn {
+            background: var(--primary);
+            color: white;
+        }
+
+        .download-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .study-btn {
+            background: rgba(0, 167, 111, 0.1);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .study-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .student-schedule {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        .student-schedule th {
+            background: #34495e;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+            border: 1px solid #2c3e50;
+        }
+
+        .student-schedule td {
+            padding: 12px;
+            border: 1px solid #bdc3c7;
+            text-align: center;
+            vertical-align: top;
+            height: 70px;
+        }
+
+        .time-cell {
+            background: #ecf0f1 !important;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .student-schedule-course {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .student-schedule-room {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            background: #ecf0f1;
+            padding: 2px 6px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .student-assignments {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .student-assignment-card {
+            border: 1px solid rgba(145, 158, 171, 0.2);
+            border-radius: 12px;
+            padding: 18px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .student-assignment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .student-assignment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .student-assignment-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .student-assignment-course {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .student-assignment-due {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--danger);
+        }
+
+        .student-assignment-progress {
+            margin-bottom: 12px;
+        }
+
+        .student-progress-bar {
+            height: 6px;
+            background: rgba(145, 158, 171, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .student-progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .student-assignment-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .student-assignment-status {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .professors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .professor-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s;
+            text-align: center;
+            border-left: 4px solid var(--primary);
+        }
+
+        .professor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .professor-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 12px;
+            font-weight: 600;
+            border: 3px solid #ecf0f1;
+        }
+
+        .professor-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--dark);
+        }
+
+        .professor-subject {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            padding: 4px 10px;
+            background: rgba(0, 167, 111, 0.1);
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .professor-courses {
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .professor-courses h4 {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .courses-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .course-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            margin-bottom: 6px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .course-item:hover {
+            background: #e9ecef;
+            border-left-color: var(--primary);
+            transform: translateX(3px);
+        }
+
+        .course-item i {
+            color: var(--primary);
+            font-size: 0.7rem;
+            width: 14px;
+        }
+
+        .course-item span {
+            font-size: 0.8rem;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .professor-contact {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--gray);
+            font-size: 0.75rem;
+            padding: 5px 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .contact-item:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .contact-item:hover i {
+            color: white;
+        }
+
+        .student-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .student-badge-primary {
+            background: rgba(0, 167, 111, 0.1);
+            color: var(--primary);
+        }
+
+        .student-badge-success {
+            background: rgba(0, 167, 111, 0.1);
+            color: var(--success);
+        }
+
+        .student-badge-warning {
+            background: rgba(255, 171, 0, 0.1);
+            color: var(--warning);
+        }
+
+        .student-badge-danger {
+            background: rgba(255, 86, 48, 0.1);
+            color: var(--danger);
+        }
+
+        /* Tabs System */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* AI Assistant Button */
+        .ai-assistant {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 55px;
+            height: 55px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0, 167, 111, 0.3);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border: 3px solid white;
+        }
+
+        .ai-assistant:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 25px rgba(0, 167, 111, 0.4);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(145, 158, 171, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--gradient);
+            color: white;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: white;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            opacity: 0.8;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .complaint-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(0, 167, 111, 0.2);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(145, 158, 171, 0.2);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            border: none;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--gray);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #55606c;
+        }
+
+        /* Responsive */
+        @media (max-width: 1199px) {
+            .student-card-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 991px) {
+            .student-card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .student-sidebar {
+                width: 240px;
+                transform: translateX(-100%);
+            }
+            
+            .student-sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .student-main {
+                margin-left: 0;
+                width: 100%;
+                padding: 15px;
+            }
+
+            .student-welcome h1 {
+                font-size: 1.3rem;
+            }
+
+            .student-welcome p {
+                font-size: 0.85rem;
+            }
+
+            .student-section-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+                align-items: stretch;
+            }
+
+            .student-section-title {
+                text-align: center;
+            }
+
+            .student-section-link {
+                justify-content: center;
+            }
+
+            .student-courses,
+            .student-assignments,
+            .professors-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .student-user-info {
+                display: block;
+                max-width: 120px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .student-logo-text {
+                font-size: 1.1rem;
+            }
+
+            .student-logo-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+
+            .ai-assistant {
+                bottom: 15px;
+                right: 15px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.1rem;
+            }
+
+            .student-schedule th,
+            .student-schedule td {
+                padding: 8px;
+                font-size: 0.8rem;
+            }
+
+            .student-schedule {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .student-header {
+                padding: 10px 15px;
+            }
+            
+            .student-navbar {
+                padding: 10px 0;
+            }
+
+            .student-user-menu {
+                gap: 10px;
+            }
+
+            .student-user-info {
+                display: none;
+            }
+
+            .student-user-name,
+            .student-user-role {
+                font-size: 0.8rem;
+            }
+
+            .student-welcome {
+                padding: 20px;
+            }
+
+            .student-card-grid {
+                gap: 12px;
+            }
+
+            .student-card {
+                padding: 15px;
+            }
+
+            .student-card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .student-card-title {
+                font-size: 0.8rem;
+            }
+
+            .student-card-value {
+                font-size: 1.3rem;
+            }
+
+            .student-card-text {
+                font-size: 0.75rem;
+            }
+
+            .student-section {
+                padding: 15px;
+            }
+
+            .student-section-header {
+                margin-bottom: 12px;
+            }
+
+            .student-section-title {
+                font-size: 1rem;
+            }
+
+            .student-menu-title {
+                padding: 8px 20px;
+                font-size: 0.7rem;
+            }
+
+            .student-menu-link {
+                padding: 10px 20px;
+                font-size: 0.85rem;
+            }
+
+            .student-menu-link i {
+                margin-right: 8px;
+            }
+
+            .student-course-actions {
+                flex-direction: column;
+            }
+
+            .course-btn {
+                width: 100%;
+            }
+
+            .student-schedule th,
+            .student-schedule td {
+                padding: 6px;
+                font-size: 0.75rem;
+            }
+
+            .professor-contact {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .contact-item {
+                justify-content: center;
+                font-size: 0.7rem;
+            }
+        }
+
+        /* Overlay for mobile menu */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            backdrop-filter: blur(5px);
+        }
+
+        .overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="student-header">
+        <div class="container">
+            <nav class="student-navbar">
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="#" class="student-logo">
+                    <div class="student-logo-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="student-logo-text" style="font-family: Inter;">.my<span>ESCOM</span></div>
+                </a>
+                
+                <div class="student-user-menu">
+                    <div class="student-user-info">
+                        <div class="student-user-name">{{etudiant.utilisateur.nom}} {{etudiant.utilisateur.prenom}}</div>
+                        <div class="student-user-role">{{info.classe}}</div>
+                    </div>
+                    <div class="student-user-avatar">{{ etudiant.utilisateur.nom|first }}{{ etudiant.utilisateur.prenom|first }}</div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Overlay for mobile -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Main Container -->
+    <div class="student-container">
+        <!-- Sidebar -->
+        <aside class="student-sidebar" id="studentSidebar">
+            <ul class="student-sidebar-menu">
+                <li class="student-menu-title">Menu Principal</li>
+                <li class="student-menu-item">
+                    <a href="#" class="student-menu-link active" data-tab="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Tableau de bord</span>
+                    </a>
+                </li>
+                <li class="student-menu-item">
+                    <a href="#" class="student-menu-link" data-tab="courses">
+                        <i class="fas fa-book"></i>
+                        <span>Mes Cours</span>
+                    </a>
+                </li>
+                <li class="student-menu-item">
+                    <a href="#" class="student-menu-link" data-tab="schedule">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Emploi du temps</span>
+                    </a>
+                </li>
+                <li class="student-menu-item">
+                    <a href="#" class="student-menu-link" data-tab="professors">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span>Mes Professeurs</span>
+                    </a>
+                </li>
+                <li class="student-menu-item">
+                    <a href="#" class="student-menu-link" data-tab="notes">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Notes & Résultats</span>
+                    </a>
+                </li>
+                
+                <li class="student-menu-title">Paramètres</li>
+                <li class="student-menu-item">
+                    <a href="{% url "out" %}" class="student-menu-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Déconnexion</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="student-main" id="studentMain">
+            <!-- Tableau de bord -->
+            <div id="dashboard" class="tab-content active">
+                <section class="student-welcome">
+                    <h1>Bienvenue, {{ etudiant.utilisateur.prenom }}</h1>
+                    <p>Vous êtes inscrit en {{ info.classe }} pour l'année académique {{ info.annee_academique }}.</p>
+                    <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
+                        <span class="student-badge student-badge-success">Inscrit</span>
+                        {% if info.montant == 30000 and  info.ram and info.marqueur %}
+                        <span class="student-badge student-badge-success">Dossier Conforme</span>
+                        {% else %}
+                        <span class="student-badge student-badge-warning">Dossier à Compléter</span>
+                        {% endif %}
+                    </div>
+                </section>
+                
+                <div class="student-card-grid">
+                    <div class="student-card">
+                        <div class="student-card-header">
+                            <div class="student-card-title">Nombres de matières du {{premier}} </div>
+                            <div class="student-card-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                        </div>
+                        <div class="student-card-value" style="{% if m1.count == 0 %} display:none; {% endif %}">{{m1.count}}</div>
+                        {% for m in m1  %}
+                        <div class="student-card-text">{{m.nom}}</div>
+                        {% empty %}
+                        <div class="student-card-text">Aucune matière programmée</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="student-card">
+                        <div class="student-card-header">
+                            <div class="student-card-title">Nombres de matières du {{second}} </div>
+                            <div class="student-card-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                        </div>
+                        <div class="student-card-value" style="{% if m2.count == 0 %} display:none; {% endif %}">{{m2.count}}</div>
+                        {% for m in m2  %}
+                        <div class="student-card-text">{{m.nom}}</div>
+                        {% empty %}
+                        <div class="student-card-text">Aucune matière programmée</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="student-card">
+                        <div class="student-card-header">
+                            <div class="student-card-title">Total Matières Année</div>
+                            <div class="student-card-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                        </div>
+                        <div class="student-card-value">{{ total|default:"0" }}</div>
+                        <div class="student-card-text">Matières pour l'année académique</div>
+                    </div>
+                </div>
+
+                <section class="student-section">
+                    <div class="student-section-header">
+                        <h2 class="student-section-title">Prochains Cours</h2>
+                    </div>
+                    
+                    <table class="student-schedule">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Heure</th>
+                                <th>Cours</th>
+                                <th>Salle</th>
+                                <th>Professeur</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cours in today %}
+                            <tr>
+                                <td>Aujourd'hui</td>
+                                <td>{{ cours.heure_debut|time:"H:i" }} - {{ cours.heure_fin|time:"H:i" }}</td>
+                                <td>
+                                    <div class="student-schedule-course">{{ cours.matiere.nom }}</div>
+                                </td>
+                                <td>{{ cours.salle.nom|default:"Non spécifié" }}</td>
+                                <td>{{ cours.enseignant.enseignant_utilisateur.nom }} {{ cours.enseignant.enseignant_utilisateur.prenom }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" style="text-align: center;">Aucun cours aujourd'hui</td>
+                            </tr>
+                            {% endfor %}
+                            
+                            {% for cour in yers %}
+                            <tr>
+                                <td>Demain</td>
+                                <td>{{ cour.heure_debut|time:"H:i" }} - {{ cour.heure_fin|time:"H:i" }}</td>
+                                <td>
+                                    <div class="student-schedule-course">{{ cour.matiere.nom }}</div>
+                                </td>
+                                <td>{{ cour.salle.nom|default:"Non spécifié" }}</td>
+                                <td>{{ cour.enseignant.enseignant_utilisateur.nom }} {{ cour.enseignant.enseignant_utilisateur.prenom }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" style="text-align: center;">Aucun cours pour demain</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </section>
+                
+                <section class="student-section">
+                    <div class="student-section-header">
+                        <h2 class="student-section-title">Dernières Notes</h2>
+                    </div>
+                    <div class="student-assignments">
+                        {% for note in dernieres_notes %}
+                        <div class="student-assignment-card">
+                            <div class="student-assignment-header">
+                                <div>
+                                    <h3 class="student-assignment-title">{{ note.matiere.nom }}</h3>
+                                    <div class="student-assignment-course">{{ note.evaluation|title }}</div>
+                                </div>
+                                <div class="student-assignment-due">{{ note.note }}/20</div>
+                            </div>
+                            <div class="student-assignment-progress">
+                                <div class="student-progress-bar">
+                                    <div class="student-progress-fill" style="width: {{ note.note|multiply:5 }}%"></div>
+                                </div>
+                            </div>
+                            <div class="student-assignment-footer">
+                                {% if note.note >= 16 %}
+                                <span class="student-badge student-badge-success">Excellent</span>
+                                {% elif note.note >= 14 %}
+                                <span class="student-badge student-badge-success">Très bien</span>
+                                {% elif note.note >= 12 %}
+                                <span class="student-badge student-badge-primary">Bien</span>
+                                {% elif note.note >= 10 %}
+                                <span class="student-badge student-badge-warning">Passable</span>
+                                {% else %}
+                                <span class="student-badge student-badge-danger">Insuffisant</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="student-assignment-card">
+                            <div class="student-assignment-header">
+                                <div>
+                                    <h3 class="student-assignment-title">Aucune note disponible</h3>
+                                    <div class="student-assignment-course">Semestre en cours</div>
+                                </div>
+                            </div>
+                            <div class="student-assignment-footer">
+                                <div class="student-assignment-status">Aucune évaluation pour le moment</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+            </div>
+
+            <!-- Mes Cours -->
+            <div id="courses" class="tab-content">
+                <section class="student-welcome">
+                    <h1>Mes Cours</h1>
+                    <p>Consultez tous vos cours et accédez aux ressources pédagogiques.</p>
+                </section>
+
+                <div class="student-card-grid">
+                    <div class="student-card">
+                        <div class="student-card-header">
+                            <div class="student-card-title">Cours Disponibles</div>
+                            <div class="student-card-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                        </div>
+                        <div class="student-card-value">{{ programmes_cours.count }}</div>
+                        <div class="student-card-text">Cette année</div>
+                    </div>
+                </div>
+
+                <section class="student-section">
+                    <div class="student-section-header">
+                        <h2 class="student-section-title">Tous mes cours</h2>
+                    </div>
+                    
+                    <div class="student-courses">
+                        {% for programme in programmes_cours %}
+                        <div class="student-course-card">
+                            <div class="student-course-header">
+                                <div class="student-course-icon">
+                                    <i class="fas fa-file-pdf"></i>
+                                </div>
+                                <div class="student-course-status">
+                                    {% if programme.verifier %}
+                                    <span class="status-badge verified">
+                                        <i class="fas fa-check-circle"></i> Validé
+                                    </span>
+                                    {% else %}
+                                    <span class="status-badge pending">
+                                        <i class="fas fa-clock"></i> En attente
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="student-course-body">
+                                <h3 class="student-course-title">{{ programme.matiere.nom }}</h3>
+                                <div class="student-course-meta">
+                                    <div class="meta-item">
+                                        <i class="fas fa-user-tie"></i>
+                                        <span>{{ programme.enseignant.enseignant_utilisateur.nom }} {{ programme.enseignant.enseignant_utilisateur.prenom }}</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-calendar"></i>
+                                        <span>{{ programme.date_upload|date:"d/m/Y" }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="student-course-info">
+                                    <div class="info-item">
+                                        <strong>Nom du fichier:</strong> {{ programme.nom }}
+                                    </div>
+                                    <div class="info-item">
+                                        <strong>Année académique:</strong> {{ programme.annee }}
+                                    </div>
+                                </div>
+                                
+                                <div class="student-course-actions">
+                                    <a href="{{ programme.document.url }}" class="course-btn download-btn" download>
+                                        <i class="fas fa-download"></i>
+                                        Télécharger
+                                    </a>
+                                    <button class="course-btn study-btn" data-course-id="{{ programme.id }}" data-course-name="{{ programme.matiere.nom }}">
+                                        <i class="fas fa-robot"></i>
+                                        Étudier avec IA
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="student-card" style="grid-column: 1 / -1; text-align: center; padding: 30px; background: white; border-radius: 12px; border: 2px dashed rgba(145, 158, 171, 0.3);">
+                            <div style="font-size: 4rem; color: rgba(145, 158, 171, 0.5); margin-bottom: 15px;">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <h3 style="color: var(--gray); margin-bottom: 8px;">Aucun cours disponible</h3>
+                            <p style="color: var(--gray);">Les cours n'ont pas encore été publiés par vos enseignants.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+            </div>
+
+            <!-- Emploi du temps -->
+            <div id="schedule" class="tab-content">
+                <section class="student-welcome">
+                    <h1>Emploi du temps</h1>
+                    <p>Consultez votre planning de la semaine et vos prochains cours.</p>
+                </section>
+
+                <div class="student-card-grid">
+                    <div class="student-card">
+                        <div class="student-card-header">
+                            <div class="student-card-title">Cours de la semaine</div>
+                            <div class="student-card-icon">
+                                <i class="fas fa-calendar-week"></i>
+                            </div>
+                        </div>
+                        <div class="student-card-value">{{Em.count}}</div>
+                        <div class="student-card-text">Heures de cours</div>
+                    </div>                    
+                </div>
+                
+                <section class="student-section">
+                    <div class="student-section-header">
+                        <h2 class="student-section-title">Emploi du temps - {{ premier }}</h2>
+                    </div>
+                    
+                    <div class="schedule-container">
+                        <table class="student-schedule">
+                            <thead>
+                                <tr>
+                                    <th>Heure/Jour</th>
+                                    <th>Lun</th>
+                                    <th>Mar</th>
+                                    <th>Mer</th>
+                                    <th>Jeu</th>
+                                    <th>Ven</th>
+                                    <th>Sam</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Premier créneau -->
+                                <tr>
+                                    <td class="time-cell">                                
+                                        {% if classe.niveau.libelle == "L1" %}
+                                        <p>08h00-10h00</p>
+                                        {% elif classe.niveau.libelle == "L2" %} 
+                                        <p>12h25-14h25</p>   
+                                        {% elif classe.niveau.libelle == "L3" %}
+                                        <p>16h45-18h30</p>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <!-- Lundi -->
+                                    <td>
+                                        {% if E1.lundi.premier.existe %}
+                                        <div class="course-cell">
+                                            <div class="course-name">{{ E1.lundi.premier.details.0 }}</div>
+                                            <div class="course-teacher">{{ E1.lundi.premier.details.1 }}</div>
+                                            <div class="course-salle">{{ E1.lundi.premier.details.2 }}</div>
+                                        </div>
+                                        {% else %}
+                                        <div class="empty-cell">-</div>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <!-- Mardi -->
+                                    <td>
+                                        {% if E1.mardi.premier.existe %}
+                                        <div class="course-cell">
+                                            <div class="course-name">{{ E1.mardi.premier.details.0 }}</div>
+                                            <div class="course-teacher">{{ E1.mardi.premier.details.1 }}</div>
+                                            <div class="course-salle">{{ E1.mardi.premier.details.2 }}</div>
+                                        </div>
+                                        {% else %}
+                                        <div class="empty-cell">-</div>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <!-- Mercredi -->
+                                    <td>
+                                        {% if E1.mercredi.premier.existe %}
+                                        <div class="course-cell">
+                                            <div class="course-name">{{ E1.mercredi.premier.details.0 }}</div>
+                                            <div class="course-teacher">{{ E1.mercredi.premier.details.1 }}</div>
+                                            <div class="course-salle">{{ E1.mercredi.premier.details.2 }}</div>
+                                        </div>
+                                        {% else %}
+                                        <div class="empty-cell">-</div>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <!-- Jeudi -->
+                                    <td>
+                                        {% if E1.jeudi.premier.existe %}
+                                        <div class="course-cell">
+                                            <div class="course-name">{{ E1.jeudi.premier.details.0 }}</div>
+                                            <div class="course-teacher">{{ E1.jeudi.premier.details.1 }}</div>
+                                            <div class="course-salle">{{ E1.jeudi.premier.details.2 }}</div>
+                                        </div>
+                                        {% else %}
+                                        <div class="empty-cell">-</div>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <!-- Vendredi -->
+                                    <td>
+                                        {% if E1.vendredi.premier.existe %}
+                                        <div class="course-cell">
+                                            <div class="course-name">{{ E1.vendredi.premier.details.0 }}</div>
+                                            <div class="course-teacher">{{ E1.vendredi.premier.details.1 }}</div>
+                                            <div class="course-salle">{{ E1.vendredi.premier.details.2 }}</div>
+                                        </div>
+                                        {% else %}
+                                        <div class="empty-cell">-</div>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <!-- Samedi -->
+                                    <td>
+                                        {% if E1.samedi.premier.existe %}
+                                        <div class="course-cell">
+                                            <div class="course-name">{{ E1.samedi.premier.details.0 }}</div>
+                                            <div class="course-teacher">{{ E1.samedi.premier.details.1 }}</div>
+                                            <div class="course-salle">{{ E1.samedi.premier.details.2 }}</div>
+                                        </div>
+                                        {% else %}
+                                        <div class="empty-cell">-</div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                
+                                <!-- Deuxième créneau -->
+                                <tr>
+                                    <td class="time-cell">                                
+                                        {% if classe.niveau.libelle == "L1" %}
+                                        <p>10h15-12h15</p>
+                                        {% elif classe.niveau.libelle == "L2" %} 
+                                        <p>14h35-16h35</p>   
+                                        {% elif classe.niveau.libelle == "L3" %}
+                                        <p>18h45-19h45</p>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <!-- Lundi -->
+                                    <td>
+                                        {% if E1.lundi.deuxieme.existe %}
+                                        <div class="course-cell">
+                                            <div class="course-name">{{ E1.lundi.deuxieme.details.0 }}</div>
+                                            <div class="course-teacher">{{ E1.lundi.deuxieme.details.1 }}</div>
+                                            <div class="course-salle">{{ E1.lundi.deuxieme.details.2 }}</div>
+                                        </div>
+                                        {% else %}
+                                        <div class="empty-cell">-</div>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <!-- Mardi -->
+                                    <td>
+                                        {% if E1.mardi.deuxieme.existe %}
+                                        <div class="course-cell">
+                                            <div class="course-name">{{ E1.mardi.deuxieme.details.0 }}</div>
+                                            <div class="course-teacher">{{ E1.mardi.deuxieme.details.1 }}</div>
+                                            <div class="course-salle">{{ E1.mardi.deuxieme.details.2 }}</div>
+                                        </div>
+                                        {% else %}
+                                        <div class="empty-cell">-</div>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <!-- Mercredi -->
+                                    <td>
+                                        {% if E1.mercredi.deuxieme.existe %}
+                                        <div class="course-cell">
+                                            <div class="course-name">{{ E1.mercredi.deuxieme.details.0 }}</div>
+                                            <div class="course-teacher">{{ E1.mercredi.deuxieme.details.1 }}</div>
+                                            <div class="course-salle">{{ E1.mercredi.deuxieme.details.2 }}</div>
+                                        </div>
+                                        {% else %}
+                                        <div class="empty-cell">-</div>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <!-- Jeudi -->
+                                    <td>
+                                        {% if E1.jeudi.deuxieme.existe %}
+                                        <div class="course-cell">
+                                            <div class="course-name">{{ E1.jeudi.deuxieme.details.0 }}</div>
+                                            <div class="course-teacher">{{ E1.jeudi.deuxieme.details.1 }}</div>
+                                            <div class="course-salle">{{ E1.jeudi.deuxieme.details.2 }}</div>
+                                        </div>
+                                        {% else %}
+                                        <div class="empty-cell">-</div>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <!-- Vendredi -->
+                                    <td>
+                                        {% if E1.vendredi.deuxieme.existe %}
+                                        <div class="course-cell">
+                                            <div class="course-name">{{ E1.vendredi.deuxieme.details.0 }}</div>
+                                            <div class="course-teacher">{{ E1.vendredi.deuxieme.details.1 }}</div>
+                                            <div class="course-salle">{{ E1.vendredi.deuxieme.details.2 }}</div>
+                                        </div>
+                                        {% else %}
+                                        <div class="empty-cell">-</div>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <!-- Samedi -->
+                                    <td>
+                                        {% if E1.samedi.deuxieme.existe %}
+                                        <div class="course-cell">
+                                            <div class="course-name">{{ E1.samedi.deuxieme.details.0 }}</div>
+                                            <div class="course-teacher">{{ E1.samedi.deuxieme.details.1 }}</div>
+                                            <div class="course-salle">{{ E1.samedi.deuxieme.details.2 }}</div>
+                                        </div>
+                                        {% else %}
+                                        <div class="empty-cell">-</div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Mes Professeurs -->
+            <div id="professors" class="tab-content">
+                <section class="student-welcome">
+                    <h1>Mes Professeurs</h1>
+                    <p>Consultez la liste de vos enseignants et leurs matières enseignées.</p>
+                </section>
+
+                <section class="student-section">
+                    <div class="student-section-header">
+                        <h2 class="student-section-title">Vos Enseignants</h2>
+                    </div>
+                    
+                    <div class="professors-grid">
+                        {% for professeur in professeurs_uniques %}
+                        <div class="professor-card">
+                            <div class="professor-avatar">
+                                {{ professeur.enseignant.enseignant_utilisateur.nom|first }}{{ professeur.enseignant.enseignant_utilisateur.prenom|first }}
+                            </div>
+                            <h3 class="professor-name">{{ professeur.enseignant.enseignant_utilisateur.nom }} {{ professeur.enseignant.enseignant_utilisateur.prenom }}</h3>
+                            <div class="professor-subject">{{ professeur.matiere.nom }}</div>
+                            
+                            <div class="professor-courses">
+                                <h4>Matières enseignées :</h4>
+                                <ul class="courses-list">
+                                    {% for matiere in professeur.matieres %}
+                                    <li class="course-item">
+                                        <i class="fas fa-book"></i>
+                                        <span>{{ matiere.nom }}</span>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="professor-card">
+                            <div class="professor-avatar">
+                                <i class="fas fa-user-slash"></i>
+                            </div>
+                            <h3 class="professor-name">Aucun professeur</h3>
+                            <div class="professor-subject">Semestre en cours</div>
+                            <div class="professor-contact">
+                                <div class="contact-item">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Aucun enseignant assigné</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+            </div>
+
+            <!-- Notes & Résultats -->
+            <div id="notes" class="tab-content">
+                <section class="student-welcome">
+                    <h1>Notes & Résultats</h1>
+                    <p>Consultez vos performances académiques.</p>
+                </section>
+
+                <section class="student-section">
+                    <div class="student-section-header">
+                        <h2 class="student-section-title">Dernières Notes</h2>
+                    </div>
+                    
+                    <table class="student-schedule">
+                        <thead>
+                            <tr>
+                                <th>Matière</th>
+                                <th>Type</th>
+                                <th>Note</th>
+                                <th>semestre</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for note in notes %}
+                            <tr>
+                                <td>{{ note.matiere.nom }}</td>
+                                <td>{{ note.evaluation }}</td>
+                                <td>{{ note.note }}/20</td>
+                                <td>{{ note.semestre}}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" style="text-align: center;">Aucune note disponible</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- AI Assistant Button -->
+    <div class="ai-assistant" id="aiAssistant">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <!-- Modal pour l'assistant IA -->
+    <div class="modal-overlay" id="assistantModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-robot"></i>
+                    Assistant CampusFlow
+                </h3>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="complaint-form" id="complaintForm">
+                    <div class="form-group">
+                        <label class="form-label" for="complaint-type">Type de préoccupation</label>
+                        <select class="form-select" id="complaint-type" name="complaint-type" required>
+                            <option value="">Sélectionnez un type</option>
+                            <option value="cours">Problème avec un cours</option>
+                            <option value="professeur">Problème avec un professeur</option>
+                            <option value="note">Question sur une note</option>
+                            <option value="emploi_du_temps">Problème d'emploi du temps</option>
+                            <option value="infrastructure">Problème d'infrastructure</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="complaint-subject">Sujet</label>
+                        <input type="text" class="form-control" id="complaint-subject" name="complaint-subject" placeholder="Entrez le sujet de votre message" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="complaint-message">Description détaillée</label>
+                        <textarea class="form-control" id="complaint-message" name="complaint-message" placeholder="Décrivez votre préoccupation en détail..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="complaint-urgency">Niveau d'urgence</label>
+                        <select class="form-select" id="complaint-urgency" name="complaint-urgency" required>
+                            <option value="faible">Faible</option>
+                            <option value="moyen" selected>Moyen</option>
+                            <option value="eleve">Élevé</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelComplaint">Annuler</button>
+                <button class="btn btn-primary" id="submitComplaint">Envoyer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Système d'onglets
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuLinks = document.querySelectorAll('.student-menu-link[data-tab]');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.getAttribute('data-tab')) {
+                        e.preventDefault();
+                        
+                        // Retirer la classe active de tous les liens et onglets
+                        menuLinks.forEach(l => l.classList.remove('active'));
+                        tabContents.forEach(tab => tab.classList.remove('active'));
+                        
+                        // Ajouter la classe active au lien cliqué
+                        this.classList.add('active');
+                        
+                        // Afficher l'onglet correspondant
+                        const tabId = this.getAttribute('data-tab');
+                        document.getElementById(tabId).classList.add('active');
+                        
+                        // Fermer le menu mobile après sélection
+                        document.getElementById('studentSidebar').classList.remove('active');
+                        document.getElementById('overlay').classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+            });
+
+            // Gestion des liens dans le contenu qui changent d'onglet
+            const contentLinks = document.querySelectorAll('[data-tab]');
+            contentLinks.forEach(link => {
+                if (link.classList.contains('student-section-link')) {
+                    link.addEventListener('click', function(e) {
+                        if (this.getAttribute('data-tab')) {
+                            e.preventDefault();
+                            const tabId = this.getAttribute('data-tab');
+                            
+                            // Retirer la classe active de tous les liens et onglets
+                            menuLinks.forEach(l => l.classList.remove('active'));
+                            tabContents.forEach(tab => tab.classList.remove('active'));
+                            
+                            // Activer le lien du menu correspondant
+                            const correspondingMenuLink = document.querySelector(`.student-menu-link[data-tab="${tabId}"]`);
+                            if (correspondingMenuLink) {
+                                correspondingMenuLink.classList.add('active');
+                            }
+                            
+                            // Afficher l'onglet correspondant
+                            document.getElementById(tabId).classList.add('active');
+                        }
+                    });
+                }
+            });
+
+            // Gestion du menu mobile
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const studentSidebar = document.getElementById('studentSidebar');
+            const overlay = document.getElementById('overlay');
+            const studentMain = document.getElementById('studentMain');
+
+            mobileMenuToggle.addEventListener('click', function() {
+                studentSidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                
+                if (studentSidebar.classList.contains('active')) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            });
+
+            overlay.addEventListener('click', function() {
+                studentSidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+
+            // Gestion de l'assistant IA
+            const aiAssistant = document.getElementById('aiAssistant');
+            const assistantModal = document.getElementById('assistantModal');
+            const closeModal = document.getElementById('closeModal');
+            const cancelComplaint = document.getElementById('cancelComplaint');
+            const submitComplaint = document.getElementById('submitComplaint');
+            const complaintForm = document.getElementById('complaintForm');
+
+            // Ouvrir le modal
+            aiAssistant.addEventListener('click', function() {
+                assistantModal.classList.add('active');
+            });
+
+            // Fermer le modal
+            closeModal.addEventListener('click', function() {
+                assistantModal.classList.remove('active');
+            });
+
+            cancelComplaint.addEventListener('click', function() {
+                assistantModal.classList.remove('active');
+            });
+
+            // Soumettre le formulaire
+            submitComplaint.addEventListener('click', function() {
+                if (complaintForm.checkValidity()) {
+                    // Ici, vous devriez envoyer les données au serveur
+                    alert('Votre message a été envoyé avec succès ! Notre équipe vous répondra dans les plus brefs délais.');
+                    complaintForm.reset();
+                    assistantModal.classList.remove('active');
+                } else {
+                    alert('Veuillez remplir tous les champs obligatoires.');
+                }
+            });
+
+            // Fermer le modal en cliquant à l'extérieur
+            assistantModal.addEventListener('click', function(e) {
+                if (e.target === assistantModal) {
+                    assistantModal.classList.remove('active');
+                }
+            });
+        });
+    </script>
+    
+    <script>
+        // Gestion de l'étude avec IA
+        document.addEventListener('DOMContentLoaded', function() {
+            const studyButtons = document.querySelectorAll('.study-btn');
+            
+            // Créer le modal d'étude s'il n'existe pas
+            let studyModal = document.getElementById('studyModal');
+            if (!studyModal) {
+                const modalHTML = `
+                <div class="modal-overlay" id="studyModal">
+                    <div class="modal study-modal">
+                        <div class="modal-header study-header">
+                            <h3 class="modal-title">
+                                <i class="fas fa-robot"></i>
+                                Assistant d'Étude - <span id="currentCourseName"></span>
+                            </h3>
+                            <button class="modal-close" id="closeStudyModal">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body study-body">
+                            <div class="chat-container">
+                                <div class="chat-messages" id="chatMessages">
+                                    <div class="message ai">
+                                        <strong>Assistant IA:</strong> Bonjour ! Je suis votre assistant d'étude. Posez-moi des questions sur le cours et je vous aiderai à comprendre les concepts.
+                                    </div>
+                                </div>
+                                <div class="chat-input">
+                                    <form class="chat-input-form" id="chatForm">
+                                        <input type="text" id="chatInput" placeholder="Posez votre question sur le cours..." required>
+                                        <button type="submit">
+                                            <i class="fas fa-paper-plane"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+                studyModal = document.getElementById('studyModal');
+            }
+            
+            // Gérer les clics sur les boutons d'étude
+            studyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const courseId = this.getAttribute('data-course-id');
+                    const courseName = this.getAttribute('data-course-name');
+                    
+                    document.getElementById('currentCourseName').textContent = courseName;
+                    document.getElementById('studyModal').classList.add('active');
+                    
+                    // Stocker l'ID du cours pour les requêtes IA
+                    document.getElementById('studyModal').setAttribute('data-current-course', courseId);
+                });
+            });
+            
+            // Fermer le modal d'étude
+            document.addEventListener('click', function(e) {
+                if (e.target.id === 'closeStudyModal' || e.target.closest('#closeStudyModal')) {
+                    document.getElementById('studyModal').classList.remove('active');
+                }
+                
+                if (e.target === document.getElementById('studyModal')) {
+                    document.getElementById('studyModal').classList.remove('active');
+                }
+            });
+            
+            // Gérer l'envoi des messages dans le chat
+            const chatForm = document.getElementById('chatForm');
+            if (chatForm) {
+                chatForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const input = document.getElementById('chatInput');
+                    const message = input.value.trim();
+                    
+                    if (message) {
+                        // Ajouter le message de l'utilisateur
+                        addMessage(message, 'user');
+                        input.value = '';
+                        
+                        // Simuler une réponse de l'IA (à remplacer par une vraie API)
+                        simulateAIResponse(message);
+                    }
+                });
+            }
+            
+            function addMessage(text, sender) {
+                const messagesContainer = document.getElementById('chatMessages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}`;
+                messageDiv.innerHTML = sender === 'ai' ? 
+                    `<strong>Assistant IA:</strong> ${text}` : 
+                    `<strong>Vous:</strong> ${text}`;
+                
+                messagesContainer.appendChild(messageDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+            
+            function simulateAIResponse(userMessage) {
+                // Simulation de réponse IA (à remplacer par une vraie intégration)
+                setTimeout(() => {
+                    const responses = [
+                        "C'est une excellente question ! Le concept clé ici est...",
+                        "Pour bien comprendre ce sujet, je vous recommande de vous concentrer sur...",
+                        "Voici une explication détaillée : Cette partie du cours traite de...",
+                        "Je vois que vous cherchez à approfondir ce sujet. Voici quelques points importants...",
+                        "Cette question touche à un aspect fondamental. En résumé..."
+                    ];
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    addMessage(randomResponse, 'ai');
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
