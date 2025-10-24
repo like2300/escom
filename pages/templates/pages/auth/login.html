@@ -227,7 +227,12 @@
             color: rgba(255, 255, 255, 0.7);
             font-size: 0.875rem;
         }
-
+        /* Masque le bouton admin sur mobile */
+        @media (max-width: 768px) {
+            .admin-card {
+                display: none;
+            }
+        }
         @media (max-width: 768px) {
             .access-card {
                 flex-direction: column;
@@ -314,8 +319,5 @@
     </main>
 
     <!-- Footer -->
-    <footer>
-        <p class="footer-text">&copy; 2025 CampusFlow - ESCOM. Tous droits réservés.</p>
-    </footer>
 </body>
 </html>
