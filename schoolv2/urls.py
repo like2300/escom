@@ -8,6 +8,11 @@ from django.conf.urls.static import static
 # # Assignez votre handler personnalisé
 # handler404 = 'pages.views.handler404'
 
+from django.urls import path, include
+from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("pages.urls")),
@@ -16,14 +21,12 @@ urlpatterns = [
     path('', include("notes.urls")),
     path('', include("utilisateur.urls")),
     path('', include("pdf.urls")),
-
-
-
-
-
 ]
-urlpatterns = urlpatterns+static(settings.MEDIA_URL,
-document_root=settings.MEDIA_ROOT)
 
-# if settings.DEBUG:
-#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve media files in both development and production
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Serve static files only in development
+# In production, static files should be served by the web server (nginx/Apache), not Django
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

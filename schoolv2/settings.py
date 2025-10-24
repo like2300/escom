@@ -41,12 +41,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-vpv!(@qf)q#_splaumxxb3ag#9sc1ks_m*yzhet7h^pc3n676g"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = False
+DEBUG = False  # Change to False for production
 
-# ALLOWED_HOSTS = ['*']
-DEBUG = True
+# For production, specify your actual domain
+# Example: ALLOWED_HOSTS = ['yourdomain.com', 'www.yourdomain.com', 'localhost']
+ALLOWED_HOSTS = ['*']  # Only use '*' in development, specify actual domains in production
 
-ALLOWED_HOSTS = ['*']
+# Security settings for production
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_REDIRECT_EXEMPT = []
 
 
 # Application definition
