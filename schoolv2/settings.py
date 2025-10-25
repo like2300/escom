@@ -45,7 +45,7 @@ DEBUG = False  # Change to False for production
 
 # For production, specify your actual domain
 # Example: ALLOWED_HOSTS = ['yourdomain.com', 'www.yourdomain.com', 'localhost']
-ALLOWED_HOSTS = ['*']  # Only use '*' in development, specify actual domains in production
+ALLOWED_HOSTS = ['*','localhost']  # Only use '*' in development, specify actual domains in production
 
 # Security settings for production
 SECURE_BROWSER_XSS_FILTER = True
