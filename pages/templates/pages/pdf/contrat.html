@@ -5,87 +5,204 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reçu de Contrat de Recrutement - ESCOM</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
         @page {
             size: A4;
-            margin: 0;
+            margin: 1.5cm;
         }
-        body {
-            font-family: Arial, sans-serif;
+
+        * {
             margin: 0;
-            padding: 20px;
-            color: #333;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 2px solid #333;
+            padding: 0;
             box-sizing: border-box;
         }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #1a202c;
+            background-color: #ffffff;
+            font-size: 12px;
+            line-height: 1.4;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0;
+        }
+
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #333;
-            padding-bottom: 20px;
-        }
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #0056b3;
-        }
-        .title {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 20px 0;
-        }
-        .section {
             margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #2d3748;
         }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1e40af;
+            letter-spacing: -0.5px;
+        }
+
+        .institution-info {
+            font-size: 11px;
+            color: #4a5568;
+            margin-bottom: 4px;
+        }
+
+        .title {
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            margin: 25px 0;
+            padding: 12px 0;
+            border-top: 2px solid #2d3748;
+            border-bottom: 2px solid #2d3748;
+            color: #1a365d;
+        }
+
+        .section {
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+        }
+
         .section-title {
-            font-weight: bold;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 5px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #2d3748;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
+
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 12px;
         }
+
         .info-item {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            display: flex;
         }
+
         .label {
-            font-weight: bold;
-            display: inline-block;
-            width: 150px;
+            font-weight: 500;
+            color: #4a5568;
+            min-width: 140px;
+            flex-shrink: 0;
         }
+
+        .value {
+            color: #1a202c;
+            font-weight: 400;
+        }
+
         .signature-section {
-            margin-top: 50px;
+            margin-top: 40px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 40px;
+            gap: 50px;
+            page-break-inside: avoid;
         }
+
         .signature-area {
-            height: 100px;
-            border-bottom: 1px solid #333;
-            margin-bottom: 10px;
+            height: 60px;
+            border-bottom: 1px solid #cbd5e0;
+            margin-bottom: 8px;
+            margin-top: 20px;
         }
-        .footer {
-            margin-top: 50px;
+
+        .signature-label {
+            font-size: 10px;
+            color: #718096;
             text-align: center;
-            font-size: 12px;
-            color: #666;
         }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 10px;
+            color: #718096;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+        }
+
+        .footer p {
+            margin-bottom: 6px;
+        }
+
+        /* Styles d'impression */
         @media print {
+            @page {
+                margin: 1.5cm;
+            }
+
             body {
                 padding: 0;
+                font-size: 11px;
             }
+
             .container {
                 border: none;
-                padding: 0;
             }
+
+            .header {
+                border-bottom-color: #000 !important;
+            }
+
+            .title {
+                border-top-color: #000 !important;
+                border-bottom-color: #000 !important;
+            }
+
+            .section {
+                break-inside: avoid;
+            }
+
+            .signature-section {
+                break-inside: avoid;
+            }
+        }
+
+        /* Styles écran */
+        @media screen {
+            body {
+                padding: 20px;
+                background-color: #f7fafc;
+            }
+
+            .container {
+                background: white;
+                padding: 30px;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                border-radius: 4px;
+                max-width: 800px;
+            }
+        }
+
+        /* Éviter les coupures dans les sections importantes */
+        .no-break {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .contract-number {
+            background-color: #f7fafc;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border-left: 4px solid #1e40af;
+            margin: 10px 0;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -93,109 +210,97 @@
     <div class="container">
         <div class="header">
             <div class="logo">ÉCOLE SUPÉRIEURE ESCOM</div>
-            <div>123 Avenue de l'Éducation, Brazzaville</div>
-            <div>Tél: 06 844 92 18| Email: mivdenzel@gmail.com</div>
+            <div class="institution-info">123 Avenue de l'Éducation, Brazzaville</div>
+            <div class="institution-info">Tél: 06 844 92 18 | Email: mivdenzel@gmail.com</div>
+        </div>
+
+        <div class="contract-number">
+            CONTRAT N°: {{element.id}}
         </div>
 
         <div class="title">REÇU DE CONTRAT DE RECRUTEMENT D'ENSEIGNANT</div>
 
-        <div class="section">
+        <div class="section no-break">
             <div class="section-title">INFORMATIONS SUR LE CONTRAT</div>
             <div class="info-grid">
                 <div class="info-item">
                     <span class="label">Numéro de contrat:</span>
-                    <span>{{element.id}}</span>
+                    <span class="value">{{element.id}}</span>
                 </div>
                 <div class="info-item">
                     <span class="label">Date d'émission:</span>
-                    <span> {{element.date|date:"d/m/Y"}}</span>
+                    <span class="value">{{element.date|date:"d/m/Y"}}</span>
                 </div>
                 <div class="info-item">
                     <span class="label">Type de contrat:</span>
-                    <span>CDD Temps plein</span>
+                    <span class="value">CDD Temps plein</span>
                 </div>
                 <div class="info-item">
-                    <span class="label">Salaire mensuel:</span>
-                    <span>1500  FCfa/h</span>
+                    <span class="label">Salaire horaire:</span>
+                    <span class="value">1 500 FCfa/h</span>
                 </div>
             </div>
         </div>
 
-        <div class="section">
+        <div class="section no-break">
             <div class="section-title">INFORMATIONS SUR L'ENSEIGNANT</div>
             <div class="info-grid">
                 <div class="info-item">
                     <span class="label">Nom:</span>
-                    <span>{{element.enseignant.enseignant_utilisateur.nom}} </span>
+                    <span class="value">{{element.enseignant.enseignant_utilisateur.nom}}</span>
                 </div>
                 <div class="info-item">
                     <span class="label">Prénom:</span>
-                    <span>{{element.enseignant.enseignant_utilisateur.prenom}}</span>
+                    <span class="value">{{element.enseignant.enseignant_utilisateur.prenom}}</span>
                 </div>
                 <div class="info-item">
                     <span class="label">Date de naissance:</span>
-                    <span>{{element.enseignant.enseignant_utilisateur.date_naissance|date:"d/m/Y"}}</span>
+                    <span class="value">{{element.enseignant.enseignant_utilisateur.date_naissance|date:"d/m/Y"}}</span>
                 </div>
                 <div class="info-item">
                     <span class="label">Lieu de naissance:</span>
-                    <span>{{element.enseignant.enseignant_utilisateur.lieu_naissance}}</span>
+                    <span class="value">{{element.enseignant.enseignant_utilisateur.lieu_naissance}}</span>
                 </div>
                 <div class="info-item">
                     <span class="label">Adresse:</span>
-                    <span>{{element.enseignant.enseignant_utilisateur.adresse}}</span>
+                    <span class="value">{{element.enseignant.enseignant_utilisateur.adresse}}</span>
                 </div>
                 <div class="info-item">
                     <span class="label">Téléphone:</span>
-                    <span>{{element.enseignant.enseignant_utilisateur.numero_telephone}}</span>
+                    <span class="value">{{element.enseignant.enseignant_utilisateur.numero_telephone}}</span>
                 </div>
                 <div class="info-item">
                     <span class="label">Email:</span>
-                    <span>{{element.enseignant.enseignant_utilisateur.email}}</span>
+                    <span class="value">{{element.enseignant.enseignant_utilisateur.email}}</span>
                 </div>
-                <!-- <div class="info-item">
-                    <span class="label">Diplôme:</span>
-                    <span>{{element.niveau}}</span>
-                </div> -->
             </div>
         </div>
 
-        <div class="section">
+        <div class="section no-break">
             <div class="section-title">DÉTAILS DE L'EMPLOI</div>
             <div class="info-item">
-                <span class="label">Specialite:</span>
-                <span>{{element.description}}</span>
+                <span class="label">Spécialité:</span>
+                <span class="value">{{element.description}}</span>
             </div>
-            <!-- <div class="info-item">
-                <span class="label">Matière(s):</span>
-                <span>Pédagogie générale, Méthodologie de recherche</span>
-            </div> -->
-            <!-- <div class="info-item">
-                <span class="label">Volume horaire:</span>
-                <span>192 heures annuelles</span>
-            </div>
-            <div class="info-item">
-                <span class="label">Avantages:</span>
-                <span>Mutuelle santé, Titres restaurant, Prise en charge transport à 50%</span>
-            </div> -->
         </div>
 
-        <div class="signature-section">
+        <div class="signature-section no-break">
             <div>
-                <div>Fait à Brazzaville, le  {% now "d/m/Y H:i" %}</div>
+                <div><strong>Fait à Brazzaville, le {% now "d/m/Y" %}</strong></div>
                 <div>Pour l'enseignant</div>
                 <div class="signature-area"></div>
-                <div>Signature précédée de la mention "Lu et approuvé"</div>
+                <div class="signature-label">Signature précédée de la mention "Lu et approuvé"</div>
             </div>
             <div>
-                <div>Pour l'École ESCOM</div>
+                <div><strong>Pour l'École ESCOM</strong></div>
                 <div class="signature-area"></div>
-                <div>Signature du Directeur</div>
+                <div class="signature-label">Signature du Directeur</div>
             </div>
         </div>
 
         <div class="footer">
             <p>Ce document fait office de reçu officiel pour le contrat de recrutement. Conservez-le précieusement.</p>
-            <p>ESCOM - École Supérieure - CODE :  {{element.id}}</p>
+            <p>ESCOM - École Supérieure de Commerce: {{element.id}}</p>
         </div>
     </div>
 </body>

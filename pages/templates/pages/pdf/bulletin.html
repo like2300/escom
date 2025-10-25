@@ -4,197 +4,364 @@
     <meta charset="UTF-8">
     <title>Bulletin de Notes - ESCOM</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        @page {
+            size: A4;
+            margin: 1.5cm;
+        }
+
+        * {
             margin: 0;
-            padding: 20px;
-            color: #333;
+            padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #1a202c;
+            background-color: #ffffff;
+            font-size: 12px;
+            line-height: 1.4;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
         .container {
-            max-width: 800px;
+            max-width: 100%;
             margin: 0 auto;
-            border: 2px solid #003366;
-            padding: 20px;
+            padding: 0;
         }
+
         .header {
             text-align: center;
             margin-bottom: 20px;
-            border-bottom: 2px solid #003366;
-            padding-bottom: 10px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #1e40af;
         }
+
         .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #003366;
-        }
-        .title {
-            font-size: 20px;
-            margin-top: 10px;
-        }
-        .section {
-            margin-bottom: 15px;
-        }
-        .section-title {
-            font-weight: bold;
-            background-color: #f2f2f2;
-            padding: 5px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #1e40af;
             margin-bottom: 5px;
+            letter-spacing: -0.5px;
         }
+
+        .institution-info {
+            font-size: 11px;
+            color: #4a5568;
+            margin-bottom: 3px;
+        }
+
+        .title {
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            margin: 20px 0;
+            padding: 10px 0;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            color: #1a365d;
+        }
+
+        .section {
+            margin-bottom: 18px;
+            page-break-inside: avoid;
+        }
+
+        .section-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            padding: 6px 8px;
+            background-color: #f8fafc;
+            border-left: 4px solid #1e40af;
+            color: #2d3748;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
+
         .info-item {
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            display: flex;
         }
+
         .info-label {
-            font-weight: bold;
+            font-weight: 500;
+            color: #4a5568;
+            min-width: 140px;
+            flex-shrink: 0;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 15px 0;
+            margin: 12px 0;
+            font-size: 11px;
         }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
+
         th {
-            background-color: #f2f2f2;
-            padding: 8px;
+            background-color: #f8fafc;
+            padding: 10px 8px;
             text-align: left;
+            font-weight: 600;
+            color: #2d3748;
+            border: 1px solid #e2e8f0;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.3px;
         }
+
         td {
-            padding: 8px;
+            padding: 9px 8px;
+            border: 1px solid #e2e8f0;
+            vertical-align: middle;
         }
-        .total {
-            font-weight: bold;
-            text-align: right;
-            font-size: 16px;
-            margin-top: 10px;
+
+        tbody tr:nth-child(even) {
+            background-color: #fafbfc;
         }
+
+        tbody tr:hover {
+            background-color: #f7fafc;
+        }
+
+        .summary {
+            background-color: #f8fafc;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 12px;
+            border-left: 4px solid #1e40af;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            padding: 4px 0;
+        }
+
+        .summary-item:last-child {
+            font-weight: 600;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 4px;
+            padding-top: 8px;
+            color: #1a365d;
+        }
+
+        .mention {
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            margin: 20px 0;
+            padding: 12px;
+            background-color: #1e40af;
+            color: white;
+            border-radius: 4px;
+        }
+
         .signature-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 50px;
+            margin-top: 40px;
         }
+
         .signature-table td {
             border: none;
             padding: 0;
             vertical-align: bottom;
             text-align: center;
+            width: 50%;
         }
+
         .signature-line {
-            border-top: 1px solid #333;
-            padding-top: 60px;
-            width: 80%;
+            border-top: 1px solid #cbd5e0;
+            padding-top: 50px;
             margin: 0 auto;
+            width: 80%;
+            font-size: 11px;
+            color: #4a5568;
         }
+
         .footer {
             margin-top: 30px;
             text-align: center;
-            font-size: 12px;
-            color: #666;
+            font-size: 10px;
+            color: #718096;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 12px;
         }
-        .mention {
-            text-align: center;
-            font-weight: bold;
-            font-size: 16px;
-            margin: 15px 0;
-            color: #003366;
-        }
-        .summary {
-            background-color: #f9f9f9;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
+
+        .footer p {
             margin-bottom: 5px;
+        }
+
+        /* Styles d'impression */
+        @media print {
+            @page {
+                margin: 1.5cm;
+            }
+
+            body {
+                padding: 0;
+                font-size: 11px;
+            }
+
+            .container {
+                border: none;
+            }
+
+            .section {
+                break-inside: avoid;
+            }
+
+            .mention {
+                background-color: #1e40af !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            th {
+                background-color: #f8fafc !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        /* Styles écran */
+        @media screen {
+            body {
+                padding: 20px;
+                background-color: #f7fafc;
+            }
+
+            .container {
+                background: white;
+                padding: 25px;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                border-radius: 4px;
+                max-width: 800px;
+            }
+        }
+
+        /* Éviter les coupures */
+        .no-break {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        /* Alignement des nombres */
+        .number-cell {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .coefficient-cell {
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo">ESCOM</div>
-            <div>123 Avenue de l'Éducation, Brazzaville</div>
-            <div>Tél: 06 844 92 18 | Email: mivdenzel@gmail.com</div>
+            <div class="logo">ÉCOLE SUPÉRIEURE ESCOM</div>
+            <div class="institution-info">123 Avenue de l'Éducation, Brazzaville</div>
+            <div class="institution-info">Tél: 06 844 92 18 | Email: mivdenzel@gmail.com</div>
             <div class="title">BULLETIN DE NOTES</div>
         </div>
 
-        <div class="section">
-            <div class="section-title">Informations sur l'école</div>
+        <div class="section no-break">
+            <div class="section-title">INFORMATIONS SUR L'ÉCOLE</div>
             <div class="info-grid">
                 <div class="info-item">
-                    <span class="info-label">Nom de l'école:</span> ESCOM
+                    <span class="info-label">Nom de l'école:</span>
+                    <span>ESCOM</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Date d'émission:</span> {{ current_date }}
+                    <span class="info-label">Date d'émission:</span>
+                    <span>{{ current_date }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Adresse:</span> 123 Avenue de l'Éducation, Brazzaville
+                    <span class="info-label">Adresse:</span>
+                    <span>123 Avenue de l'Éducation, Brazzaville</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Téléphone:</span> 06 844 92 18
+                    <span class="info-label">Téléphone:</span>
+                    <span>06 844 92 18</span>
                 </div>
             </div>
         </div>
 
-        <div class="section">
-            <div class="section-title">Informations sur l'étudiant</div>
+        <div class="section no-break">
+            <div class="section-title">INFORMATIONS SUR L'ÉTUDIANT</div>
             <div class="info-grid">
                 <div class="info-item">
-                    <span class="info-label">Nom complet:</span> {{ etudiant.utilisateur.nom }} {{ etudiant.utilisateur.prenom }}
+                    <span class="info-label">Nom complet:</span>
+                    <span>{{ etudiant.utilisateur.nom }} {{ etudiant.utilisateur.prenom }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Classe:</span> {{ transaction.classe.nom}}
+                    <span class="info-label">Classe:</span>
+                    <span>{{ transaction.classe.nom }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Matricule:</span> {{ etudiant.utilisateur.matricule }}
+                    <span class="info-label">Matricule:</span>
+                    <span>{{ etudiant.utilisateur.matricule }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Option:</span> {{ transaction.classe.option}}
+                    <span class="info-label">Option:</span>
+                    <span>{{ transaction.classe.option }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Option:</span> {{ transaction.classe.option.filiere}}
+                    <span class="info-label">Filière:</span>
+                    <span>{{ transaction.classe.option.filiere }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Niveau:</span> {{ transaction.classe.niveau }}
+                    <span class="info-label">Niveau:</span>
+                    <span>{{ transaction.classe.niveau }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Année Académique:</span> {{ annee_academique }}
+                    <span class="info-label">Année Académique:</span>
+                    <span>{{ annee_academique }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Semestre:</span> {{ semestre }}
+                    <span class="info-label">Semestre:</span>
+                    <span>{{ semestre }}</span>
                 </div>
             </div>
         </div>
 
-        <div class="section">
-            <div class="section-title">Notes par matière</div>
+        <div class="section no-break">
+            <div class="section-title">NOTES PAR MATIÈRE</div>
             <table>
                 <thead>
                     <tr>
                         <th>Matière</th>
-                        <th>Coefficient</th>
-                        <th>Note Devoir</th>
-                        <th>Note Session</th>
-                        <th>Moyenne</th>
-                        <th>Note x Coeff</th>
+                        <th width="80">Coefficient</th>
+                        <th width="80">Note Devoir</th>
+                        <th width="80">Note Session</th>
+                        <th width="80">Moyenne</th>
+                        <th width="80">Note x Coeff</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for matiere, details in matieres.items %}
                     <tr>
                         <td>{{ matiere }}</td>
-                        <td>{{ details.coefficient }}</td>
-                        <td>{{ details.devoir }}</td>
-                        <td>{{ details.session }}</td>
-                        <td>{{ details.moyenne }}</td>
-                        <td>{{ details.ponderee }}</td>
+                        <td class="coefficient-cell">{{ details.coefficient }}</td>
+                        <td class="number-cell">{{ details.devoir }}</td>
+                        <td class="number-cell">{{ details.session }}</td>
+                        <td class="number-cell">{{ details.moyenne }}</td>
+                        <td class="number-cell">{{ details.ponderee }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -211,7 +378,7 @@
                 </div>
                 <div class="summary-item">
                     <span>Moyenne générale:</span>
-                    <span>{{ moyenne_generale }} / 20</span>
+                    <span><strong>{{ moyenne_generale }} / 20</strong></span>
                 </div>
             </div>
             
@@ -237,7 +404,7 @@
 
         <div class="footer">
             <p>Ce document certifie l'authenticité des notes présentées ci-dessus.</p>
-            <p>ESCOM - École Supérieure de Chimie Organique et Minérale</p>
+            <p>ESCOM - École Supérieure de Commerce</p>
         </div>
     </div>
 </body>

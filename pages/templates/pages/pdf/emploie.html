@@ -4,43 +4,48 @@
     <meta charset="UTF-8">
     <title>Emploi du Temps - {{ classe.nom }}</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
-            font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            background-color: #f9f9f9;
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            color: #000000;
+            background-color: #ffffff;
+            padding: 10px;
+            line-height: 1.3;
+            font-size: 12px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
 
         .container {
-            max-width: 1100px;
-            margin: auto;
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
+            max-width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
         }
 
         .header {
-            background-color: #4a5568; /* Gris foncé */
-            color: #ffffff;
-            padding: 25px 30px;
+            background: #1a365d;
+            color: white;
+            padding: 20px 25px;
             text-align: center;
-            border-bottom: 5px solid #2d3748; /* Gris plus foncé */
+            border-bottom: 2px solid #2d3748;
         }
 
         .header h1 {
-            margin: 0;
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 700;
-            letter-spacing: 0.5px;
+            margin-bottom: 5px;
         }
 
         .header p {
-            margin: 8px 0 0;
-            font-size: 18px;
+            font-size: 14px;
             font-weight: 400;
             opacity: 0.9;
         }
@@ -48,81 +53,156 @@
         .schedule-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .schedule-table th,
-        .schedule-table td {
-            border: 1px solid #e2e8f0; /* Gris clair */
-            padding: 15px;
-            text-align: center;
-            vertical-align: middle;
-            font-size: 14px;
-        }
-
-        .schedule-table thead {
-            background-color: #edf2f7; /* Gris très clair */
+            font-size: 11px;
+            page-break-inside: avoid;
         }
 
         .schedule-table th {
-            font-weight: 500;
-            color: #2d3748; /* Gris foncé */
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #2d3748;
             text-transform: uppercase;
-            font-size: 13px;
+            font-size: 10px;
+            letter-spacing: 0.3px;
+            padding: 12px 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .schedule-table td {
+            padding: 10px 6px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            vertical-align: middle;
+            height: 70px;
         }
 
         .time-cell {
-            font-weight: 500;
-            color: #4a5568; /* Gris moyen */
-            background-color: #f7fafc; /* Blanc cassé */
-            width: 120px;
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #2d3748;
+            width: 80px;
+            font-size: 10px;
         }
 
         .course-cell {
-            padding: 12px;
-            min-height: 80px;
+            min-height: 60px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
+            padding: 8px 4px;
+            background: #ffffff;
         }
 
         .course-name {
-            font-weight: 700;
-            font-size: 15px;
-            color: #2c5282; /* Bleu foncé */
-            margin-bottom: 6px;
+            font-weight: 600;
+            color: #1e40af;
+            font-size: 11px;
+            margin-bottom: 4px;
+            line-height: 1.2;
         }
 
-        .course-teacher,
-        .course-salle {
-            font-size: 13px;
-            color: #4a5568; /* Gris moyen */
-            line-height: 1.4;
-        }
-        
-        .course-teacher::before,
-        .course-salle::before {
-            font-family: "Font Awesome 5 Free";
-            margin-right: 6px;
-            opacity: 0.7;
+        .course-details {
+            font-size: 9px;
+            color: #4a5568;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            width: 100%;
         }
 
-        .course-teacher::before {
-            content: "👤"; /* Icône utilisateur */
-        }
-
-        .course-salle::before {
-            content: "📍"; /* Icône lieu */
+        .course-teacher, .course-salle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
         }
 
         .empty-cell {
-            color: #a0aec0; /* Gris léger */
+            color: #a0aec0;
             font-style: italic;
+            font-size: 10px;
         }
 
-        /* Alternating row colors for better readability */
-        .schedule-table tbody tr:nth-child(even) {
-            background-color: #f7fafc; /* Blanc cassé */
+        /* Styles d'impression */
+        @media print {
+            @page {
+                margin: 0.5cm;
+                size: A4 landscape;
+            }
+
+            body {
+                padding: 0;
+                margin: 0;
+                background: white;
+                font-size: 11px;
+            }
+
+            .container {
+                border: none;
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+            }
+
+            .header {
+                background: #1a365d !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .schedule-table {
+                font-size: 10px;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            .schedule-table th {
+                background-color: #f8f9fa !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .time-cell {
+                background-color: #f8f9fa !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .course-name {
+                color: #1e40af;
+            }
+
+            /* Éviter les coupures de ligne */
+            tr {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            
+            /* Optimisation des marges pour l'impression */
+            .header {
+                padding: 15px 20px;
+                margin-bottom: 10px;
+            }
+            
+            .schedule-table th,
+            .schedule-table td {
+                padding: 8px 4px;
+            }
+        }
+
+        /* Pour l'affichage écran */
+        @media screen {
+            body {
+                background-color: #f5f5f5;
+                padding: 20px;
+            }
+            
+            .container {
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                border-radius: 4px;
+            }
         }
     </style>
 </head>
@@ -157,8 +237,10 @@
                         {% if E1.lundi.premier.existe %}
                             <div class="course-cell">
                                 <div class="course-name">{{ E1.lundi.premier.details.0 }}</div>
-                                <div class="course-teacher">{{ E1.lundi.premier.details.1 }}</div>
-                                <div class="course-salle">{{ E1.lundi.premier.details.2 }}</div>
+                                <div class="course-details">
+                                    <div class="course-teacher">👤 {{ E1.lundi.premier.details.1 }}</div>
+                                    <div class="course-salle">📍 {{ E1.lundi.premier.details.2 }}</div>
+                                </div>
                             </div>
                         {% else %}<div class="empty-cell">-</div>{% endif %}
                     </td>
@@ -166,8 +248,10 @@
                         {% if E1.mardi.premier.existe %}
                             <div class="course-cell">
                                 <div class="course-name">{{ E1.mardi.premier.details.0 }}</div>
-                                <div class="course-teacher">{{ E1.mardi.premier.details.1 }}</div>
-                                <div class="course-salle">{{ E1.mardi.premier.details.2 }}</div>
+                                <div class="course-details">
+                                    <div class="course-teacher">👤 {{ E1.mardi.premier.details.1 }}</div>
+                                    <div class="course-salle">📍 {{ E1.mardi.premier.details.2 }}</div>
+                                </div>
                             </div>
                         {% else %}<div class="empty-cell">-</div>{% endif %}
                     </td>
@@ -175,8 +259,10 @@
                         {% if E1.mercredi.premier.existe %}
                             <div class="course-cell">
                                 <div class="course-name">{{ E1.mercredi.premier.details.0 }}</div>
-                                <div class="course-teacher">{{ E1.mercredi.premier.details.1 }}</div>
-                                <div class="course-salle">{{ E1.mercredi.premier.details.2 }}</div>
+                                <div class="course-details">
+                                    <div class="course-teacher">👤 {{ E1.mercredi.premier.details.1 }}</div>
+                                    <div class="course-salle">📍 {{ E1.mercredi.premier.details.2 }}</div>
+                                </div>
                             </div>
                         {% else %}<div class="empty-cell">-</div>{% endif %}
                     </td>
@@ -184,8 +270,10 @@
                         {% if E1.jeudi.premier.existe %}
                             <div class="course-cell">
                                 <div class="course-name">{{ E1.jeudi.premier.details.0 }}</div>
-                                <div class="course-teacher">{{ E1.jeudi.premier.details.1 }}</div>
-                                <div class="course-salle">{{ E1.jeudi.premier.details.2 }}</div>
+                                <div class="course-details">
+                                    <div class="course-teacher">👤 {{ E1.jeudi.premier.details.1 }}</div>
+                                    <div class="course-salle">📍 {{ E1.jeudi.premier.details.2 }}</div>
+                                </div>
                             </div>
                         {% else %}<div class="empty-cell">-</div>{% endif %}
                     </td>
@@ -193,8 +281,10 @@
                         {% if E1.vendredi.premier.existe %}
                             <div class="course-cell">
                                 <div class="course-name">{{ E1.vendredi.premier.details.0 }}</div>
-                                <div class="course-teacher">{{ E1.vendredi.premier.details.1 }}</div>
-                                <div class="course-salle">{{ E1.vendredi.premier.details.2 }}</div>
+                                <div class="course-details">
+                                    <div class="course-teacher">👤 {{ E1.vendredi.premier.details.1 }}</div>
+                                    <div class="course-salle">📍 {{ E1.vendredi.premier.details.2 }}</div>
+                                </div>
                             </div>
                         {% else %}<div class="empty-cell">-</div>{% endif %}
                     </td>
@@ -202,8 +292,10 @@
                         {% if E1.samedi.premier.existe %}
                             <div class="course-cell">
                                 <div class="course-name">{{ E1.samedi.premier.details.0 }}</div>
-                                <div class="course-teacher">{{ E1.samedi.premier.details.1 }}</div>
-                                <div class="course-salle">{{ E1.samedi.premier.details.2 }}</div>
+                                <div class="course-details">
+                                    <div class="course-teacher">👤 {{ E1.samedi.premier.details.1 }}</div>
+                                    <div class="course-salle">📍 {{ E1.samedi.premier.details.2 }}</div>
+                                </div>
                             </div>
                         {% else %}<div class="empty-cell">-</div>{% endif %}
                     </td>
@@ -219,8 +311,10 @@
                         {% if E1.lundi.deuxieme.existe %}
                             <div class="course-cell">
                                 <div class="course-name">{{ E1.lundi.deuxieme.details.0 }}</div>
-                                <div class="course-teacher">{{ E1.lundi.deuxieme.details.1 }}</div>
-                                <div class="course-salle">{{ E1.lundi.deuxieme.details.2 }}</div>
+                                <div class="course-details">
+                                    <div class="course-teacher">👤 {{ E1.lundi.deuxieme.details.1 }}</div>
+                                    <div class="course-salle">📍 {{ E1.lundi.deuxieme.details.2 }}</div>
+                                </div>
                             </div>
                         {% else %}<div class="empty-cell">-</div>{% endif %}
                     </td>
@@ -228,8 +322,10 @@
                         {% if E1.mardi.deuxieme.existe %}
                             <div class="course-cell">
                                 <div class="course-name">{{ E1.mardi.deuxieme.details.0 }}</div>
-                                <div class="course-teacher">{{ E1.mardi.deuxieme.details.1 }}</div>
-                                <div class="course-salle">{{ E1.mardi.deuxieme.details.2 }}</div>
+                                <div class="course-details">
+                                    <div class="course-teacher">👤 {{ E1.mardi.deuxieme.details.1 }}</div>
+                                    <div class="course-salle">📍 {{ E1.mardi.deuxieme.details.2 }}</div>
+                                </div>
                             </div>
                         {% else %}<div class="empty-cell">-</div>{% endif %}
                     </td>
@@ -237,8 +333,10 @@
                         {% if E1.mercredi.deuxieme.existe %}
                             <div class="course-cell">
                                 <div class="course-name">{{ E1.mercredi.deuxieme.details.0 }}</div>
-                                <div class="course-teacher">{{ E1.mercredi.deuxieme.details.1 }}</div>
-                                <div class="course-salle">{{ E1.mercredi.deuxieme.details.2 }}</div>
+                                <div class="course-details">
+                                    <div class="course-teacher">👤 {{ E1.mercredi.deuxieme.details.1 }}</div>
+                                    <div class="course-salle">📍 {{ E1.mercredi.deuxieme.details.2 }}</div>
+                                </div>
                             </div>
                         {% else %}<div class="empty-cell">-</div>{% endif %}
                     </td>
@@ -246,8 +344,10 @@
                         {% if E1.jeudi.deuxieme.existe %}
                             <div class="course-cell">
                                 <div class="course-name">{{ E1.jeudi.deuxieme.details.0 }}</div>
-                                <div class="course-teacher">{{ E1.jeudi.deuxieme.details.1 }}</div>
-                                <div class="course-salle">{{ E1.jeudi.deuxieme.details.2 }}</div>
+                                <div class="course-details">
+                                    <div class="course-teacher">👤 {{ E1.jeudi.deuxieme.details.1 }}</div>
+                                    <div class="course-salle">📍 {{ E1.jeudi.deuxieme.details.2 }}</div>
+                                </div>
                             </div>
                         {% else %}<div class="empty-cell">-</div>{% endif %}
                     </td>
@@ -255,8 +355,10 @@
                         {% if E1.vendredi.deuxieme.existe %}
                             <div class="course-cell">
                                 <div class="course-name">{{ E1.vendredi.deuxieme.details.0 }}</div>
-                                <div class="course-teacher">{{ E1.vendredi.deuxieme.details.1 }}</div>
-                                <div class="course-salle">{{ E1.vendredi.deuxieme.details.2 }}</div>
+                                <div class="course-details">
+                                    <div class="course-teacher">👤 {{ E1.vendredi.deuxieme.details.1 }}</div>
+                                    <div class="course-salle">📍 {{ E1.vendredi.deuxieme.details.2 }}</div>
+                                </div>
                             </div>
                         {% else %}<div class="empty-cell">-</div>{% endif %}
                     </td>
@@ -264,8 +366,10 @@
                         {% if E1.samedi.deuxieme.existe %}
                             <div class="course-cell">
                                 <div class="course-name">{{ E1.samedi.deuxieme.details.0 }}</div>
-                                <div class="course-teacher">{{ E1.samedi.deuxieme.details.1 }}</div>
-                                <div class="course-salle">{{ E1.samedi.deuxieme.details.2 }}</div>
+                                <div class="course-details">
+                                    <div class="course-teacher">👤 {{ E1.samedi.deuxieme.details.1 }}</div>
+                                    <div class="course-salle">📍 {{ E1.samedi.deuxieme.details.2 }}</div>
+                                </div>
                             </div>
                         {% else %}<div class="empty-cell">-</div>{% endif %}
                     </td>
